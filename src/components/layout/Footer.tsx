@@ -6,6 +6,7 @@ import {
   footerColumns,
   socialHandles,
   SITE_NAME,
+  SITE_TAGLINE,
   type SocialHandle,
 } from "@/constants/site";
 
@@ -29,16 +30,19 @@ function SocialIcon({ name }: { name: SocialHandle["icon"] }) {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/60 bg-muted/30">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
-          <div className="max-w-xs">
-            <BrandMark />
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Clean, natural skincare made with honest ingredients. Calm, minimal
-              routines for skin that deserves the purest care.
+    <footer className="border-t border-white/10 bg-terracotta text-white">
+      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.6fr_repeat(3,1fr)]">
+          <div className="max-w-sm">
+            <BrandMark variant="dark" />
+            <p className="mt-5 text-lg font-medium text-brand-cream">
+              {SITE_TAGLINE}
             </p>
-            <div className="mt-6 flex gap-2">
+            <p className="mt-3 text-base leading-relaxed text-brand-cream/75">
+              Clean, natural skincare made with honest ingredients. Calm,
+              minimal routines for skin that deserves the purest care.
+            </p>
+            <div className="mt-7 flex gap-2.5">
               {socialHandles.map((handle) => (
                 <a
                   key={handle.label}
@@ -46,7 +50,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={handle.label}
-                  className="grid size-9 place-items-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                  className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/5 text-white/60 transition-all duration-200 hover:border-white/35 hover:bg-white/15 hover:text-white hover:scale-105"
                 >
                   <SocialIcon name={handle.icon} />
                 </a>
@@ -56,13 +60,15 @@ export function Footer() {
 
           {footerColumns.map((column) => (
             <div key={column.title}>
-              <h3 className="font-heading text-sm font-semibold">{column.title}</h3>
-              <ul className="mt-4 space-y-3">
+              <h3 className="text-base font-semibold tracking-wider text-brand-cream uppercase">
+                {column.title}
+              </h3>
+              <ul className="mt-5 space-y-3">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                      className="text-lg text-brand-cream/80 transition-colors duration-200 hover:text-white"
                     >
                       {link.label}
                     </Link>
@@ -73,12 +79,14 @@ export function Footer() {
           ))}
         </div>
 
-        <Separator className="my-8" />
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
+        <Separator className="my-10 bg-white/10" />
+        <div className="flex flex-col items-center justify-between gap-4 text-sm text-brand-cream/60 sm:flex-row">
           <p>
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <p>Made with care, for skin and planet.</p>
+          <p className="flex items-center gap-1.5 text-brand-cream/50">
+            Made with care, for skin and planet.
+          </p>
         </div>
       </div>
     </footer>

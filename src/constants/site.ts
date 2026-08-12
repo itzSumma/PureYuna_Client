@@ -1,5 +1,5 @@
 export const SITE_NAME = "PureYuna";
-export const SITE_TAGLINE = "Clean, natural skincare";
+export const SITE_TAGLINE = "Your skin. Your routine.";
 
 export interface NavLink {
   label: string;
@@ -41,7 +41,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Shop",
     links: [
-      { label: "All Products", href: "/products" },
+      { label: "Products", href: "/products" },
       { label: "Ready-Made Packages", href: "/packages" },
       { label: "Build Your Package", href: "/build-package" },
     ],
@@ -49,9 +49,15 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "/about" },
+      { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
-      { label: "Login", href: "/login" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "FAQ", href: "/faq" },
+      { label: "My Orders", href: "/orders" },
     ],
   },
 ];
