@@ -31,12 +31,15 @@ export function ImageWithFallback({
     );
   }
 
+  const defaultLoading = props.priority ? undefined : "lazy";
+
   return (
     <Image
       src={src}
       alt={alt}
       className={cn("object-cover", className)}
       onError={() => setFailed(true)}
+      loading={defaultLoading}
       {...props}
     />
   );

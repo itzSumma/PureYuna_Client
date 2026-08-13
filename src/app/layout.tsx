@@ -29,12 +29,45 @@ const displayFont = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pureyuna.com"),
   title: {
-    default: "PureYuna — Clean, Natural Skincare",
+    default: "PureYuna — Organic & Formulated Skincare Sanctuary",
     template: "%s · PureYuna",
   },
   description:
-    "Discover clean, natural and formulated skincare. Match products to your skin type, browse ready-made packages, or build your own routine with PureYuna.",
+    "Discover clean, organic, and precision-formulated skincare. Match products to your skin type, browse ready-made packages, or build your own routine with PureYuna.",
+  keywords: [
+    "clean beauty",
+    "organic skincare",
+    "botanical extracts",
+    "clinical actives",
+    "personalized beauty",
+    "PureYuna",
+    "vegan cosmetics"
+  ],
+  authors: [{ name: "PureYuna Sanctuary" }],
+  openGraph: {
+    title: "PureYuna — Organic & Formulated Skincare Sanctuary",
+    description: "Discover clean, organic, and precision-formulated skincare formulas.",
+    url: "https://pureyuna.com",
+    siteName: "PureYuna",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PureYuna Skincare Sanctuary Showcase",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PureYuna — Organic & Formulated Skincare Sanctuary",
+    description: "Discover clean, organic, and precision-formulated skincare formulas.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

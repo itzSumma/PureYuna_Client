@@ -41,7 +41,19 @@ import { useAuthStore } from "@/stores/authStore";
 import { useToastStore } from "@/stores/toastStore";
 import { useCartStore } from "@/stores/cartStore";
 import { useWishlistStore } from "@/stores/wishlistStore";
-import { CartDrawer } from "@/components/cart/cart-drawer";
+import dynamic from "next/dynamic";
+
+const CartDrawer = dynamic(
+  () => import("@/components/cart/cart-drawer").then((mod) => mod.CartDrawer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full items-center justify-center p-8">
+        <span className="text-xs text-cocoa/40 animate-pulse tracking-widest uppercase">Loading Sanctuary Cart...</span>
+      </div>
+    ),
+  }
+);
 
 function NavLink({
   href,
