@@ -36,6 +36,7 @@ function persistUser(user: AuthUser | null) {
 interface AuthState {
   user: AuthUser | null;
   token: string | null;
+  isAuthenticated: boolean;
   isInitialized: boolean;
   initialize: () => void;
   setAuth: (token: string, user: AuthUser) => void;
@@ -46,6 +47,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()((set) => ({
   user: null,
   token: null,
+  isAuthenticated: false,
   isInitialized: false,
 
   initialize: () =>
@@ -58,27 +60,27 @@ export const useAuthStore = create<AuthState>()((set) => ({
       if (!token || !user) {
         if (token) persistToken(null);
         if (user) persistUser(null);
-        return { token: null, user: null, isInitialized: true };
+        return { token: null, user: null, isAuthenticated: false, isInitialized: true };
       }
 
-      return { token, user, isInitialized: true };
+      return { token, user, isAuthenticated: true, isInitialized: true };
     }),
 
   setAuth: (token, user) => {
     persistToken(token);
     persistUser(user);
-    set({ token, user });
+    set({ token, user, isAuthenticated: true });
   },
 
   setUser: (user) => {
     persistUser(user);
-    set({ user });
+    set({ user, isAuthenticated: true });
   },
 
   logout: () => {
     persistToken(null);
     persistUser(null);
-    set({ token: null, user: null });
+    set({ token: null, user: null, isAuthenticated: false });
   },
 }));
 

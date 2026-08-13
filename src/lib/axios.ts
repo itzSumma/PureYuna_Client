@@ -8,14 +8,14 @@ import axios, {
 import type { ApiErrorResponse } from "@/types/api";
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:6000/api/v1";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://pureyuna.onrender.com/api/v1";
 
 export const TOKEN_STORAGE_KEY = "pureyuna_token";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     "Content-Type": "application/json",
   },

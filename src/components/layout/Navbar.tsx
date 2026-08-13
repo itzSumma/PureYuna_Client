@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   ChevronDown,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -36,6 +37,7 @@ import {
 import { mainNavLinks, packagesDropdownLinks } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
+import { useToastStore } from "@/stores/toastStore";
 
 function NavLink({
   href,
@@ -79,9 +81,11 @@ function PackagesDropdown() {
         <span className="sr-only">Packages</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-72" sideOffset={22}>
-        <DropdownMenuLabel className="text-xs font-semibold tracking-[0.18em] text-charcoal/60 uppercase">
-          Packs & Routines
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="text-xs font-semibold tracking-[0.18em] text-charcoal/60 uppercase">
+            Packs & Routines
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {packagesDropdownLinks.map((item, index) => (
           <DropdownMenuItem
@@ -119,10 +123,20 @@ function getInitials(name: string): string {
 }
 
 function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
-  const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+  const showToast = useToastStore((state) => state.showToast);
 
   if (!user) return null;
+
+  const handleLogout = () => {
+    logout();
+    showToast("Logged out successfully", "info");
+    if (onNavigate) {
+      onNavigate();
+    }
+    router.push("/login");
+  };
 
   return (
     <DropdownMenu>
@@ -131,7 +145,7 @@ function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
           <button
             type="button"
             aria-label="Account menu"
-            className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50 cursor-pointer"
           />
         }
       >
@@ -141,34 +155,52 @@ function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="flex flex-col gap-0.5">
-          <span className="font-medium">{user.name}</span>
-          <span className="truncate text-xs font-normal text-muted-foreground">
-            {user.email}
-          </span>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" className="w-56 bg-[#FAF5EF] border border-[#3A2820]/10 text-[#3A2820] p-1.5 rounded-lg shadow-md">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="flex flex-col gap-0.5 px-3 py-1.5">
+            <span className="font-semibold text-sm text-[#3A2820]">{user.name}</span>
+            <span className="truncate text-xs font-normal text-[#3A2820]/60">
+              {user.email}
+            </span>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator className="my-1 h-px bg-[#3A2820]/10 -mx-1.5" />
+        
         <DropdownMenuItem
-          render={<Link href="/wishlist" />}
-          className="gap-2 focus:bg-charcoal/5"
+          render={<Link href="/profile" />}
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3A2820] hover:bg-[#3A2820]/5 focus:bg-[#3A2820]/5 cursor-pointer rounded-md transition-colors outline-none"
           onClick={onNavigate}
         >
-          <Heart className="size-4" />
-          My Wishlist
+          <UserRound className="size-4 text-terracotta" />
+          My Profile
         </DropdownMenuItem>
+        
         <DropdownMenuItem
           render={<Link href="/orders" />}
-          className="gap-2 focus:bg-charcoal/5"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3A2820] hover:bg-[#3A2820]/5 focus:bg-[#3A2820]/5 cursor-pointer rounded-md transition-colors outline-none"
           onClick={onNavigate}
         >
-          <ShoppingBag className="size-4" />
+          <ShoppingBag className="size-4 text-terracotta" />
           My Orders
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 text-destructive focus:bg-destructive/5" onClick={logout}>
+
+        <DropdownMenuItem
+          render={<Link href="/wishlist" />}
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3A2820] hover:bg-[#3A2820]/5 focus:bg-[#3A2820]/5 cursor-pointer rounded-md transition-colors outline-none"
+          onClick={onNavigate}
+        >
+          <Heart className="size-4 text-terracotta" />
+          My Wishlist
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator className="my-1 h-px bg-[#3A2820]/10 -mx-1.5" />
+        
+        <DropdownMenuItem
+          className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer rounded-md transition-colors outline-none"
+          onClick={handleLogout}
+        >
           <LogOut className="size-4" />
-          Log out
+          Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -176,7 +208,7 @@ function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 function AuthActions({ onNavigate }: { onNavigate?: () => void }) {
-  const isAuthenticated = useAuthStore((state) => Boolean(state.token && state.user));
+  const { isAuthenticated } = useAuthStore();
 
   if (isAuthenticated) {
     return <UserMenu onNavigate={onNavigate} />;
@@ -235,7 +267,16 @@ function MobileNavContent({
   pathname: string;
 }) {
   const [packagesOpen, setPackagesOpen] = useState(false);
-  const isAuthenticated = useAuthStore((state) => Boolean(state.token && state.user));
+  const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuthStore();
+  const showToast = useToastStore((state) => state.showToast);
+
+  const handleLogout = () => {
+    logout();
+    showToast("Logged out successfully", "info");
+    onClose();
+    router.push("/login");
+  };
 
   return (
     <>
@@ -299,23 +340,61 @@ function MobileNavContent({
         </div>
       </nav>
 
+      {isAuthenticated && user && (
+        <div className="mt-6 border-t border-[#3A2820]/10 px-6 pt-5 text-[#3A2820]">
+          <div className="flex items-center gap-3 mb-4">
+            <Avatar className="h-10 w-10 ring-1 ring-terracotta/20">
+              <AvatarFallback className="bg-terracotta text-brand-cream text-sm">
+                {getInitials(user.name) || <UserRound className="size-4" />}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col min-w-0">
+              <span className="font-semibold text-sm leading-tight truncate">{user.name}</span>
+              <span className="text-xs text-[#3A2820]/60 truncate">{user.email}</span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/profile"
+              onClick={onClose}
+              className="flex items-center gap-2 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+            >
+              <UserRound className="size-4" />
+              My Profile
+            </Link>
+            <Link
+              href="/orders"
+              onClick={onClose}
+              className="flex items-center gap-2 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+            >
+              <ShoppingBag className="size-4" />
+              My Orders
+            </Link>
+            <Link
+              href="/wishlist"
+              onClick={onClose}
+              className="flex items-center gap-2 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+            >
+              <Heart className="size-4" />
+              My Wishlist
+            </Link>
+          </div>
+        </div>
+      )}
+
       <div className="mt-8 flex items-center gap-2 border-t border-taupe/50 px-6 pt-5">
         <IconLinks />
-        {isAuthenticated && <UserMenu onNavigate={onClose} />}
       </div>
 
       <div className="mt-5 px-6">
         {isAuthenticated ? (
           <button
             type="button"
-            className="flex items-center gap-2 text-base font-medium text-charcoal/80 transition-colors duration-200 hover:text-black"
-            onClick={() => {
-              useAuthStore.getState().logout();
-              onClose();
-            }}
+            className="flex items-center gap-2 text-base font-semibold text-red-600 transition-colors duration-200 hover:text-red-700 cursor-pointer"
+            onClick={handleLogout}
           >
             <LogOut className="size-4" />
-            Log out
+            Sign Out
           </button>
         ) : (
           <div className="grid grid-cols-2 gap-3">

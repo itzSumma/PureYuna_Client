@@ -31,9 +31,9 @@
 
   --color-formulated-bg: #f8f2e7;
   --color-formulated-surface: #ede0ca;
-  --color-formulated-primary: #b86b4b;
-  --color-formulated-accent: #96583a;
-  --color-formulated-text: #2e221d;
+  --color-formulated-primary: #c48a2c;
+  --color-formulated-accent: #8e5d20;
+  --color-formulated-text: #332410;
 
   --color-brand-cream: #faf5ef;
   --color-brand-earth: #3a2820;
@@ -171,5 +171,13 @@
     opacity: 0.04;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 160px 160px;
+  }
+
+  .auth-shell-container input:-webkit-autofill,
+  .auth-shell-container input:-webkit-autofill:hover, 
+  .auth-shell-container input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #3A2820 !important;
+    -webkit-box-shadow: 0 0 0px 1000px #DF8E73 inset !important;
+    transition: background-color 5000s ease-in-out 0s;
   }
 }

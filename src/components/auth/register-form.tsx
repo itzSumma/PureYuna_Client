@@ -13,11 +13,9 @@ import { Label } from "@/components/ui/label";
 import { getRegisterErrorMessage } from "@/lib/errors";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/authStore";
+import { INPUT_UNDERLINE } from "@/constants/design-tokens";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const inputUnderline =
-  "h-10 rounded-none border-x-0 border-t-0 border-b border-taupe bg-transparent px-0 focus-visible:ring-0 focus-visible:border-organic-primary transition-colors";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -73,18 +71,20 @@ export function RegisterForm() {
     <AuthShell
       title="Create your PureYuna account."
       subtitle="Join a brand that starts with your skin — never a role."
+      imageSrc="https://images.unsplash.com/photo-1643123158391-8543727c85f5?auto=format&fit=crop&w=1920&q=90"
+      overlayText="Join Us. Embrace conscious luxury and pure, effective care."
     >
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         {error && (
-          <Alert variant="destructive" className="rounded-md">
-            <AlertCircle className="size-4" />
-            <AlertTitle>Unable to sign up</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
+          <Alert variant="destructive" className="rounded-md bg-red-50 border-red-200 text-red-800">
+            <AlertCircle className="size-4 text-red-800" />
+            <AlertTitle className="font-semibold text-sm">Unable to sign up</AlertTitle>
+            <AlertDescription className="text-xs">{error}</AlertDescription>
           </Alert>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-xs font-medium tracking-wide text-muted-foreground">
+          <Label htmlFor="name" className="text-xs font-medium tracking-wide text-[#3A2820]">
             Name
           </Label>
           <Input
@@ -94,12 +94,12 @@ export function RegisterForm() {
             placeholder="Jane Doe"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            className={inputUnderline}
+            className={INPUT_UNDERLINE}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-xs font-medium tracking-wide text-muted-foreground">
+          <Label htmlFor="email" className="text-xs font-medium tracking-wide text-[#3A2820]">
             Email
           </Label>
           <Input
@@ -109,12 +109,12 @@ export function RegisterForm() {
             placeholder="you@example.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className={inputUnderline}
+            className={INPUT_UNDERLINE}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-xs font-medium tracking-wide text-muted-foreground">
+          <Label htmlFor="password" className="text-xs font-medium tracking-wide text-[#3A2820]">
             Password
           </Label>
           <div className="relative">
@@ -125,13 +125,13 @@ export function RegisterForm() {
               placeholder="At least 6 characters"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className={inputUnderline}
+              className={INPUT_UNDERLINE}
             />
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute top-1/2 right-0 -translate-y-1/2 p-1 text-muted-foreground transition-colors hover:text-foreground"
+              className="absolute top-1/2 right-0 -translate-y-1/2 p-1 text-[#3A2820]/50 transition-colors hover:text-[#3A2820]"
             >
               {showPassword ? (
                 <EyeOff className="size-4" />
@@ -145,7 +145,7 @@ export function RegisterForm() {
         <div className="space-y-2">
           <Label
             htmlFor="confirm-password"
-            className="text-xs font-medium tracking-wide text-muted-foreground"
+            className="text-xs font-medium tracking-wide text-[#3A2820]"
           >
             Confirm password
           </Label>
@@ -156,7 +156,7 @@ export function RegisterForm() {
             placeholder="Repeat your password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
-            className={inputUnderline}
+            className={INPUT_UNDERLINE}
           />
         </div>
 
@@ -164,16 +164,16 @@ export function RegisterForm() {
           type="submit"
           variant="default"
           size="lg"
-          className="w-full"
+          className="w-full cursor-pointer"
           disabled={isSubmitting}
         >
           {isSubmitting ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
           {isSubmitting ? "Creating account..." : "Create account"}
         </Button>
 
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/login" className="font-medium text-organic-primary hover:underline">
+        <p className="text-center text-sm text-[#3A2820]">
+          Already have an account?{"  "}
+          <Link href="/login" className="font-medium text-[#3A2820] hover:text-[#B86B4B] hover:underline">
             Sign in
           </Link>
         </p>

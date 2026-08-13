@@ -1,0 +1,258 @@
+"use client";
+
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+
+import { FilterSidebar } from "@/components/products/filter-sidebar";
+import { FilterDrawer } from "@/components/products/filter-drawer";
+import { ProductsHeader } from "@/components/products/products-header";
+import { ProductsGrid } from "@/components/products/products-grid";
+import { useToastStore } from "@/stores/toastStore";
+import { getApiErrorMessage } from "@/lib/errors";
+import { productService } from "@/services/product.service";
+import type { Category, Product, ProductQueryParams } from "@/types/product";
+import { ProductSort, ProductType, SkinType } from "@/types/product";
+
+function ProductsDiscoveryContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const showToast = useToastStore((state) => state.showToast);
+
+  // States
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
+
+  // Read URL State
+  const activeProductType = (searchParams.get("productType") as ProductType) || ProductType.ORGANIC;
+  const isOrganic = activeProductType === ProductType.ORGANIC;
+  const activeCategory = searchParams.get("category") || "";
+  const activeSkinType = searchParams.get("skinType") || "";
+  const activeSort = searchParams.get("sort") || "";
+  const activeSearch = searchParams.get("search") || "";
+  const activePage = Number(searchParams.get("page")) || 1;
+
+  const [searchText, setSearchText] = useState(activeSearch);
+  const [retryTrigger, setRetryTrigger] = useState(0);
+
+  // Sync search input
+  useEffect(() => {
+    setSearchText(activeSearch);
+  }, [activeSearch]);
+
+  // Fetch categories
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const data = await productService.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      }
+    }
+    loadCategories();
+  }, []);
+
+  // Fetch products
+  useEffect(() => {
+    async function loadProducts() {
+      setLoading(true);
+      setError(null);
+      try {
+        const params: ProductQueryParams = {
+          productType: activeProductType,
+          page: activePage,
+          limit: 8,
+        };
+        if (activeCategory) params.category = activeCategory;
+        if (activeSkinType) params.skinType = activeSkinType as SkinType;
+        if (activeSort) params.sort = activeSort as ProductSort;
+        if (activeSearch) params.search = activeSearch;
+
+        const response = await productService.getProducts(params);
+        setProducts(response.data);
+        if (response.meta) {
+          setTotalPages(response.meta.totalPages);
+          setTotalProducts(response.meta.total);
+        }
+      } catch (err) {
+        setError(getApiErrorMessage(err, "Failed to load products."));
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProducts();
+  }, [activeProductType, activeCategory, activeSkinType, activeSort, activeSearch, activePage, retryTrigger]);
+
+  const updateUrlParams = (newParams: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value === null || value === "") {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
+    if (!newParams.page) {
+      params.set("page", "1");
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleTabChange = (type: ProductType) => {
+    router.push(`${pathname}?productType=${type}`);
+  };
+
+  const handleCategoryChange = (val: string) => {
+    updateUrlParams({ category: val === "ALL" ? "" : val });
+  };
+
+  const handleSkinTypeChange = (val: string) => {
+    updateUrlParams({ skinType: val === "ALL" ? "" : val });
+  };
+
+  const handleSortChange = (val: string) => {
+    updateUrlParams({ sort: val === "DEFAULT" ? "" : val });
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateUrlParams({ search: searchText });
+  };
+
+  const handleResetFilters = () => {
+    setSearchText("");
+    router.push(`${pathname}?productType=${activeProductType}`);
+    showToast("Filters cleared.", "info");
+  };
+
+  const handleAddToCart = (product: Product, event: React.MouseEvent) => {
+    event.preventDefault();
+    showToast(`Added ${product.name} to cart!`, "success");
+  };
+
+  const handleToggleWishlist = (product: Product, event: React.MouseEvent) => {
+    event.preventDefault();
+    if (wishlistIds.includes(product.id)) {
+      setWishlistIds((prev) => prev.filter((id) => id !== product.id));
+      showToast("Removed from wishlist.", "info");
+    } else {
+      setWishlistIds((prev) => [...prev, product.id]);
+      showToast("Saved to wishlist!", "success");
+    }
+  };
+
+  const hasActiveFilters = Boolean(activeCategory || activeSkinType || activeSort || activeSearch);
+
+  return (
+    <div className="relative min-h-screen py-10">
+      <ProductsHeader />
+
+      {/* Tabs Switcher */}
+      <div className="mx-auto max-w-6xl px-4 mt-12 sm:px-6 lg:px-8">
+        <div className="flex justify-center border-b border-taupe/60">
+          <nav className="flex gap-10" aria-label="Product lines">
+            <button
+              type="button"
+              onClick={() => handleTabChange(ProductType.ORGANIC)}
+              className={`flex items-center gap-2 pb-5 text-xl font-medium tracking-wide transition-all border-b-2 cursor-pointer ${
+                isOrganic
+                  ? "border-terracotta text-terracotta font-semibold"
+                  : "border-transparent text-cocoa/50 hover:text-cocoa"
+              }`}
+            >
+              🌿 Organic Care
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTabChange(ProductType.FORMULATED)}
+              className={`flex items-center gap-2 pb-5 text-xl font-medium tracking-wide transition-all border-b-2 cursor-pointer ${
+                !isOrganic
+                  ? "border-formulated-primary text-formulated-primary font-semibold"
+                  : "border-transparent text-cocoa/50 hover:text-cocoa"
+              }`}
+            >
+              🧪 Precision Formulated
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      {/* Grid and Filters */}
+      <div className="mx-auto max-w-6xl px-4 mt-10 sm:px-6 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
+          <FilterSidebar
+            hasActiveFilters={hasActiveFilters}
+            handleResetFilters={handleResetFilters}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            handleSearchSubmit={handleSearchSubmit}
+            categories={categories}
+            activeCategory={activeCategory}
+            handleCategoryChange={handleCategoryChange}
+            activeSkinType={activeSkinType}
+            handleSkinTypeChange={handleSkinTypeChange}
+            activeSort={activeSort}
+            handleSortChange={handleSortChange}
+            isOrganic={isOrganic}
+          />
+
+          <main className="space-y-8">
+            <FilterDrawer
+              hasActiveFilters={hasActiveFilters}
+              handleResetFilters={handleResetFilters}
+              searchText={searchText}
+              setSearchText={setSearchText}
+              handleSearchSubmit={handleSearchSubmit}
+              categories={categories}
+              activeCategory={activeCategory}
+              handleCategoryChange={handleCategoryChange}
+              activeSkinType={activeSkinType}
+              handleSkinTypeChange={handleSkinTypeChange}
+              isOrganic={isOrganic}
+              activeSort={activeSort}
+              handleSortChange={handleSortChange}
+            />
+
+            <ProductsGrid
+              loading={loading}
+              error={error}
+              products={products}
+              wishlistIds={wishlistIds}
+              handleAddToCart={handleAddToCart}
+              handleToggleWishlist={handleToggleWishlist}
+              activePage={activePage}
+              totalPages={totalPages}
+              totalProducts={totalProducts}
+              updateUrlParams={updateUrlParams}
+              handleResetFilters={handleResetFilters}
+              hasActiveFilters={hasActiveFilters}
+              retryLoading={() => setRetryTrigger((val) => val + 1)}
+            />
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 text-center text-cocoa">
+          <p className="font-heading text-2xl font-medium animate-pulse">Loading Discovery Canvas...</p>
+        </div>
+      }
+    >
+      <Suspense fallback={null}>
+        <ProductsDiscoveryContent />
+      </Suspense>
+    </Suspense>
+  );
+}

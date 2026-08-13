@@ -13,11 +13,10 @@ import { Label } from "@/components/ui/label";
 import { getApiErrorMessage } from "@/lib/errors";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/authStore";
+import { useToastStore } from "@/stores/toastStore";
+import { INPUT_UNDERLINE } from "@/constants/design-tokens";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const inputUnderline =
-  "h-10 rounded-none border-x-0 border-t-0 border-b border-taupe bg-transparent px-0 focus-visible:ring-0 focus-visible:border-organic-primary transition-colors";
 
 function getSafeNext(value: string | null): string {
   if (value && value.startsWith("/") && !value.startsWith("//")) return value;
@@ -54,9 +53,15 @@ export function LoginForm() {
     try {
       const { token, user } = await authService.login({ email, password });
       useAuthStore.getState().setAuth(token, user);
+      useToastStore.getState().showToast("Welcome back to PureYuna!", "success");
       router.replace(next);
     } catch (err) {
-      setError(getApiErrorMessage(err, "Invalid email or password."));
+      const errorMessage =
+        (err as any)?.response?.data?.message ||
+        (err as any)?.message ||
+        "Invalid email or password.";
+      setError(errorMessage);
+      useToastStore.getState().showToast(errorMessage, "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -66,27 +71,29 @@ export function LoginForm() {
     <AuthShell
       title="Welcome back to PureYuna."
       subtitle="Sign in to continue your skincare routine."
+      imageSrc="https://plus.unsplash.com/premium_photo-1661604366594-64781f82a4b6?auto=format&fit=crop&w=1920&q=90"
+      overlayText="Welcome Back. Access your PureYuna sanctuary."
     >
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         {registered && (
-          <Alert className="rounded-md">
-            <CheckCircle2 className="size-4 text-organic-primary" />
-            <AlertTitle>Account created</AlertTitle>
-            <AlertDescription>
+          <Alert className="rounded-md bg-[#FAF5EF] border-[#B86B4B]/20 text-[#3A2820]">
+            <CheckCircle2 className="size-4 text-[#B86B4B]" />
+            <AlertTitle className="font-semibold text-sm">Account created</AlertTitle>
+            <AlertDescription className="text-xs">
               Your account is ready. Sign in to continue.
             </AlertDescription>
           </Alert>
         )}
 
         {error && (
-          <Alert variant="destructive" className="rounded-md">
-            <AlertTitle>Unable to sign in</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
+          <Alert variant="destructive" className="rounded-md bg-red-50 border-red-200 text-red-800">
+            <AlertTitle className="font-semibold text-sm">Unable to sign in</AlertTitle>
+            <AlertDescription className="text-xs">{error}</AlertDescription>
           </Alert>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-xs font-medium tracking-wide text-muted-foreground">
+          <Label htmlFor="email" className="text-xs font-medium tracking-wide text-[#3A2820]">
             Email
           </Label>
           <Input
@@ -96,14 +103,22 @@ export function LoginForm() {
             placeholder="you@example.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className={inputUnderline}
+            className={INPUT_UNDERLINE}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-xs font-medium tracking-wide text-muted-foreground">
-            Password
-          </Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password" className="text-xs font-medium tracking-wide text-[#3A2820]">
+              Password
+            </Label>
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-[#3A2820] hover:text-[#B86B4B] hover:underline transition-colors"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <div className="relative">
             <Input
               id="password"
@@ -111,13 +126,13 @@ export function LoginForm() {
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className={inputUnderline}
+              className={INPUT_UNDERLINE}
             />
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute top-1/2 right-0 -translate-y-1/2 p-1 text-muted-foreground transition-colors hover:text-foreground"
+              className="absolute top-1/2 right-0 -translate-y-1/2 p-1 text-[#3A2820]/50 transition-colors hover:text-[#3A2820]"
             >
               {showPassword ? (
                 <EyeOff className="size-4" />
@@ -132,7 +147,7 @@ export function LoginForm() {
           type="submit"
           variant="default"
           size="lg"
-          className="w-full"
+          className="w-full cursor-pointer"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -141,11 +156,11 @@ export function LoginForm() {
           {isSubmitting ? "Signing in..." : "Sign in"}
         </Button>
 
-        <p className="text-center text-sm text-muted-foreground">
-          New to PureYuna?{" "}
+        <p className="text-center text-sm text-[#3A2820]">
+          New to PureYuna?{"  "}
           <Link
             href="/register"
-            className="font-medium text-organic-primary hover:underline"
+            className="font-medium text-[#3A2820] hover:text-[#B86B4B] hover:underline"
           >
             Create an account
           </Link>
