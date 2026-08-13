@@ -12,6 +12,7 @@ import {
   Plus,
   ShoppingBag,
   Sparkles,
+  Star,
 } from "lucide-react";
 
 import { ImageWithFallback } from "@/components/shared/image-with-fallback";
@@ -21,6 +22,9 @@ import { cn } from "@/lib/utils";
 import { productService } from "@/services/product.service";
 import type { Product } from "@/types/product";
 import { useToastStore } from "@/stores/toastStore";
+import { useCartStore } from "@/stores/cartStore";
+import { useWishlistStore } from "@/stores/wishlistStore";
+import { useAuthStore } from "@/stores/authStore";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -34,11 +38,46 @@ export default function ProductDetailPage({ params }: PageProps) {
   const resolvedParams = React.use(params);
   const id = resolvedParams.id;
 
+  // Stores
+  const addItem = useCartStore((state) => state.addItem);
+  const wishlistIds = useWishlistStore((state) => state.productIds);
+  const toggleWishlistStore = useWishlistStore((state) => state.toggleWishlist);
+  const { user, isAuthenticated } = useAuthStore();
+
   const [product, setProduct] = React.useState<Product | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [quantity, setQuantity] = React.useState(1);
-  const [isWishlisted, setIsWishlisted] = React.useState(false);
+
+  // Gallery Active Image Thumbnail index state
+  const [activeImgIndex, setActiveImgIndex] = React.useState(0);
+
+  // Tabs state
+  const [activeTab, setActiveTab] = React.useState<"formula" | "benefits" | "ingredients">("formula");
+
+  // Reviews state
+  const [reviews, setReviews] = React.useState([
+    {
+      id: "rev-1",
+      userName: "Aria Montgomery",
+      rating: 5,
+      comment: "Absolutely divine! My skin feels incredibly nourished and the scent is so soothing. Highly recommend this botanical masterpiece.",
+      date: "August 02, 2026",
+    },
+    {
+      id: "rev-2",
+      userName: "Liam Thorne",
+      rating: 4,
+      comment: "Saw a noticeable improvement in skin texture within a week. Not greasy at all. Love the minimalist design packaging too.",
+      date: "July 28, 2026",
+    },
+  ]);
+
+  // Review Form state
+  const [formRating, setFormRating] = React.useState(5);
+  const [formComment, setFormComment] = React.useState("");
+
+  const isWishlisted = product ? wishlistIds.includes(product.id) : false;
 
   React.useEffect(() => {
     async function loadProduct() {
@@ -75,18 +114,42 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   const handleAddToCart = () => {
     if (!product) return;
+    addItem(product, quantity);
     showToast(`Added ${quantity} × ${product.name} to cart!`, "success");
   };
 
-  const handleToggleWishlist = () => {
+  const handleToggleWishlist = async () => {
     if (!product) return;
+    await toggleWishlistStore(product);
     if (isWishlisted) {
-      setIsWishlisted(false);
       showToast(`Removed from wishlist.`, "info");
     } else {
-      setIsWishlisted(true);
       showToast(`Saved to wishlist!`, "success");
     }
+  };
+
+  const handleSubmitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!product || !isAuthenticated || !user) return;
+    if (!formComment.trim()) {
+      showToast("Please write a comment for your review.", "error");
+      return;
+    }
+    const newReview = {
+      id: `rev-${Math.random().toString(36).slice(2, 11)}`,
+      userName: user.name,
+      rating: formRating,
+      comment: formComment,
+      date: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+      }),
+    };
+    setReviews((prev) => [newReview, ...prev]);
+    setFormComment("");
+    setFormRating(5);
+    showToast("Thank you! Your review has been submitted successfully.", "success");
   };
 
   if (loading) {
@@ -146,8 +209,8 @@ export default function ProductDetailPage({ params }: PageProps) {
         {/* 2-Column Product Layout */}
         <div className="grid gap-12 lg:grid-cols-[45fr_55fr] lg:gap-16 items-start">
           
-          {/* LEFT: Product Image framed in Asymmetric Arch Mask */}
-          <div className="relative w-full max-w-md mx-auto lg:mx-0">
+          {/* LEFT: Product Image framed in Asymmetric Arch Mask & Gallery thumbnails */}
+          <div className="relative w-full max-w-md mx-auto lg:mx-0 flex flex-col gap-4">
             <div
               className={cn(
                 "relative aspect-[4/5] w-full overflow-hidden rounded-t-[20rem] rounded-b-[2.5rem] shadow-[0_20px_50px_rgba(58,40,32,0.1)] border",
@@ -159,13 +222,51 @@ export default function ProductDetailPage({ params }: PageProps) {
                 alt={product.name}
                 fill
                 sizes="(min-width: 1024px) 40vw, 90vw"
-                className="absolute inset-0 h-full w-full object-cover"
+                className={cn(
+                  "absolute inset-0 h-full w-full object-cover transition-all duration-300",
+                  activeImgIndex === 1 && "brightness-105 saturate-110",
+                  activeImgIndex === 2 && "sepia-[0.1] contrast-[0.98]"
+                )}
                 priority
               />
             </div>
             
+            {/* Gallery Thumbnails */}
+            <div className="flex justify-center gap-3 mt-2">
+              {[
+                { label: "Overview", style: "" },
+                { label: "Close Up", style: "brightness-105 saturate-110" },
+                { label: "Texture", style: "sepia-[0.1] contrast-[0.98]" }
+              ].map((thumb, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveImgIndex(idx)}
+                  className={cn(
+                    "relative size-16 rounded-xl overflow-hidden border-2 cursor-pointer transition-all bg-white",
+                    activeImgIndex === idx
+                      ? isOrganic
+                        ? "border-terracotta scale-105"
+                        : "border-formulated-primary scale-105"
+                      : "border-taupe/40 opacity-70 hover:opacity-100"
+                  )}
+                >
+                  <ImageWithFallback
+                    src={product.image}
+                    alt={`${product.name} thumbnail ${idx + 1}`}
+                    fill
+                    sizes="64px"
+                    className={cn("object-cover", thumb.style)}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-black/40 text-white text-[0.5rem] font-bold text-center py-0.5 uppercase tracking-wider">
+                    {thumb.label}
+                  </div>
+                </button>
+              ))}
+            </div>
+
             {/* Ambient branding indicator */}
-            <div className="absolute -left-3 bottom-6 rounded-full border border-white/20 bg-white/95 px-4 py-2 shadow-sm backdrop-blur-xs flex items-center gap-2">
+            <div className="relative mt-2 mx-auto rounded-full border border-white/20 bg-white/95 px-4 py-2 shadow-sm backdrop-blur-xs flex items-center gap-2 w-fit">
               <span className={cn("size-2 rounded-full", isOrganic ? "bg-terracotta" : "bg-formulated-primary")} />
               <span className="text-[0.62rem] font-bold tracking-widest text-cocoa uppercase">
                 {isOrganic ? "🌿 100% Organic" : "🧪 Formulated"}
@@ -212,65 +313,80 @@ export default function ProductDetailPage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Product Description */}
-            <div className="mt-7 border-t border-taupe/40 pt-6">
-              <h3 className="text-xs font-bold tracking-widest text-cocoa/60 uppercase">
-                About the formula
-              </h3>
-              <p className="mt-2.5 text-base leading-relaxed text-charcoal/80">
-                {product.description}
-              </p>
-            </div>
+            {/* Tabs System */}
+            <div className="mt-8 border-t border-taupe/40 pt-6">
+              <div className="flex border-b border-taupe/30 mb-5">
+                {[
+                  { id: "formula", label: "About The Formula" },
+                  { id: "benefits", label: "Key Benefits" },
+                  { id: "ingredients", label: "Ingredients" }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={cn(
+                      "pb-2.5 text-xs font-bold uppercase tracking-wider transition-all border-b-2 mr-6 cursor-pointer",
+                      activeTab === tab.id
+                        ? isOrganic
+                          ? "border-terracotta text-terracotta"
+                          : "border-formulated-primary text-formulated-primary"
+                        : "border-transparent text-cocoa/40 hover:text-cocoa/70"
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
-            {/* Dynamic Features List Aligned to Theme */}
-            <div className="mt-7 border-t border-taupe/40 pt-6">
-              {isOrganic ? (
-                // 🌿 Organic Botanical Accents
-                <div className="space-y-3.5">
-                  <h3 className="text-xs font-bold tracking-widest text-terracotta uppercase flex items-center gap-1.5">
-                    <span>🌿</span> Botanical Standards
-                  </h3>
-                  <ul className="grid gap-2 sm:grid-cols-2 text-sm text-cocoa/80">
-                    <li className="flex items-center gap-2">
-                      <span className="grid size-5 place-items-center rounded-full bg-terracotta/10 text-terracotta">
-                        <Check className="size-3" strokeWidth={2.5} />
-                      </span>
-                      Vegan formulas
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="grid size-5 place-items-center rounded-full bg-terracotta/10 text-terracotta">
-                        <Check className="size-3" strokeWidth={2.5} />
-                      </span>
-                      Cruelty-free certified
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="grid size-5 place-items-center rounded-full bg-terracotta/10 text-terracotta">
-                        <Check className="size-3" strokeWidth={2.5} />
-                      </span>
-                      No synthetic colorants
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="grid size-5 place-items-center rounded-full bg-terracotta/10 text-terracotta">
-                        <Check className="size-3" strokeWidth={2.5} />
-                      </span>
-                      100% bio-sourced extracts
-                    </li>
-                  </ul>
+              {activeTab === "formula" && (
+                <div className="text-sm leading-relaxed text-charcoal/80 space-y-4">
+                  <p>{product.description}</p>
                 </div>
-              ) : (
-                // 🧪 Formulated Scientific Accents
-                <div className="space-y-3.5">
-                  <h3 className="text-xs font-bold tracking-widest text-formulated-primary uppercase flex items-center gap-1.5">
-                    <Sparkles className="size-3.5" /> Clinical Focus
-                  </h3>
-                  <div className="rounded-xl bg-formulated-bg/80 border border-formulated-surface/60 p-4 space-y-2 text-sm text-formulated-text/80">
+              )}
+
+              {activeTab === "benefits" && (
+                <div className="space-y-4">
+                  {isOrganic ? (
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-bold tracking-widest text-terracotta uppercase">Botanical Care Profile</h4>
+                      <ul className="grid gap-2 sm:grid-cols-2 text-xs text-cocoa/80">
+                        <li className="flex items-center gap-2">
+                          <Check className="size-3.5 text-terracotta" /> Vegan & Eco-Conscious
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="size-3.5 text-terracotta" /> Cruelty-free certified
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="size-3.5 text-terracotta" /> No synthetic dyes
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check className="size-3.5 text-terracotta" /> Bio-active nourishment
+                        </li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-bold tracking-widest text-formulated-primary uppercase">Clinical Focus</h4>
+                      <p className="text-xs text-cocoa/80 leading-normal">
+                        Precision blended with active dermatologist-approved agents. Non-comedogenic, pH balanced, and optimized to protect the natural skin barrier.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === "ingredients" && (
+                <div className="text-xs leading-relaxed text-cocoa/75 italic">
+                  {isOrganic ? (
                     <p>
-                      <strong>Active Actives Profile:</strong> Precision blended with clinically validated skin support agents matching target profile.
+                      Organic Lavender Extract, Cold-Pressed Rosehip Seed Oil, Aloe Barbadensis Leaf Juice, Chamomile Flower Distillate, Organic Jojoba Oil, Vegetable Glycerin, Tocopherol (Vitamin E).
                     </p>
-                    <p className="text-xs text-cocoa/60 italic">
-                      Concentration optimized for high efficacy without skin barrier disruption. pH balanced.
+                  ) : (
+                    <p>
+                      Purified Water, Niacinamide (Vitamin B3), Sodium Hyaluronate (Hyaluronic Acid), Salicylic Acid (BHA), Centella Asiatica Extract, Ceramide NP, Panthenol, Phenoxyethanol, Ethylhexylglycerin.
                     </p>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -355,6 +471,101 @@ export default function ProductDetailPage({ params }: PageProps) {
               )}
             </div>
 
+          </div>
+        </div>
+
+        {/* BOTTOM: Reviews Section */}
+        <div className="mt-16 border-t border-taupe/40 pt-10">
+          <h2 className="font-heading text-2xl font-medium text-cocoa mb-8">
+            Customer Sanctuary Reviews
+          </h2>
+
+          <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+            {/* Reviews List */}
+            <div className="space-y-6">
+              {reviews.length === 0 ? (
+                <p className="text-sm text-cocoa/50 italic">No reviews yet for this product. Be the first to share your sanctuary experience!</p>
+              ) : (
+                reviews.map((rev) => (
+                  <div key={rev.id} className="bg-white/40 border border-[#3A2820]/10 p-5 rounded-2xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-cocoa">{rev.userName}</span>
+                      <span className="text-[0.68rem] text-muted-foreground">{rev.date}</span>
+                    </div>
+                    {/* Stars */}
+                    <div className="flex gap-0.5 text-amber-500">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className="size-3.5"
+                          fill={i < rev.rating ? "currentColor" : "none"}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-charcoal/80 leading-relaxed pt-1">{rev.comment}</p>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Review Submission Form */}
+            <div className="bg-white/50 border border-[#3A2820]/15 rounded-2xl p-6 h-fit space-y-4">
+              <h3 className="text-sm font-bold tracking-wider text-cocoa uppercase">Write a Review</h3>
+              {isAuthenticated ? (
+                <form onSubmit={handleSubmitReview} className="space-y-4">
+                  {/* Rating Selector */}
+                  <div className="space-y-1">
+                    <span className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase block">Rating</span>
+                    <div className="flex gap-1.5 text-amber-500">
+                      {[1, 2, 3, 4, 5].map((val) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => setFormRating(val)}
+                          className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
+                          aria-label={`Rate ${val} stars`}
+                        >
+                          <Star
+                            className="size-5"
+                            fill={val <= formRating ? "currentColor" : "none"}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Comment input */}
+                  <div className="space-y-1">
+                    <span className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase block">Your Comment</span>
+                    <textarea
+                      value={formComment}
+                      onChange={(e) => setFormComment(e.target.value)}
+                      placeholder="Share your experience with the sanctuary formula..."
+                      rows={4}
+                      className="w-full text-xs p-3 rounded-lg border border-[#3A2820]/20 bg-white/70 text-cocoa focus-visible:ring-0 focus-visible:border-terracotta outline-none resize-none"
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full text-xs font-semibold cursor-pointer">
+                    Submit Experience
+                  </Button>
+                </form>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-xs text-cocoa/70 leading-relaxed">
+                    Only registered sanctuary members can submit reviews.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs font-semibold border-taupe text-cocoa cursor-pointer"
+                    render={<Link href={`/login?next=/products/${product.id}`} />}
+                  >
+                    Login to Review
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

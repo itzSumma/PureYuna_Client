@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from "@/lib/axios";
+import { apiGet, apiPost, apiPatch } from "@/lib/axios";
 import type { ApiSuccessResponse } from "@/types/api";
 import type {
   AuthUser,
@@ -27,6 +27,11 @@ export const authService = {
 
   async getProfile(): Promise<User> {
     const result = await apiGet<ApiSuccessResponse<User>>("/auth/profile");
+    return result.data;
+  },
+
+  async updateProfile(payload: { name?: string; email?: string }): Promise<User> {
+    const result = await apiPatch<ApiSuccessResponse<User>>("/auth/profile", payload);
     return result.data;
   },
 };

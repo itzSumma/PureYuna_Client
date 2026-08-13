@@ -8,6 +8,8 @@ import { FilterDrawer } from "@/components/products/filter-drawer";
 import { ProductsHeader } from "@/components/products/products-header";
 import { ProductsGrid } from "@/components/products/products-grid";
 import { useToastStore } from "@/stores/toastStore";
+import { useCartStore } from "@/stores/cartStore";
+import { useWishlistStore } from "@/stores/wishlistStore";
 import { getApiErrorMessage } from "@/lib/errors";
 import { productService } from "@/services/product.service";
 import type { Category, Product, ProductQueryParams } from "@/types/product";
@@ -19,6 +21,11 @@ function ProductsDiscoveryContent() {
   const searchParams = useSearchParams();
   const showToast = useToastStore((state) => state.showToast);
 
+  // Stores
+  const wishlistIds = useWishlistStore((state) => state.productIds);
+  const addItem = useCartStore((state) => state.addItem);
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+
   // States
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,7 +33,6 @@ function ProductsDiscoveryContent() {
   const [error, setError] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
 
   // Read URL State
   const activeProductType = (searchParams.get("productType") as ProductType) || ProductType.ORGANIC;
@@ -133,16 +139,17 @@ function ProductsDiscoveryContent() {
 
   const handleAddToCart = (product: Product, event: React.MouseEvent) => {
     event.preventDefault();
+    addItem(product);
     showToast(`Added ${product.name} to cart!`, "success");
   };
 
-  const handleToggleWishlist = (product: Product, event: React.MouseEvent) => {
+  const handleToggleWishlist = async (product: Product, event: React.MouseEvent) => {
     event.preventDefault();
-    if (wishlistIds.includes(product.id)) {
-      setWishlistIds((prev) => prev.filter((id) => id !== product.id));
+    const isWishlisted = wishlistIds.includes(product.id);
+    await toggleWishlist(product);
+    if (isWishlisted) {
       showToast("Removed from wishlist.", "info");
     } else {
-      setWishlistIds((prev) => [...prev, product.id]);
       showToast("Saved to wishlist!", "success");
     }
   };

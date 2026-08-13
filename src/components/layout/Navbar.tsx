@@ -34,10 +34,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import * as React from "react";
 import { mainNavLinks, packagesDropdownLinks } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 import { useToastStore } from "@/stores/toastStore";
+import { useCartStore } from "@/stores/cartStore";
+import { useWishlistStore } from "@/stores/wishlistStore";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 
 function NavLink({
   href,
@@ -234,7 +238,10 @@ function AuthActions({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function IconLinks() {
+function IconLinks({ onCartClick }: { onCartClick: () => void }) {
+  const cartCount = useCartStore((state) => state.getItemCount());
+  const wishlistCount = useWishlistStore((state) => state.items.length);
+
   return (
     <>
       <Button
@@ -242,18 +249,28 @@ function IconLinks() {
         size="icon"
         render={<Link href="/wishlist" />}
         aria-label="Wishlist"
-        className="text-terracotta hover:text-ochre"
+        className="text-terracotta hover:text-ochre relative"
       >
         <Heart className="size-6" strokeWidth={2.2} />
+        {wishlistCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-terracotta text-[0.62rem] font-bold text-cream">
+            {wishlistCount}
+          </span>
+        )}
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        render={<Link href="/cart" />}
+        onClick={onCartClick}
         aria-label="Cart"
-        className="text-terracotta hover:text-ochre"
+        className="text-terracotta hover:text-ochre relative cursor-pointer"
       >
         <ShoppingBag className="size-6" strokeWidth={2.2} />
+        {cartCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-terracotta text-[0.62rem] font-bold text-cream">
+            {cartCount}
+          </span>
+        )}
       </Button>
     </>
   );
@@ -262,9 +279,11 @@ function IconLinks() {
 function MobileNavContent({
   onClose,
   pathname,
+  onCartClick,
 }: {
   onClose: () => void;
   pathname: string;
+  onCartClick: () => void;
 }) {
   const [packagesOpen, setPackagesOpen] = useState(false);
   const router = useRouter();
@@ -383,7 +402,7 @@ function MobileNavContent({
       )}
 
       <div className="mt-8 flex items-center gap-2 border-t border-taupe/50 px-6 pt-5">
-        <IconLinks />
+        <IconLinks onCartClick={() => { onClose(); onCartClick(); }} />
       </div>
 
       <div className="mt-5 px-6">
@@ -436,6 +455,15 @@ function MobileNavContent({
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const cartCount = useCartStore((state) => state.getItemCount());
+  const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
+  const { isAuthenticated } = useAuthStore();
+
+  React.useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist, isAuthenticated]);
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -457,7 +485,7 @@ export function Navbar() {
               <Menu className="size-5" />
             </SheetTrigger>
             <SheetContent side="left" className="flex w-80 max-w-sm flex-col sm:max-w-sm">
-              <MobileNavContent onClose={closeMobile} pathname={pathname} />
+              <MobileNavContent onClose={closeMobile} pathname={pathname} onCartClick={() => setCartOpen(true)} />
             </SheetContent>
           </Sheet>
           <BrandMark />
@@ -478,9 +506,24 @@ export function Navbar() {
           <PackagesDropdown />
         </nav>
 
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 md:gap-8">
+          {/* Mobile Cart Button */}
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="md:hidden text-terracotta hover:text-ochre relative p-1.5 cursor-pointer"
+            aria-label="Cart"
+          >
+            <ShoppingBag className="size-6" strokeWidth={2.2} />
+            {cartCount > 0 && (
+              <span className="absolute top-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-terracotta text-[0.62rem] font-bold text-cream">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <div className="hidden gap-2 md:flex">
-            <IconLinks />
+            <IconLinks onCartClick={() => setCartOpen(true)} />
           </div>
           <div className="hidden md:block">
             <AuthActions />
@@ -494,6 +537,7 @@ export function Navbar() {
           </Button>
         </div>
       </div>
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </header>
   );
 }
