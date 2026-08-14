@@ -113,31 +113,52 @@ export function ProductsGrid({
 
       {/* PAGINATION PANEL */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-taupe/40 pt-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-taupe/40 pt-6">
           <span className="text-xs text-muted-foreground font-medium">
-            Showing Page <strong className="text-cocoa">{activePage}</strong> of{" "}
-            <strong className="text-cocoa">{totalPages}</strong> ({totalProducts} items)
+            Showing <strong className="text-cocoa">{(activePage - 1) * 8 + 1}-{Math.min(activePage * 8, totalProducts)}</strong> of{" "}
+            <strong className="text-cocoa">{totalProducts}</strong> products
           </span>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer border-taupe text-cocoa disabled:opacity-40"
+              className="cursor-pointer border-taupe text-cocoa disabled:opacity-40 h-8 px-2.5"
               disabled={activePage <= 1}
               onClick={() => updateUrlParams({ page: String(activePage - 1) })}
             >
-              <ArrowLeft className="size-4 mr-1.5" />
-              Previous
+              <ArrowLeft className="size-3.5 mr-1" />
+              Prev
             </Button>
+
+            {Array.from({ length: totalPages }).map((_, idx) => {
+              const pageNum = idx + 1;
+              const isActive = activePage === pageNum;
+              return (
+                <Button
+                  key={pageNum}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  className={`cursor-pointer size-8 p-0 text-xs font-semibold ${
+                    isActive
+                      ? "bg-terracotta text-cream border-transparent"
+                      : "border-taupe text-cocoa hover:bg-cream/40"
+                  }`}
+                  onClick={() => updateUrlParams({ page: String(pageNum) })}
+                >
+                  {pageNum}
+                </Button>
+              );
+            })}
+
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer border-taupe text-cocoa disabled:opacity-40"
+              className="cursor-pointer border-taupe text-cocoa disabled:opacity-40 h-8 px-2.5"
               disabled={activePage >= totalPages}
               onClick={() => updateUrlParams({ page: String(activePage + 1) })}
             >
               Next
-              <ArrowRight className="size-4 ml-1.5" />
+              <ArrowRight className="size-3.5 ml-1" />
             </Button>
           </div>
         </div>
