@@ -26,12 +26,7 @@ export function ProductCard({
 
   return (
     <div
-      className={cn(
-        "group relative flex h-full flex-col rounded-2xl border transition-all duration-300",
-        isOrganic
-          ? "border-taupe/40 bg-cream hover:shadow-[0_15px_30px_rgba(58,40,32,0.08)] hover:-translate-y-1"
-          : "border-formulated-surface/40 bg-formulated-bg hover:shadow-[0_15px_30px_rgba(142,93,32,0.06)] hover:-translate-y-1"
-      )}
+      className="group relative flex h-full flex-col rounded-2xl border border-taupe/40 bg-[#D4937A] hover:shadow-[0_15px_30px_rgba(58,40,32,0.08)] hover:-translate-y-1 transition-all duration-300"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -76,18 +71,13 @@ export function ProductCard({
         {/* Floating Badges */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
           <span
-            className={cn(
-              "rounded-full px-2.5 py-0.5 text-[0.62rem] font-bold tracking-widest uppercase shadow-sm backdrop-blur-xs",
-              isOrganic
-                ? "bg-cream/90 text-terracotta border border-terracotta/20"
-                : "bg-formulated-bg/95 text-formulated-primary border border-formulated-primary/20"
-            )}
+            className="rounded-full bg-[#F7EDE6]/80 text-[#3A2820] border border-[#C58068] px-2.5 py-0.5 text-[0.62rem] font-bold tracking-widest uppercase shadow-sm backdrop-blur-xs"
           >
             {isOrganic ? "🌿 Organic" : "🧪 Formulated"}
           </span>
 
           {/* Skin Type Badge */}
-          <span className="rounded-full bg-white/80 px-2.5 py-0.5 text-[0.58rem] font-medium tracking-wider text-cocoa/70 uppercase backdrop-blur-xs w-fit">
+          <span className="rounded-full bg-[#F7EDE6]/80 text-[#3A2820] border border-[#C58068] px-2.5 py-0.5 text-[0.58rem] font-medium tracking-wider uppercase backdrop-blur-xs w-fit">
             {product.skinType.toLowerCase()}
           </span>
         </div>
@@ -109,34 +99,29 @@ export function ProductCard({
       {/* Card Details */}
       <div className="flex flex-1 flex-col px-4.5 pt-4 pb-4">
         {/* Category Label */}
-        <span className="text-[0.62rem] font-semibold tracking-[0.2em] text-cocoa/40 uppercase">
+        <span className="text-[0.62rem] font-semibold tracking-[0.2em] text-[#3A2820]/80 uppercase">
           {product.category?.name || "Skincare"}
         </span>
 
         {/* Product Title */}
         <Link href={`/products/${product.id}`} className="group/title mt-1.5">
-          <h3
-            className={cn(
-              "font-heading text-lg font-medium leading-snug tracking-tight text-balance group-hover/title:text-terracotta transition-colors duration-200 line-clamp-1",
-              isOrganic ? "text-cocoa" : "text-formulated-text"
-            )}
-          >
+          <h3 className="font-serif text-lg font-medium leading-snug tracking-tight text-balance text-[#3A2820] group-hover/title:text-[#3A2820]/80 transition-colors duration-200 line-clamp-1">
             {product.name}
           </h3>
         </Link>
 
         {/* Description Snippet */}
-        <p className="mt-2 text-xs leading-relaxed text-charcoal/60 line-clamp-2">
+        <p className="mt-2 text-xs leading-relaxed text-[#4A3528] line-clamp-2">
           {product.description}
         </p>
 
         {/* Card Footer: Price & Add Button */}
         <div className="mt-auto pt-4 flex items-center justify-between gap-2 border-t border-taupe/20">
           <div className="flex flex-col">
-            <span className="text-[0.6rem] text-muted-foreground uppercase tracking-widest leading-none">
+            <span className="text-[0.6rem] text-[#3A2820]/80 uppercase tracking-widest leading-none">
               Price
             </span>
-            <span className="mt-1 text-base font-bold text-terracotta">
+            <span className="mt-1 text-base font-semibold text-[#3A2820]">
               ${product.price.toFixed(2)}
             </span>
           </div>
@@ -145,12 +130,7 @@ export function ProductCard({
             type="button"
             disabled={product.stock <= 0}
             onClick={(e) => onAddToCart?.(product, e)}
-            className={cn(
-              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed",
-              isOrganic
-                ? "bg-terracotta text-cream hover:bg-ochre active:scale-95"
-                : "bg-formulated-primary text-formulated-bg hover:bg-formulated-accent active:scale-95"
-            )}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-[#8A4A32] text-white hover:bg-[#3A2820] transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
             aria-label="Add to cart"
           >
             <ShoppingBag className="size-3.5" />

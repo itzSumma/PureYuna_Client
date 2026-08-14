@@ -487,13 +487,13 @@ export default function ProductDetailPage({ params }: PageProps) {
                 <p className="text-sm text-cocoa/50 italic">No reviews yet for this product. Be the first to share your sanctuary experience!</p>
               ) : (
                 reviews.map((rev) => (
-                  <div key={rev.id} className="bg-white/40 border border-[#3A2820]/10 p-5 rounded-2xl space-y-2">
+                  <div key={rev.id} className="bg-[#E0A58E] border border-[#C58068] p-5 rounded-2xl space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-cocoa">{rev.userName}</span>
-                      <span className="text-[0.68rem] text-muted-foreground">{rev.date}</span>
+                      <span className="text-sm font-semibold text-[#3A2820]">{rev.userName}</span>
+                      <span className="text-[0.68rem] text-[#3A2820]/80">{rev.date}</span>
                     </div>
                     {/* Stars */}
-                    <div className="flex gap-0.5 text-amber-500">
+                    <div className="flex gap-0.5 text-[#3A2820]">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
                           key={i}
@@ -502,21 +502,21 @@ export default function ProductDetailPage({ params }: PageProps) {
                         />
                       ))}
                     </div>
-                    <p className="text-xs text-charcoal/80 leading-relaxed pt-1">{rev.comment}</p>
+                    <p className="text-xs text-[#4A3528] leading-relaxed pt-1">{rev.comment}</p>
                   </div>
                 ))
               )}
             </div>
 
             {/* Review Submission Form */}
-            <div className="bg-white/50 border border-[#3A2820]/15 rounded-2xl p-6 h-fit space-y-4">
-              <h3 className="text-sm font-bold tracking-wider text-cocoa uppercase">Write a Review</h3>
+            <div className="bg-[#D4937A] border border-[#C58068] rounded-2xl p-6 h-fit space-y-4">
+              <h3 className="text-sm font-bold tracking-wider text-[#3A2820] uppercase">Write a Review</h3>
               {isAuthenticated ? (
                 <form onSubmit={handleSubmitReview} className="space-y-4">
                   {/* Rating Selector */}
                   <div className="space-y-1">
-                    <span className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase block">Rating</span>
-                    <div className="flex gap-1.5 text-amber-500">
+                    <span className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase block">Rating</span>
+                    <div className="flex gap-1.5 text-[#3A2820]">
                       {[1, 2, 3, 4, 5].map((val) => (
                         <button
                           key={val}
@@ -536,13 +536,13 @@ export default function ProductDetailPage({ params }: PageProps) {
 
                   {/* Comment input */}
                   <div className="space-y-1">
-                    <span className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase block">Your Comment</span>
+                    <span className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase block">Your Comment</span>
                     <textarea
                       value={formComment}
                       onChange={(e) => setFormComment(e.target.value)}
                       placeholder="Share your experience with the sanctuary formula..."
                       rows={4}
-                      className="w-full text-xs p-3 rounded-lg border border-[#3A2820]/20 bg-white/70 text-cocoa focus-visible:ring-0 focus-visible:border-terracotta outline-none resize-none"
+                      className="w-full text-xs p-3 rounded-lg border border-[#C58068] bg-[#FAF5EF]/90 text-[#3A2820] focus-visible:ring-0 focus-visible:border-[#3A2820]/50 outline-none resize-none"
                     />
                   </div>
 
@@ -552,13 +552,13 @@ export default function ProductDetailPage({ params }: PageProps) {
                 </form>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-xs text-cocoa/70 leading-relaxed">
+                  <p className="text-xs text-[#3A2820]/80 leading-relaxed">
                     Only registered sanctuary members can submit reviews.
                   </p>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full text-xs font-semibold border-taupe text-cocoa cursor-pointer"
+                    className="w-full text-xs font-semibold border-[#C58068] text-[#3A2820] cursor-pointer"
                     render={<Link href={`/login?next=/products/${product.id}`} />}
                   >
                     Login to Review

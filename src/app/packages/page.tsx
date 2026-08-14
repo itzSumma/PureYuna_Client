@@ -42,7 +42,7 @@ export default function PackagesPage() {
           return (
             <div
               key={pkg.id}
-              className="group relative flex flex-col rounded-3xl border border-taupe/40 bg-cream overflow-hidden transition-all duration-300 hover:shadow-[0_15px_30px_rgba(58,40,32,0.08)] hover:-translate-y-1"
+              className="group relative flex flex-col rounded-3xl border border-taupe/40 bg-[#D4937A] overflow-hidden transition-all duration-300 hover:shadow-[0_15px_30px_rgba(58,40,32,0.08)] hover:-translate-y-1"
             >
               {/* Product Image Frame */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-taupe/20 p-2">
@@ -75,28 +75,28 @@ export default function PackagesPage() {
               {/* Card Body */}
               <div className="flex flex-1 flex-col p-6 space-y-6">
                 <div className="space-y-2">
-                  <span className="text-[0.62rem] font-semibold tracking-[0.2em] text-terracotta uppercase">
+                  <span className="text-[0.62rem] font-semibold tracking-[0.2em] text-[#3A2820]/80 uppercase">
                     {pkg.products.length}-Step System
                   </span>
                   <Link href={`/packages/${pkg.id}`} className="block group/title">
-                    <h3 className="font-heading text-2xl font-medium text-cocoa leading-tight group-hover/title:text-terracotta transition-colors duration-200">
+                    <h3 className="font-heading text-2xl font-medium text-cocoa leading-tight group-hover/title:text-[#3A2820]/80 transition-colors duration-200">
                       {pkg.name}
                     </h3>
                   </Link>
-                  <p className="text-xs text-charcoal/70 leading-relaxed line-clamp-3">
+                  <p className="text-xs text-[#4A3528] leading-relaxed line-clamp-3">
                     {pkg.description}
                   </p>
                 </div>
 
                 {/* Items Included */}
                 <div className="space-y-2 pt-2 border-t border-taupe/20">
-                  <span className="text-[0.58rem] font-bold tracking-widest text-cocoa/40 uppercase">
+                  <span className="text-[0.58rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
                     Includes
                   </span>
                   <ul className="space-y-1.5">
                     {pkg.products.map((prod) => (
-                      <li key={prod.id} className="flex items-center gap-2 text-xs text-charcoal/80">
-                        <CheckCircle2 className="size-3.5 text-terracotta shrink-0" />
+                      <li key={prod.id} className="flex items-center gap-2 text-xs text-[#4A3528]">
+                        <CheckCircle2 className="size-3.5 text-[#8A4A32] shrink-0" />
                         <span className="truncate">{prod.name}</span>
                       </li>
                     ))}
@@ -106,14 +106,14 @@ export default function PackagesPage() {
                 {/* Price and Cart Action */}
                 <div className="mt-auto pt-4 flex items-center justify-between gap-4 border-t border-taupe/20">
                   <div className="flex flex-col">
-                    <span className="text-[0.58rem] text-muted-foreground uppercase tracking-widest leading-none">
+                    <span className="text-[0.58rem] text-[#3A2820]/80 uppercase tracking-widest leading-none">
                       Bundle Price
                     </span>
                     <div className="flex items-baseline gap-1.5 mt-1">
-                      <span className="text-xl font-bold text-terracotta">
+                      <span className="text-xl font-bold text-[#3A2820]">
                         ${pkg.price.toFixed(2)}
                       </span>
-                      <span className="text-xs text-charcoal/40 line-through">
+                      <span className="text-xs text-[#4A3528]/60 line-through">
                         ${pkg.originalPrice.toFixed(2)}
                       </span>
                     </div>
@@ -123,14 +123,14 @@ export default function PackagesPage() {
                     <button
                       type="button"
                       onClick={(e) => handleAddSetToCart(pkg, e)}
-                      className="flex items-center justify-center gap-1.5 rounded-lg bg-terracotta text-cream px-3 py-2 text-xs font-semibold hover:bg-ochre transition-colors active:scale-95 cursor-pointer w-full"
+                      className="flex items-center justify-center gap-1.5 rounded-lg bg-[#8A4A32] text-white px-3 py-2 text-xs font-semibold hover:bg-[#3A2820] transition-colors active:scale-95 cursor-pointer w-full"
                     >
                       <ShoppingBag className="size-3.5" />
                       Add Set
                     </button>
                     <Link
                       href={`/packages/${pkg.id}`}
-                      className="text-[0.62rem] font-bold text-center tracking-wider text-cocoa hover:text-terracotta uppercase flex items-center justify-center gap-1"
+                      className="text-[0.62rem] font-bold text-center tracking-wider text-[#3A2820] hover:text-[#3A2820]/80 uppercase flex items-center justify-center gap-1"
                     >
                       Details
                       <ArrowRight className="size-3" />

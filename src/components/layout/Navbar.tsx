@@ -96,20 +96,20 @@ function PackagesDropdown() {
       >
         <span className="sr-only">Packages</span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-72" sideOffset={22}>
+      <DropdownMenuContent align="start" className="w-72 bg-[#D4937A] border border-[#C58068] text-[#3A2820] shadow-lg p-1.5 rounded-lg" sideOffset={22}>
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-xs font-semibold tracking-[0.18em] text-charcoal/60 uppercase">
+          <DropdownMenuLabel className="text-xs font-semibold tracking-[0.18em] text-[#3A2820]/60 uppercase px-3 py-1.5">
             Packs & Routines
           </DropdownMenuLabel>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="my-1 h-px bg-[#3A2820]/15 -mx-1.5" />
         {packagesDropdownLinks.map((item, index) => (
           <DropdownMenuItem
             key={item.href}
             render={<Link href={item.href} />}
-            className="gap-3 px-2 py-2.5 focus:bg-charcoal/5"
+            className="gap-3 px-3 py-2.5 text-sm font-medium text-[#3A2820] hover:bg-[#C58068]/40 focus:bg-[#C58068]/40 cursor-pointer rounded-md transition-colors outline-none"
           >
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-ivory text-terracotta">
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#3A2820]/10 text-[#3A2820]">
               {index === 0 ? (
                 <Package className="size-4" />
               ) : (
@@ -117,8 +117,8 @@ function PackagesDropdown() {
               )}
             </span>
             <span className="flex min-w-0 flex-col">
-              <span className="font-medium">{item.label}</span>
-              <span className="text-xs font-normal text-muted-foreground">
+              <span className="font-medium text-[#3A2820]">{item.label}</span>
+              <span className="text-xs font-normal text-[#3A2820]/75">
                 {item.description}
               </span>
             </span>

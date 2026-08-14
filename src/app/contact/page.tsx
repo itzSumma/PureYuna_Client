@@ -79,15 +79,15 @@ export default function ContactPage() {
       {/* 2-Column Consultation & Contact Form */}
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Left Column: Form */}
-        <section className="bg-cream border border-taupe/50 rounded-3xl p-8 shadow-xs">
+        <section className="bg-[#D4937A] text-[#3A2820] shadow-sm border border-[#C58068] rounded-3xl p-8">
           {submitted ? (
             <div className="h-full flex flex-col items-center justify-center text-center py-12 space-y-6">
-              <CheckCircle className="size-16 text-terracotta animate-bounce" />
+              <CheckCircle className="size-16 text-[#3A2820] animate-bounce" />
               <div className="space-y-2">
-                <h3 className="font-heading text-2xl font-medium text-cocoa">
+                <h3 className="font-heading text-2xl font-medium text-[#3A2820]">
                   Consultation Request Received
                 </h3>
-                <p className="text-sm text-charcoal/70 max-w-[40ch] mx-auto leading-relaxed">
+                <p className="text-sm text-[#3A2820]/80 max-w-[40ch] mx-auto leading-relaxed">
                   Our Skincare Concierge will review your skin concerns and email you a personalized routine recommendation within 24 hours.
                 </p>
               </div>
@@ -105,17 +105,17 @@ export default function ContactPage() {
           ) : (
             <div className="space-y-6">
               <div className="space-y-1">
-                <h3 className="font-heading text-2xl font-medium text-cocoa">
+                <h3 className="font-heading text-2xl font-medium text-[#3A2820]">
                   Skin Consultation
                 </h3>
-                <p className="text-xs text-charcoal/60">
+                <p className="text-xs text-[#3A2820]/80">
                   Share your skin profile for a tailored routine response.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+                  <Label htmlFor="name" className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/90 uppercase">
                     Your Name
                   </Label>
                   <Input
@@ -124,12 +124,12 @@ export default function ContactPage() {
                     placeholder="Enter your full name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={INPUT_UNDERLINE}
+                    className="h-10 rounded-none border-x-0 border-t-0 border-b border-[#7A6352] bg-[#F5E6DC]/80 px-3 focus-visible:ring-0 focus-visible:ring-transparent transition-colors text-[#3A2820] placeholder-[#5C4538]/70 placeholder:text-[#5C4538]/70"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+                  <Label htmlFor="email" className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/90 uppercase">
                     Email Address
                   </Label>
                   <Input
@@ -138,19 +138,19 @@ export default function ContactPage() {
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={INPUT_UNDERLINE}
+                    className="h-10 rounded-none border-x-0 border-t-0 border-b border-[#7A6352] bg-[#F5E6DC]/80 px-3 focus-visible:ring-0 focus-visible:ring-transparent transition-colors text-[#3A2820] placeholder-[#5C4538]/70 placeholder:text-[#5C4538]/70"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="skinConcern" className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+                  <Label htmlFor="skinConcern" className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/90 uppercase">
                     Primary Skin Concern
                   </Label>
                   <select
                     id="skinConcern"
                     value={formData.skinConcern}
                     onChange={(e) => setFormData({ ...formData, skinConcern: e.target.value })}
-                    className="w-full h-10 rounded-none border-x-0 border-t-0 border-b border-[#7A6352] bg-transparent px-0 text-sm text-cocoa focus-visible:ring-0 focus-visible:border-terracotta outline-none cursor-pointer"
+                    className="w-full h-10 rounded-none border-x-0 border-t-0 border-b border-[#7A6352] bg-[#F5E6DC]/80 px-3 text-sm text-[#3A2820] focus-visible:ring-0 outline-none cursor-pointer"
                   >
                     <option value="" disabled>Select your main concern</option>
                     <option value="Acne">Acne & Congestion</option>
@@ -161,7 +161,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message" className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+                  <Label htmlFor="message" className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/90 uppercase">
                     Message / Skin Notes
                   </Label>
                   <textarea
@@ -170,7 +170,7 @@ export default function ContactPage() {
                     placeholder="Tell us about your current products and skin goals..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full rounded-lg border border-[#7A6352] bg-transparent p-3 text-sm text-cocoa placeholder:text-cocoa/40 focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none resize-none"
+                    className="w-full rounded-lg border border-[#7A6352] bg-[#F5E6DC]/80 p-3 text-sm text-[#3A2820] placeholder-[#5C4538]/70 placeholder:text-[#5C4538]/70 focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none resize-none"
                   />
                 </div>
 
@@ -194,33 +194,33 @@ export default function ContactPage() {
           </div>
 
           <div className="grid gap-6">
-            <div className="flex gap-4 items-start p-5 rounded-2xl bg-cream/40 border border-taupe/30">
-              <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-terracotta/10 text-terracotta">
+            <div className="flex gap-4 items-start p-5 rounded-2xl bg-[#D4937A] text-[#3A2820] border border-[#C58068]">
+              <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#3A2820]/10 text-[#3A2820]">
                 <Mail className="size-5" />
               </div>
               <div className="min-w-0">
-                <h5 className="font-semibold text-cocoa text-sm">Email Address</h5>
-                <p className="text-xs text-charcoal/70 mt-0.5">concierge@pureyuna.com</p>
+                <h5 className="font-semibold text-[#3A2820] text-sm">Email Address</h5>
+                <p className="text-xs text-[#3A2820]/80 mt-0.5">concierge@pureyuna.com</p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-start p-5 rounded-2xl bg-cream/40 border border-taupe/30">
-              <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-terracotta/10 text-terracotta">
+            <div className="flex gap-4 items-start p-5 rounded-2xl bg-[#D4937A] text-[#3A2820] border border-[#C58068]">
+              <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#3A2820]/10 text-[#3A2820]">
                 <Phone className="size-5" />
               </div>
               <div className="min-w-0">
-                <h5 className="font-semibold text-cocoa text-sm">Concierge Hotline</h5>
-                <p className="text-xs text-charcoal/70 mt-0.5">+1 (800) 555-YUNA</p>
+                <h5 className="font-semibold text-[#3A2820] text-sm">Concierge Hotline</h5>
+                <p className="text-xs text-[#3A2820]/80 mt-0.5">+1 (800) 555-YUNA</p>
               </div>
             </div>
 
-            <div className="flex gap-4 items-start p-5 rounded-2xl bg-cream/40 border border-taupe/30">
-              <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-terracotta/10 text-terracotta">
+            <div className="flex gap-4 items-start p-5 rounded-2xl bg-[#D4937A] text-[#3A2820] border border-[#C58068]">
+              <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#3A2820]/10 text-[#3A2820]">
                 <MapPin className="size-5" />
               </div>
               <div className="min-w-0">
-                <h5 className="font-semibold text-cocoa text-sm">Sanctuary Spa Location</h5>
-                <p className="text-xs text-charcoal/70 mt-0.5">
+                <h5 className="font-semibold text-[#3A2820] text-sm">Sanctuary Spa Location</h5>
+                <p className="text-xs text-[#3A2820]/80 mt-0.5">
                   128 Editorial Way, Suite 400, SoHo, New York, NY 10012
                 </p>
               </div>
@@ -247,18 +247,18 @@ export default function ContactPage() {
             return (
               <div
                 key={idx}
-                className="border border-taupe/40 bg-cream/30 rounded-2xl overflow-hidden transition-all duration-300"
+                className="border border-[#C58068] bg-[#D4937A] text-[#3A2820] rounded-2xl overflow-hidden transition-all duration-300"
               >
                 <button
                   type="button"
                   onClick={() => toggleFaq(idx)}
-                  className="w-full flex items-center justify-between p-6 text-left cursor-pointer hover:bg-cream/70 transition-colors"
+                  className="w-full flex items-center justify-between p-6 text-left cursor-pointer hover:bg-[#C58068]/40 transition-colors"
                 >
-                  <span className="font-heading text-lg font-medium text-cocoa">
+                  <span className="font-heading text-lg font-medium text-[#3A2820]">
                     {faq.question}
                   </span>
                   <ChevronDown
-                    className={`size-5 text-cocoa/50 transition-transform duration-300 ${
+                    className={`size-5 text-[#3A2820]/70 transition-transform duration-300 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -269,7 +269,7 @@ export default function ContactPage() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-6 pb-6 text-sm text-charcoal/80 leading-relaxed font-light">
+                    <p className="px-6 pb-6 text-sm text-[#3A2820]/90 leading-relaxed font-light">
                       {faq.answer}
                     </p>
                   </div>

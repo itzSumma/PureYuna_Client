@@ -54,9 +54,9 @@ export function FilterDrawer({
             </Button>
           }
         />
-        <SheetContent side="left" className="w-80 bg-cream">
-          <SheetHeader className="border-b border-taupe/40 pb-4 text-left">
-            <SheetTitle className="font-heading text-2xl font-medium text-cocoa flex items-center gap-2">
+        <SheetContent side="left" className="w-80 bg-[#D4937A] text-[#3A2820] border-r border-[#C58068]">
+          <SheetHeader className="border-b border-[#C58068] pb-4 text-left">
+            <SheetTitle className="font-heading text-2xl font-medium text-[#3A2820] flex items-center gap-2">
               <SlidersHorizontal className="size-5" />
               Filters
             </SheetTitle>
@@ -64,7 +64,7 @@ export function FilterDrawer({
           <div className="flex flex-col gap-6 py-6 overflow-y-auto max-h-[80vh] px-1">
             {/* Mobile Search */}
             <form onSubmit={handleSearchSubmit} className="space-y-2">
-              <Label className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+              <Label className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
                 Search
               </Label>
               <div className="relative">
@@ -75,7 +75,7 @@ export function FilterDrawer({
                   onChange={(e) => setSearchText(e.target.value)}
                   className={INPUT_UNDERLINE}
                 />
-                <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 text-cocoa/50">
+                <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 text-[#3A2820]/60">
                   <Search className="size-4" />
                 </button>
               </div>
@@ -83,7 +83,7 @@ export function FilterDrawer({
 
             {/* Mobile Category */}
             <div className="space-y-3">
-              <Label className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+              <Label className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
                 Category
               </Label>
               <div className="flex flex-col gap-2">
@@ -91,10 +91,8 @@ export function FilterDrawer({
                   onClick={() => handleCategoryChange("ALL")}
                   className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                     !activeCategory
-                      ? isOrganic
-                        ? "bg-terracotta/10 text-terracotta font-semibold"
-                        : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                      : "text-charcoal/70"
+                      ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
+                      : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
                   }`}
                 >
                   All Categories
@@ -105,10 +103,8 @@ export function FilterDrawer({
                     onClick={() => handleCategoryChange(cat.id)}
                     className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                       activeCategory === cat.id
-                        ? isOrganic
-                          ? "bg-terracotta/10 text-terracotta font-semibold"
-                          : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                        : "text-charcoal/70"
+                        ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
+                        : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
                     }`}
                   >
                     {cat.name}
@@ -119,7 +115,7 @@ export function FilterDrawer({
 
             {/* Mobile Skin Type */}
             <div className="space-y-3">
-              <Label className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
+              <Label className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
                 Skin Type
               </Label>
               <div className="flex flex-col gap-2">
@@ -127,10 +123,8 @@ export function FilterDrawer({
                   onClick={() => handleSkinTypeChange("ALL")}
                   className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                     !activeSkinType
-                      ? isOrganic
-                        ? "bg-terracotta/10 text-terracotta font-semibold"
-                        : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                      : "text-charcoal/70"
+                      ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
+                      : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
                   }`}
                 >
                   All Skin Types
@@ -141,10 +135,8 @@ export function FilterDrawer({
                     onClick={() => handleSkinTypeChange(type)}
                     className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                       activeSkinType === type
-                        ? isOrganic
-                          ? "bg-terracotta/10 text-terracotta font-semibold"
-                          : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                        : "text-charcoal/70"
+                        ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
+                        : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
                     }`}
                   >
                     {type.charAt(0) + type.slice(1).toLowerCase()} Skin

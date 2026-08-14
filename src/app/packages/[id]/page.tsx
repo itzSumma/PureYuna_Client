@@ -78,18 +78,18 @@ export default function PackageDetailPage() {
           </p>
 
           {/* Pricing Box */}
-          <div className="flex items-center gap-4 p-5 rounded-2xl bg-cream border border-taupe/40 w-fit">
+          <div className="flex items-center gap-4 p-5 rounded-2xl bg-[#D4937A] border border-[#C58068] w-fit">
             <div className="flex flex-col">
-              <span className="text-[0.58rem] text-muted-foreground uppercase tracking-widest leading-none">
+              <span className="text-[0.58rem] text-[#3A2820]/80 uppercase tracking-widest leading-none">
                 Bundle price
               </span>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-terracotta">${pkg.price.toFixed(2)}</span>
-                <span className="text-sm text-charcoal/40 line-through">${pkg.originalPrice.toFixed(2)}</span>
+                <span className="text-2xl font-bold text-[#3A2820]">${pkg.price.toFixed(2)}</span>
+                <span className="text-sm text-[#4A3528]/60 line-through">${pkg.originalPrice.toFixed(2)}</span>
               </div>
             </div>
-            <div className="h-10 w-px bg-taupe/60" />
-            <div className="text-xs font-semibold text-emerald-700">
+            <div className="h-10 w-px bg-[#C58068]" />
+            <div className="text-xs font-bold text-emerald-950">
               You Save ${(pkg.originalPrice - pkg.price).toFixed(2)}!
             </div>
           </div>
@@ -118,15 +118,15 @@ export default function PackageDetailPage() {
 
         <div className="grid gap-8 md:grid-cols-2">
           {/* AM Routine */}
-          <div className="bg-cream/40 border border-taupe/35 p-8 rounded-3xl space-y-6">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-taupe/30 text-amber-600">
+          <div className="bg-[#D4937A] border border-[#C58068] p-8 rounded-3xl space-y-6">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-[#C58068] text-[#8A4A32]">
               <Sun className="size-5" />
-              <h3 className="font-heading text-xl font-medium text-cocoa">AM Routine</h3>
+              <h3 className="font-heading text-xl font-medium text-[#3A2820]">AM Routine</h3>
             </div>
             <ol className="space-y-4">
               {pkg.steps.am.map((step, idx) => (
-                <li key={idx} className="flex gap-3 text-sm text-charcoal/80 leading-relaxed font-light">
-                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-terracotta/10 text-terracotta text-xs font-bold">
+                <li key={idx} className="flex gap-3 text-sm text-[#4A3528] leading-relaxed font-light">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#F7EDE6]/80 text-[#3A2820] text-xs font-bold">
                     {idx + 1}
                   </span>
                   <span>{step}</span>
@@ -136,15 +136,15 @@ export default function PackageDetailPage() {
           </div>
 
           {/* PM Routine */}
-          <div className="bg-cream/40 border border-taupe/35 p-8 rounded-3xl space-y-6">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-taupe/30 text-indigo-700">
+          <div className="bg-[#D4937A] border border-[#C58068] p-8 rounded-3xl space-y-6">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-[#C58068] text-[#8A4A32]">
               <Moon className="size-5" />
-              <h3 className="font-heading text-xl font-medium text-cocoa">PM Routine</h3>
+              <h3 className="font-heading text-xl font-medium text-[#3A2820]">PM Routine</h3>
             </div>
             <ol className="space-y-4">
               {pkg.steps.pm.map((step, idx) => (
-                <li key={idx} className="flex gap-3 text-sm text-charcoal/80 leading-relaxed font-light">
-                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-terracotta/10 text-terracotta text-xs font-bold">
+                <li key={idx} className="flex gap-3 text-sm text-[#4A3528] leading-relaxed font-light">
+                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#F7EDE6]/80 text-[#3A2820] text-xs font-bold">
                     {idx + 1}
                   </span>
                   <span>{step}</span>
@@ -166,7 +166,7 @@ export default function PackageDetailPage() {
             return (
               <div
                 key={product.id}
-                className="flex flex-col border border-taupe/40 bg-cream rounded-2xl p-4 space-y-4 hover:shadow-md transition-shadow"
+                className="flex flex-col border border-[#C58068] bg-[#D4937A] rounded-2xl p-4 space-y-4 hover:shadow-md transition-shadow"
               >
                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-taupe/15">
                   <ImageWithFallback
@@ -182,20 +182,20 @@ export default function PackageDetailPage() {
                 </div>
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
-                    <h4 className="font-heading text-lg font-medium text-cocoa line-clamp-1">
+                    <h4 className="font-heading text-lg font-medium text-[#3A2820] line-clamp-1">
                       {product.name}
                     </h4>
-                    <p className="text-xs text-charcoal/60 line-clamp-2 mt-1">
+                    <p className="text-xs text-[#4A3528] line-clamp-2 mt-1">
                       {product.description}
                     </p>
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-taupe/20 mt-3">
-                    <span className="text-sm font-semibold text-terracotta">
+                  <div className="flex items-center justify-between pt-3 border-t border-[#C58068] mt-3">
+                    <span className="text-sm font-bold text-[#3A2820]">
                       ${product.price.toFixed(2)}
                     </span>
                     <Link
                       href={`/products/${product.id}`}
-                      className="text-xs font-bold text-cocoa hover:text-terracotta uppercase flex items-center gap-0.5"
+                      className="text-xs font-bold text-[#3A2820] hover:text-[#3A2820]/80 uppercase flex items-center gap-0.5"
                     >
                       View
                       <ChevronRight className="size-3" />
