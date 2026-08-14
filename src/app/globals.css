@@ -13,30 +13,41 @@
   --color-brand: var(--primary);
   --color-brand-foreground: var(--primary-foreground);
 
-  /* Locked design tokens — Section 2 of ui-design-tasks.md */
-  --color-peach: #e8b8a2;
-  --color-cream: #faf5ef;
-  --color-ivory: #f4ece1;
-  --color-terracotta: #b86b4b;
-  --color-ochre: #96583a;
-  --color-cocoa: #3a2820;
-  --color-taupe: #e2d5c5;
-  --color-charcoal: #25201d;
+  /* New warm nude / soft peach beauty palette design tokens */
+  --color-golden: #FDF4EE; /* Soft peach / warm nude background */
+  --color-champagne: #FAF5F0; /* Soft peach / warm nude alternative */
+  --color-golden-card: #FAF5F0; /* Warm cream product surfaces */
+  --color-warm-white: #FAF5F0; /* Warm cream surfaces */
+  --color-soft-ivory: #FAF5F0;
+  --color-caramel: #4A1E27; /* Deep Wine / Burgundy primary CTA */
+  --color-deep-brown: #261C19; /* Deep Espresso / Charcoal headings */
+  --color-golden-border: #EBDCD2; /* Soft Border */
+  --color-champagne-highlight: #FAF5F0;
 
-  --color-organic-bg: #faf5ef;
-  --color-organic-surface: #f4ece1;
-  --color-organic-primary: #b86b4b;
-  --color-organic-accent: #96583a;
-  --color-organic-text: #25201d;
+  /* Brand visual identity colors */
+  --color-cream: #FDF4EE; /* Soft Peach / Warm Nude */
+  --color-terracotta: #4A1E27; /* Deep Wine / Burgundy */
+  --color-taupe: #EBDCD2; /* Soft Border */
+  --color-cocoa: #261C19; /* Deep Espresso / Charcoal */
+  --color-ochre: #A0827B; /* Muted Rose / Soft Clay decorative accent */
+  --color-charcoal: #1E1E1E;
 
-  --color-formulated-bg: #f8f2e7;
-  --color-formulated-surface: #ede0ca;
-  --color-formulated-primary: #c48a2c;
-  --color-formulated-accent: #8e5d20;
-  --color-formulated-text: #332410;
+  /* Organic care mappings */
+  --color-organic-bg: #FAF5F0;
+  --color-organic-surface: #FAF5F0;
+  --color-organic-primary: #4A1E27;
+  --color-organic-accent: #A0827B;
+  --color-organic-text: #261C19;
 
-  --color-brand-cream: #faf5ef;
-  --color-brand-earth: #3a2820;
+  /* Precision formulated mappings */
+  --color-formulated-bg: #FDF4EE;
+  --color-formulated-surface: #FAF5F0;
+  --color-formulated-primary: #261C19;
+  --color-formulated-accent: #A0827B;
+  --color-formulated-text: #4A1E27;
+
+  --color-brand-cream: #FAF5F0;
+  --color-brand-earth: #261C19;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -77,38 +88,38 @@
 }
 
 :root {
-  --background: #f4ece1;
-  --foreground: #25201d;
-  --card: #faf5ef;
-  --card-foreground: #25201d;
-  --popover: #faf5ef;
-  --popover-foreground: #25201d;
-  --primary: #b86b4b;
-  --primary-foreground: #faf5ef;
-  --secondary: #eadfcf;
-  --secondary-foreground: #222b20;
-  --muted: #eadfcf;
-  --muted-foreground: color-mix(in srgb, #25201d 58%, #e2d5c5 42%);
-  --accent: #eadfcf;
-  --accent-foreground: #222b20;
+  --background: #FDF4EE; /* Soft Peach / Warm Nude */
+  --foreground: #5A524E; /* Muted Brown / Grey body copy */
+  --card: #FAF5F0; /* Warm cream */
+  --card-foreground: #261C19; /* Deep Espresso / Charcoal */
+  --popover: #FAF5F0; /* Warm cream */
+  --popover-foreground: #3D1B22; /* Deep Burgundy / Espresso */
+  --primary: #4A1E27; /* Deep Wine / Burgundy */
+  --primary-foreground: #FAF5F0;
+  --secondary: #E3C2B0; /* Warm Sand / Nude */
+  --secondary-foreground: #261C19;
+  --muted: #FAF5F0; /* Soft Peach light */
+  --muted-foreground: #5A524E;
+  --accent: #4A1E27; /* Deep Burgundy hover bg */
+  --accent-foreground: #FAF5F0; /* Soft Off-White hover text */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e2d5c5;
-  --input: #e2d5c5;
-  --ring: #b86b4b;
-  --chart-1: #b86b4b;
-  --chart-2: #96583a;
-  --chart-3: #475c42;
+  --border: #EBDCD2; /* Soft Border */
+  --input: #FAF6F2; /* Warm cream input fields */
+  --ring: #4A1E27;
+  --chart-1: #4A1E27;
+  --chart-2: #E3C2B0;
+  --chart-3: #261C19;
   --chart-4: oklch(0.65 0.1 330);
   --chart-5: oklch(0.7 0.12 90);
   --radius: 0.625rem;
-  --sidebar: #f4ece1;
-  --sidebar-foreground: #25201d;
-  --sidebar-primary: #b86b4b;
-  --sidebar-primary-foreground: #faf5ef;
-  --sidebar-accent: #eadfcf;
-  --sidebar-accent-foreground: #222b20;
-  --sidebar-border: #e2d5c5;
-  --sidebar-ring: #b86b4b;
+  --sidebar: #FAF5F0;
+  --sidebar-foreground: #261C19;
+  --sidebar-primary: #4A1E27;
+  --sidebar-primary-foreground: #FAF5F0;
+  --sidebar-accent: #FAF5F0;
+  --sidebar-accent-foreground: #261C19;
+  --sidebar-border: #EBDCD2;
+  --sidebar-ring: #4A1E27;
 }
 
 .dark {
@@ -154,13 +165,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(
-      ellipse at top left,
-      #faf5ef 0%,
-      #e8b8a2 45%,
-      #f4ece1 100%
-    );
-    background-attachment: fixed;
   }
   body::before {
     content: "";
@@ -176,8 +180,8 @@
   .auth-shell-container input:-webkit-autofill,
   .auth-shell-container input:-webkit-autofill:hover, 
   .auth-shell-container input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #3A2820 !important;
-    -webkit-box-shadow: 0 0 0px 1000px #DF8E73 inset !important;
+    -webkit-text-fill-color: #261C19 !important;
+    -webkit-box-shadow: 0 0 0px 1000px #FDF4EE inset !important;
     transition: background-color 5000s ease-in-out 0s;
   }
 }

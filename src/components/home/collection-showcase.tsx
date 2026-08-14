@@ -8,26 +8,26 @@ import { IMAGES } from "@/lib/images";
 
 export function CollectionShowcase() {
   return (
-    <section className="bg-[#B86B4B] py-20 lg:py-28 relative overflow-hidden">
+    <section className="bg-cream py-20 lg:py-28 relative overflow-hidden">
       {/* Subtle organic layout glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-48 -left-48 size-96 rounded-full bg-white/5 blur-3xl"
+        className="pointer-events-none absolute -bottom-48 -left-48 size-96 rounded-full bg-[#E3C2B0]/10 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-48 -right-48 size-96 rounded-full bg-white/5 blur-3xl"
+        className="pointer-events-none absolute -top-48 -right-48 size-96 rounded-full bg-[#E3C2B0]/10 blur-3xl"
       />
 
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 relative z-10">
         <Reveal>
           <SectionHeading
-            variant="dark"
+            variant="light"
             eyebrow="The Collection"
             title={
               <>
                 Two paths.{" "}
-                <span className="italic text-brand-cream">One</span> honest
+                <span className="italic text-ochre">One</span> honest
                 standard.
               </>
             }
@@ -39,9 +39,9 @@ export function CollectionShowcase() {
           <Reveal>
             <Link
               href="/products?productType=ORGANIC"
-              className="group flex flex-col rounded-[2rem] border border-white/10 bg-[#E29D80] p-6 transition-all duration-300 hover:-translate-y-1 sm:p-8"
+              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 sm:p-8"
             >
-              <div className="relative aspect-[5/6] overflow-hidden rounded-t-full rounded-b-[1.5rem] shadow-md">
+              <div className="relative aspect-[5/6] overflow-hidden rounded-3xl shadow-sm">
                 <ImageWithFallback
                   fill
                   sizes="(min-width: 1024px) 42vw, 90vw"
@@ -52,17 +52,17 @@ export function CollectionShowcase() {
               </div>
 
               <div className="mt-8 px-1">
-                <p className="text-xs font-semibold tracking-[0.24em] text-[#25201D]/60 uppercase">
+                <p className="text-xs font-semibold tracking-[0.24em] text-foreground/60 uppercase">
                   Organic
                 </p>
-                <h3 className="mt-3 font-heading text-3xl font-medium tracking-tight text-[#25201D] sm:text-4xl">
+                <h3 className="mt-3 font-heading text-3xl font-medium tracking-tight text-deep-brown sm:text-4xl">
                   Inspired by nature.
                 </h3>
-                <p className="mt-3 max-w-sm text-[16px] leading-relaxed text-[#25201D]/80">
+                <p className="mt-3 max-w-sm text-[16px] leading-relaxed text-foreground/80">
                   Naturally inspired skincare designed for gentle everyday
                   rituals.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#25201D] transition-colors duration-200 hover:text-[#25201D]/85">
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-caramel/85">
                   Explore Organic
                   <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -73,9 +73,9 @@ export function CollectionShowcase() {
           <Reveal delay={0.12}>
             <Link
               href="/products?productType=FORMULATED"
-              className="group flex flex-col rounded-[2rem] border border-white/10 bg-[#E29D80] p-6 transition-all duration-300 hover:-translate-y-1 sm:p-8 sm:mt-10"
+              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 sm:p-8 sm:mt-10"
             >
-              <div className="relative aspect-[5/6] overflow-hidden rounded-t-full rounded-b-[1.5rem] shadow-md">
+              <div className="relative aspect-[5/6] overflow-hidden rounded-3xl shadow-sm">
                 <ImageWithFallback
                   fill
                   sizes="(min-width: 1024px) 42vw, 90vw"
@@ -87,29 +87,29 @@ export function CollectionShowcase() {
                   aria-hidden="true"
                   className="absolute inset-x-3 top-3 flex flex-wrap gap-x-2 gap-y-1"
                 >
-                  <span className="rounded-full bg-white/95 px-3 py-1 text-[0.62rem] font-semibold tracking-[0.2em] text-terracotta uppercase shadow-sm backdrop-blur-sm">
+                  <span className="rounded-full bg-[#FAF5F0]/95 px-3 py-1 text-[0.62rem] font-semibold tracking-[0.2em] text-caramel uppercase shadow-sm backdrop-blur-sm">
                     AHA 8%
                   </span>
-                  <span className="rounded-full bg-white/95 px-3 py-1 text-[0.62rem] font-semibold tracking-[0.2em] text-terracotta uppercase shadow-sm backdrop-blur-sm">
+                  <span className="rounded-full bg-[#FAF5F0]/95 px-3 py-1 text-[0.62rem] font-semibold tracking-[0.2em] text-caramel uppercase shadow-sm backdrop-blur-sm">
                     Niacinamide
                   </span>
-                  <span className="rounded-full bg-white/95 px-3 py-1 text-[0.62rem] font-semibold tracking-[0.2em] text-terracotta uppercase shadow-sm backdrop-blur-sm">
+                  <span className="rounded-full bg-[#FAF5F0]/95 px-3 py-1 text-[0.62rem] font-semibold tracking-[0.2em] text-caramel uppercase shadow-sm backdrop-blur-sm">
                     Hyaluronic
                   </span>
                 </div>
               </div>
 
               <div className="mt-8 px-1">
-                <p className="text-xs font-semibold tracking-[0.24em] text-[#25201D]/60 uppercase">
+                <p className="text-xs font-semibold tracking-[0.24em] text-foreground/60 uppercase">
                   Formulated
                 </p>
-                <h3 className="mt-3 font-heading text-3xl font-medium tracking-tight text-[#25201D] sm:text-4xl">
+                <h3 className="mt-3 font-heading text-3xl font-medium tracking-tight text-deep-brown sm:text-4xl">
                   Targeted skincare.
                 </h3>
-                <p className="mt-3 max-w-sm text-[16px] leading-relaxed text-[#25201D]/80">
+                <p className="mt-3 max-w-sm text-[16px] leading-relaxed text-foreground/80">
                   Thoughtfully formulated care for specific skin needs.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#25201D] transition-colors duration-200 hover:text-[#25201D]/85">
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-caramel/85">
                   Explore Formulated
                   <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>

@@ -71,8 +71,8 @@ function NavLink({
       href={href}
       onClick={onNavigate}
       className={cn(
-        "text-lg tracking-wide font-medium transition-colors duration-200 hover:text-ochre",
-        active ? "text-ochre font-semibold" : "text-terracotta"
+        "relative py-1 text-sm tracking-widest uppercase font-medium transition-colors duration-200 text-[#3D1B22]/80 hover:text-[#4A1E27] outline-none focus:outline-none",
+        active && "text-[#4A1E27] font-semibold border-b-2 border-[#4A1E27] pb-1"
       )}
     >
       {label}
@@ -81,13 +81,19 @@ function NavLink({
 }
 
 function PackagesDropdown() {
+  const pathname = usePathname();
+  const isActive = pathname.startsWith("/packages");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
           <button
             type="button"
-            className="flex items-center gap-1.5 text-lg tracking-wide font-medium text-terracotta transition-colors duration-200 hover:text-ochre focus:text-ochre outline-none"
+            className={cn(
+              "relative py-1 flex items-center gap-1.5 text-sm tracking-widest uppercase font-medium text-[#3D1B22]/80 transition-colors duration-200 hover:text-[#4A1E27] focus:text-[#4A1E27] outline-none focus:outline-none cursor-pointer",
+              isActive && "text-[#4A1E27] font-semibold border-b-2 border-[#4A1E27] pb-1"
+            )}
           >
             Packages
             <ChevronDown className="size-4 opacity-60" />
@@ -96,20 +102,20 @@ function PackagesDropdown() {
       >
         <span className="sr-only">Packages</span>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-72 bg-[#D4937A] border border-[#C58068] text-[#3A2820] shadow-lg p-1.5 rounded-lg" sideOffset={22}>
+      <DropdownMenuContent align="start" className="w-72 bg-[#FAF5F0] border border-[#EBDCD2] text-[#3D1B22] shadow-lg p-1.5 rounded-lg" sideOffset={22}>
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-xs font-semibold tracking-[0.18em] text-[#3A2820]/60 uppercase px-3 py-1.5">
+          <DropdownMenuLabel className="text-xs font-semibold tracking-[0.18em] text-[#3D1B22]/60 uppercase px-3 py-1.5">
             Packs & Routines
           </DropdownMenuLabel>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className="my-1 h-px bg-[#3A2820]/15 -mx-1.5" />
+        <DropdownMenuSeparator className="my-1 h-px bg-[#EBDCD2] -mx-1.5" />
         {packagesDropdownLinks.map((item, index) => (
           <DropdownMenuItem
             key={item.href}
             render={<Link href={item.href} />}
-            className="gap-3 px-3 py-2.5 text-sm font-medium text-[#3A2820] hover:bg-[#C58068]/40 focus:bg-[#C58068]/40 cursor-pointer rounded-md transition-colors outline-none"
+            className="group gap-3 px-3 py-2.5 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27] hover:text-[#FAF5F0] focus:bg-[#4A1E27] focus:text-[#FAF5F0] cursor-pointer rounded-md transition-all outline-none"
           >
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#3A2820]/10 text-[#3A2820]">
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#4A1E27]/10 text-[#4A1E27] group-hover:bg-[#FAF5F0]/20 group-hover:text-[#FAF5F0] transition-colors">
               {index === 0 ? (
                 <Package className="size-4" />
               ) : (
@@ -117,8 +123,8 @@ function PackagesDropdown() {
               )}
             </span>
             <span className="flex min-w-0 flex-col">
-              <span className="font-medium text-[#3A2820]">{item.label}</span>
-              <span className="text-xs font-normal text-[#3A2820]/75">
+              <span className="font-medium text-[#3D1B22] group-hover:text-[#FAF5F0] transition-colors">{item.label}</span>
+              <span className="text-xs font-normal text-[#3D1B22]/80 group-hover:text-[#FAF5F0]/90 transition-colors">
                 {item.description}
               </span>
             </span>
@@ -138,12 +144,12 @@ function getInitials(name: string): string {
     .join("");
 }
 
-function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
+function UserMenu({ onNavigate, mounted }: { onNavigate?: () => void; mounted: boolean }) {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const showToast = useToastStore((state) => state.showToast);
 
-  if (!user) return null;
+  if (!user || !mounted) return null;
 
   const handleLogout = () => {
     logout();
@@ -165,51 +171,59 @@ function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
           />
         }
       >
-        <Avatar className="ring-1 ring-terracotta/20">
-          <AvatarFallback className="bg-terracotta text-brand-cream">
-            {getInitials(user.name) || <UserRound className="size-4" />}
-          </AvatarFallback>
-        </Avatar>
+        {user.image || user.avatar ? (
+          <img
+            src={user.image || user.avatar}
+            alt={user.name}
+            className="w-8 h-8 rounded-full object-cover border border-[#EBDCD2]"
+          />
+        ) : (
+          <Avatar className="ring-1 ring-[#4A1E27]/20">
+            <AvatarFallback className="bg-[#4A1E27] text-[#FAF5F0]">
+              {getInitials(user.name) || <UserRound className="size-4" />}
+            </AvatarFallback>
+          </Avatar>
+        )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 bg-[#FAF5EF] border border-[#3A2820]/10 text-[#3A2820] p-1.5 rounded-lg shadow-md">
+      <DropdownMenuContent align="end" className="w-56 bg-[#FAF5F0] border border-[#EBDCD2] text-[#3D1B22] p-1.5 rounded-lg shadow-md">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex flex-col gap-0.5 px-3 py-1.5">
-            <span className="font-semibold text-sm text-[#3A2820]">{user.name}</span>
-            <span className="truncate text-xs font-normal text-[#3A2820]/60">
+            <span className="font-semibold text-sm text-[#3D1B22]">{user.name}</span>
+            <span className="truncate text-xs font-normal text-[#3D1B22]/60">
               {user.email}
             </span>
           </DropdownMenuLabel>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className="my-1 h-px bg-[#3A2820]/10 -mx-1.5" />
+        <DropdownMenuSeparator className="my-1 h-px bg-[#EBDCD2] -mx-1.5" />
         
         <DropdownMenuItem
           render={<Link href="/profile" />}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3A2820] hover:bg-[#3A2820]/5 focus:bg-[#3A2820]/5 cursor-pointer rounded-md transition-colors outline-none"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
           onClick={onNavigate}
         >
-          <UserRound className="size-4 text-terracotta" />
+          <UserRound className="size-4 text-[#4A1E27]" />
           My Profile
         </DropdownMenuItem>
         
         <DropdownMenuItem
           render={<Link href="/orders" />}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3A2820] hover:bg-[#3A2820]/5 focus:bg-[#3A2820]/5 cursor-pointer rounded-md transition-colors outline-none"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
           onClick={onNavigate}
         >
-          <ShoppingBag className="size-4 text-terracotta" />
+          <ShoppingBag className="size-4 text-[#4A1E27]" />
           My Orders
         </DropdownMenuItem>
 
         <DropdownMenuItem
           render={<Link href="/wishlist" />}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3A2820] hover:bg-[#3A2820]/5 focus:bg-[#3A2820]/5 cursor-pointer rounded-md transition-colors outline-none"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
           onClick={onNavigate}
         >
-          <Heart className="size-4 text-terracotta" />
+          <Heart className="size-4 text-[#4A1E27]" />
           My Wishlist
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="my-1 h-px bg-[#3A2820]/10 -mx-1.5" />
+        <DropdownMenuSeparator className="my-1 h-px bg-[#4A1E27]/10 -mx-1.5" />
         
         <DropdownMenuItem
           className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer rounded-md transition-colors outline-none"
@@ -223,11 +237,13 @@ function UserMenu({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function AuthActions({ onNavigate }: { onNavigate?: () => void }) {
+function AuthActions({ onNavigate, mounted }: { onNavigate?: () => void; mounted: boolean }) {
   const { isAuthenticated } = useAuthStore();
 
+  if (!mounted) return null;
+
   if (isAuthenticated) {
-    return <UserMenu onNavigate={onNavigate} />;
+    return <UserMenu onNavigate={onNavigate} mounted={mounted} />;
   }
 
   return (
@@ -235,14 +251,14 @@ function AuthActions({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         href="/login"
         onClick={onNavigate}
-        className="text-lg tracking-wide font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+        className="text-sm tracking-widest uppercase font-medium text-[#3D1B22]/80 transition-colors duration-200 hover:text-[#4A1E27]"
       >
         Login
       </Link>
       <Link
         href="/register"
         onClick={onNavigate}
-        className="text-lg tracking-wide font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+        className="text-sm tracking-widest uppercase font-medium text-[#3D1B22]/80 transition-colors duration-200 hover:text-[#4A1E27]"
       >
         Register
       </Link>
@@ -250,7 +266,7 @@ function AuthActions({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function IconLinks({ onCartClick }: { onCartClick: () => void }) {
+function IconLinks({ onCartClick, mounted }: { onCartClick: () => void; mounted: boolean }) {
   const cartCount = useCartStore((state) => state.getItemCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
 
@@ -260,12 +276,13 @@ function IconLinks({ onCartClick }: { onCartClick: () => void }) {
         variant="ghost"
         size="icon"
         render={<Link href="/wishlist" />}
+        nativeButton={false}
         aria-label="Wishlist"
-        className="text-terracotta hover:text-ochre relative"
+        className="text-[#3D1B22]/80 hover:text-[#4A1E27] relative"
       >
         <Heart className="size-6" strokeWidth={2.2} />
-        {wishlistCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-terracotta text-[0.62rem] font-bold text-cream">
+        {mounted && wishlistCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
             {wishlistCount}
           </span>
         )}
@@ -275,11 +292,11 @@ function IconLinks({ onCartClick }: { onCartClick: () => void }) {
         size="icon"
         onClick={onCartClick}
         aria-label="Cart"
-        className="text-terracotta hover:text-ochre relative cursor-pointer"
+        className="text-[#3D1B22]/80 hover:text-[#4A1E27] relative cursor-pointer"
       >
         <ShoppingBag className="size-6" strokeWidth={2.2} />
-        {cartCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-terracotta text-[0.62rem] font-bold text-cream">
+        {mounted && cartCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
             {cartCount}
           </span>
         )}
@@ -292,10 +309,12 @@ function MobileNavContent({
   onClose,
   pathname,
   onCartClick,
+  mounted,
 }: {
   onClose: () => void;
   pathname: string;
   onCartClick: () => void;
+  mounted: boolean;
 }) {
   const [packagesOpen, setPackagesOpen] = useState(false);
   const router = useRouter();
@@ -330,7 +349,7 @@ function MobileNavContent({
         <button
           type="button"
           onClick={() => setPackagesOpen((open) => !open)}
-          className="flex items-center justify-between text-lg tracking-wide font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+          className="flex items-center justify-between text-lg tracking-wide font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
           aria-expanded={packagesOpen}
         >
           Packages
@@ -348,15 +367,15 @@ function MobileNavContent({
           )}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-col gap-4 border-l border-taupe/60 pl-5">
+            <div className="flex flex-col gap-4 border-l border-[#EBDCD2]/60 pl-5">
               {packagesDropdownLinks.map((item, index) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className="flex items-center gap-2.5 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+                  className="flex items-center gap-2.5 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
                 >
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ivory text-terracotta">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#4A1E27]/10 text-[#4A1E27]">
                     {index === 0 ? (
                       <Package className="size-4" />
                     ) : (
@@ -371,50 +390,58 @@ function MobileNavContent({
         </div>
       </nav>
 
-      {isAuthenticated && user && (
-        <div className="mt-6 border-t border-[#3A2820]/10 px-6 pt-5 text-[#3A2820]">
+      {mounted && isAuthenticated && user && (
+        <div className="mt-6 border-t border-[#EBDCD2] px-6 pt-5 text-[#3D1B22]">
           <div className="flex items-center gap-3 mb-4">
-            <Avatar className="h-10 w-10 ring-1 ring-terracotta/20">
-              <AvatarFallback className="bg-terracotta text-brand-cream text-sm">
-                {getInitials(user.name) || <UserRound className="size-4" />}
-              </AvatarFallback>
-            </Avatar>
+            {user.image || user.avatar ? (
+              <img
+                src={user.image || user.avatar}
+                alt={user.name}
+                className="w-10 h-10 rounded-full object-cover border border-[#EBDCD2]"
+              />
+            ) : (
+              <Avatar className="h-10 w-10 ring-1 ring-[#4A1E27]/20">
+                <AvatarFallback className="bg-[#4A1E27] text-[#FAF5F0] text-sm">
+                  {getInitials(user.name) || <UserRound className="size-4" />}
+                </AvatarFallback>
+              </Avatar>
+            )}
             <div className="flex flex-col min-w-0">
               <span className="font-semibold text-sm leading-tight truncate">{user.name}</span>
-              <span className="text-xs text-[#3A2820]/60 truncate">{user.email}</span>
+              <span className="text-xs text-[#3D1B22]/60 truncate">{user.email}</span>
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <Link
               href="/profile"
               onClick={onClose}
-              className="flex items-center gap-2 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+              className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
             >
-              <UserRound className="size-4" />
+              <UserRound className="size-4 text-[#4A1E27]" />
               My Profile
             </Link>
             <Link
               href="/orders"
               onClick={onClose}
-              className="flex items-center gap-2 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+              className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
             >
-              <ShoppingBag className="size-4" />
+              <ShoppingBag className="size-4 text-[#4A1E27]" />
               My Orders
             </Link>
             <Link
               href="/wishlist"
               onClick={onClose}
-              className="flex items-center gap-2 text-base font-medium text-terracotta transition-colors duration-200 hover:text-ochre"
+              className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
             >
-              <Heart className="size-4" />
+              <Heart className="size-4 text-[#4A1E27]" />
               My Wishlist
             </Link>
           </div>
         </div>
       )}
 
-      <div className="mt-8 flex items-center gap-2 border-t border-taupe/50 px-6 pt-5">
-        <IconLinks onCartClick={() => { onClose(); onCartClick(); }} />
+      <div className="mt-8 flex items-center gap-2 border-t border-[#EBDCD2] px-6 pt-5">
+        <IconLinks onCartClick={() => { onClose(); onCartClick(); }} mounted={mounted} />
       </div>
 
       <div className="mt-5 px-6">
@@ -433,6 +460,7 @@ function MobileNavContent({
               variant="outline"
               size="sm"
               render={<Link href="/login" />}
+              nativeButton={false}
               onClick={onClose}
             >
               Login
@@ -441,6 +469,7 @@ function MobileNavContent({
               variant="default"
               size="sm"
               render={<Link href="/register" />}
+              nativeButton={false}
               onClick={onClose}
             >
               Register
@@ -454,6 +483,7 @@ function MobileNavContent({
           variant="default"
           size="lg"
           render={<Link href="/products" />}
+          nativeButton={false}
           onClick={onClose}
           className="w-full"
         >
@@ -468,6 +498,11 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const cartCount = useCartStore((state) => state.getItemCount());
   const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
@@ -480,16 +515,18 @@ export function Navbar() {
   const closeMobile = () => setMobileOpen(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-taupe/60 bg-[#F2C8B6]">
+    <header className="sticky top-0 z-40 w-full border-b border-golden-border bg-champagne">
+      <div className="w-full bg-[#4A1E27] py-2 px-4 text-center text-[11px] font-semibold tracking-[0.16em] text-white uppercase">
+        Complimentary shipping on orders over $75 • Use code: PUREYUNA
+      </div>
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger
               render={
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  className="-ml-2 md:hidden"
+                <button
+                  type="button"
+                  className="inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 outline-none select-none hover:bg-charcoal/5 text-charcoal active:scale-[0.97] size-8 rounded-md -ml-2 md:hidden"
                   aria-label="Open menu"
                 />
               }
@@ -497,7 +534,7 @@ export function Navbar() {
               <Menu className="size-5" />
             </SheetTrigger>
             <SheetContent side="left" className="flex w-80 max-w-sm flex-col sm:max-w-sm">
-              <MobileNavContent onClose={closeMobile} pathname={pathname} onCartClick={() => setCartOpen(true)} />
+              <MobileNavContent onClose={closeMobile} pathname={pathname} onCartClick={() => setCartOpen(true)} mounted={mounted} />
             </SheetContent>
           </Sheet>
           <BrandMark />
@@ -523,26 +560,27 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setCartOpen(true)}
-            className="md:hidden text-terracotta hover:text-ochre relative p-1.5 cursor-pointer"
+            className="md:hidden text-[#3D1B22] hover:text-[#4A1E27] relative p-1.5 cursor-pointer"
             aria-label="Cart"
           >
             <ShoppingBag className="size-6" strokeWidth={2.2} />
-            {cartCount > 0 && (
-              <span className="absolute top-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-terracotta text-[0.62rem] font-bold text-cream">
+            {mounted && cartCount > 0 && (
+              <span className="absolute top-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
                 {cartCount}
               </span>
             )}
           </button>
 
           <div className="hidden gap-2 md:flex">
-            <IconLinks onCartClick={() => setCartOpen(true)} />
+            <IconLinks onCartClick={() => setCartOpen(true)} mounted={mounted} />
           </div>
           <div className="hidden md:block">
-            <AuthActions />
+            <AuthActions mounted={mounted} />
           </div>
           <Button
             variant="default"
             render={<Link href="/products" />}
+            nativeButton={false}
             className="hidden lg:inline-flex text-lg font-medium h-12 px-7"
           >
             Shop Now

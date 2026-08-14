@@ -8,6 +8,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { useToastStore } from "@/stores/toastStore";
 import { ImageWithFallback } from "@/components/shared/image-with-fallback";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function BuildPackagePage() {
   const addItem = useCartStore((state) => state.addItem);
@@ -52,7 +53,8 @@ export default function BuildPackagePage() {
   );
   const treatments = products.filter(
     (p) =>
-      p.categoryId === "cat-serums" ||
+      p.categoryId === "cat-serums-treatments" ||
+      p.categoryId === "cat-facial-oils" ||
       p.category?.name.toLowerCase().includes("serum") ||
       p.category?.name.toLowerCase().includes("treatment") ||
       p.category?.name.toLowerCase().includes("oil")
@@ -118,7 +120,7 @@ export default function BuildPackagePage() {
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
       {/* Header */}
       <header className="text-center space-y-4 max-w-2xl mx-auto">
-        <span className="text-xs font-bold tracking-[0.25em] text-terracotta uppercase">
+        <span className="text-xs font-bold tracking-[0.25em] text-[#4A1E27] uppercase">
           Routine Lab
         </span>
         <h1 className="font-heading text-4xl sm:text-5xl font-medium tracking-tight text-cocoa">
@@ -134,34 +136,34 @@ export default function BuildPackagePage() {
         <div className="flex items-center gap-2">
           <span
             className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-              step >= 1 ? "bg-terracotta text-cream" : "bg-taupe text-cocoa"
+              step >= 1 ? "bg-[#4A1E27] text-[#FAF5F0]" : "bg-[#FAF5F0] border border-[#EBDCD2] text-[#3D1B22]"
             }`}
           >
             1
           </span>
-          <span className="text-xs font-semibold text-cocoa uppercase tracking-wider hidden sm:inline">Profile</span>
+          <span className="text-xs font-semibold text-[#3D1B22] uppercase tracking-wider hidden sm:inline">Profile</span>
         </div>
-        <div className="h-px bg-taupe/60 flex-1" />
+        <div className="h-px bg-[#EBDCD2] flex-1" />
         <div className="flex items-center gap-2">
           <span
             className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-              step >= 2 ? "bg-terracotta text-cream" : "bg-taupe text-cocoa"
+              step >= 2 ? "bg-[#4A1E27] text-[#FAF5F0]" : "bg-[#FAF5F0] border border-[#EBDCD2] text-[#3D1B22]"
             }`}
           >
             2
           </span>
-          <span className="text-xs font-semibold text-cocoa uppercase tracking-wider hidden sm:inline">Choose Items</span>
+          <span className="text-xs font-semibold text-[#3D1B22] uppercase tracking-wider hidden sm:inline">Choose Items</span>
         </div>
-        <div className="h-px bg-taupe/60 flex-1" />
+        <div className="h-px bg-[#EBDCD2] flex-1" />
         <div className="flex items-center gap-2">
           <span
             className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-              step >= 3 ? "bg-terracotta text-cream" : "bg-taupe text-cocoa"
+              step >= 3 ? "bg-[#4A1E27] text-[#FAF5F0]" : "bg-[#FAF5F0] border border-[#EBDCD2] text-[#3D1B22]"
             }`}
           >
             3
           </span>
-          <span className="text-xs font-semibold text-cocoa uppercase tracking-wider hidden sm:inline">Review & Save</span>
+          <span className="text-xs font-semibold text-[#3D1B22] uppercase tracking-wider hidden sm:inline">Review & Save</span>
         </div>
       </div>
 
@@ -173,15 +175,15 @@ export default function BuildPackagePage() {
         <div className="w-full">
           {/* STEP 1: profile */}
           {step === 1 && (
-            <div className="space-y-10 max-w-3xl mx-auto bg-[#D4937A] p-8 border border-[#C58068] rounded-3xl">
+            <div className="space-y-10 max-w-3xl mx-auto bg-[#4A1E27] p-8 border border-[#3D1B22] rounded-3xl shadow-sm">
               <div className="space-y-6">
-                <h3 className="font-heading text-2xl font-medium text-[#3A2820] text-center">
+                <h3 className="font-heading text-2xl font-medium text-[#FAF5F0] text-center">
                   Tell us about your skin
                 </h3>
                 
                 {/* Skin Type */}
                 <div className="space-y-3">
-                  <span className="text-xs font-bold tracking-widest text-[#3A2820]/80 uppercase block text-center">
+                  <span className="text-xs font-bold tracking-widest text-[#FAF5F0]/80 uppercase block text-center">
                     1. What is your skin type?
                   </span>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -198,21 +200,21 @@ export default function BuildPackagePage() {
                         onClick={() => setSkinType(type.name)}
                         className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all cursor-pointer ${
                           skinType === type.name
-                            ? "bg-[#FAF5EF] border-[#3A2820] text-[#3A2820] scale-105 shadow-sm font-bold"
-                            : "bg-[#FAF5EF]/40 border-[#C58068]/50 text-[#3A2820] hover:bg-[#FAF5EF]/70"
+                            ? "bg-[#FAF5F0] border-[#4A1E27] text-[#4A1E27] scale-105 shadow-sm font-bold"
+                            : "bg-[#FAF5F0]/10 border-[#FAF5F0]/20 text-[#FAF5F0]/90 hover:bg-[#FAF5F0]/20"
                         }`}
                       >
                         <span className="text-2xl mb-1.5">{type.icon}</span>
                         <span className="text-xs tracking-wider uppercase font-semibold">{type.name}</span>
-                        <span className="text-[0.62rem] text-[#3A2820]/70 mt-0.5">{type.desc}</span>
+                        <span className={`text-[0.62rem] mt-0.5 ${skinType === type.name ? "text-[#4A1E27]/70" : "text-[#FAF5F0]/70"}`}>{type.desc}</span>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Concerns */}
-                <div className="space-y-3 pt-4 border-t border-[#C58068]/30">
-                  <span className="text-xs font-bold tracking-widest text-[#3A2820]/80 uppercase block text-center">
+                <div className="space-y-3 pt-4 border-t border-[#FAF5F0]/20">
+                  <span className="text-xs font-bold tracking-widest text-[#FAF5F0]/80 uppercase block text-center">
                     2. Choose your primary target concern
                   </span>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -228,11 +230,11 @@ export default function BuildPackagePage() {
                         onClick={() => setConcern(c.name)}
                         className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all cursor-pointer ${
                           concern === c.name
-                            ? "bg-[#FAF5EF] border-[#3A2820] text-[#3A2820] scale-105 shadow-sm font-bold"
-                            : "bg-[#FAF5EF]/40 border-[#C58068]/50 text-[#3A2820] hover:bg-[#FAF5EF]/70"
+                            ? "bg-[#FAF5F0] border-[#4A1E27] text-[#4A1E27] scale-105 shadow-sm font-bold"
+                            : "bg-[#FAF5F0]/10 border-[#FAF5F0]/20 text-[#FAF5F0]/90 hover:bg-[#FAF5F0]/20"
                         }`}
                       >
-                        <div className="text-[#3A2820] mb-2">{c.icon}</div>
+                        <div className={`mb-2 ${concern === c.name ? "text-[#4A1E27]" : "text-[#FAF5F0]"}`}>{c.icon}</div>
                         <span className="text-xs tracking-wider uppercase font-semibold">{c.label}</span>
                       </button>
                     ))}
@@ -240,27 +242,27 @@ export default function BuildPackagePage() {
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-[#C58068]/30 flex justify-end">
-                <Button
+              <div className="pt-6 border-t border-[#FAF5F0]/20 flex justify-end">
+                <button
+                  type="button"
                   onClick={handleNextStep1}
-                  variant="default"
-                  className="cursor-pointer font-semibold flex items-center gap-1.5"
+                  className="cursor-pointer font-semibold flex items-center gap-1.5 bg-[#FAF5F0] hover:bg-[#FAF5F0]/90 text-[#4A1E27] px-6 py-2.5 rounded-xl shadow-xs transition-colors"
                 >
                   Continue to Selection
                   <ArrowRight className="size-4" />
-                </Button>
+                </button>
               </div>
             </div>
           )}
 
           {/* STEP 2: Selection */}
           {step === 2 && (
-            <div className="space-y-12">
+            <div className="space-y-12 pb-16">
               {/* Product Type Categorized Grid */}
               <div className="space-y-16">
                 {/* 1. Cleansers */}
                 <div className="space-y-4">
-                  <h3 className="font-heading text-2xl font-medium text-[#3A2820] border-b border-[#C58068]/40 pb-2">
+                  <h3 className="font-heading text-2xl font-medium text-[#3D1B22] border-b border-[#EBDCD2] pb-2">
                     Step 1: Choose a Cleanser
                   </h3>
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -270,26 +272,39 @@ export default function BuildPackagePage() {
                         <div
                           key={p.id}
                           onClick={() => setSelectedCleanser(p)}
-                          className={`flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all ${
+                          className={cn(
+                            "flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all duration-300 shadow-xs",
                             isSelected
-                              ? "bg-[#D4937A] border-[#3A2820] shadow-xs"
-                              : "bg-[#E0A58E] border-[#C58068] hover:bg-[#E0A58E]/80"
-                          }`}
+                              ? "bg-[#4A1E27] border-[#4A1E27] ring-1 ring-[#4A1E27] text-[#FAF5F0] scale-[1.02]"
+                              : "bg-[#FAF5F0] border-[#EBDCD2] hover:bg-[#FAF5F0]/80 text-[#3D1B22]"
+                          )}
                         >
-                          <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-taupe/10">
+                          <div className={cn(
+                            "relative size-20 shrink-0 overflow-hidden rounded-lg transition-colors",
+                            isSelected ? "bg-[#FAF5F0]/15" : "bg-[#FDF4EE] border border-[#EBDCD2]/50"
+                          )}>
                             <ImageWithFallback src={p.image} alt={p.name} fill className="object-cover" sizes="80px" />
                             {isSelected && (
-                              <div className="absolute inset-0 bg-[#3A2820]/40 grid place-items-center">
-                                <Check className="size-6 text-white" />
+                              <div className="absolute inset-0 bg-[#4A1E27]/40 grid place-items-center">
+                                <Check className="size-6 text-[#FAF5F0]" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1 flex flex-col justify-between min-w-0">
                             <div>
-                              <h4 className="font-semibold text-[#3A2820] text-sm truncate">{p.name}</h4>
-                              <p className="text-xs text-[#4A3528] line-clamp-2 mt-0.5">{p.description}</p>
+                              <h4 className={cn(
+                                "font-semibold text-sm truncate transition-colors",
+                                isSelected ? "text-[#FAF5F0]" : "text-[#3D1B22]"
+                              )}>{p.name}</h4>
+                              <p className={cn(
+                                "text-xs line-clamp-2 mt-0.5 font-light transition-colors",
+                                isSelected ? "text-[#FAF5F0]/80" : "text-[#5A524E]"
+                              )}>{p.description}</p>
                             </div>
-                            <span className="text-xs font-bold text-[#3A2820] mt-2">${p.price.toFixed(2)}</span>
+                            <span className={cn(
+                              "text-xs font-bold mt-2 transition-colors",
+                              isSelected ? "text-[#FAF5F0]" : "text-[#4A1E27]"
+                            )}>${p.price.toFixed(2)}</span>
                           </div>
                         </div>
                       );
@@ -299,7 +314,7 @@ export default function BuildPackagePage() {
 
                 {/* 2. Treatment/Serums */}
                 <div className="space-y-4">
-                  <h3 className="font-heading text-2xl font-medium text-[#3A2820] border-b border-[#C58068]/40 pb-2">
+                  <h3 className="font-heading text-2xl font-medium text-[#3D1B22] border-b border-[#EBDCD2] pb-2">
                     Step 2: Choose a Treatment / Serum / Oil
                   </h3>
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -309,26 +324,39 @@ export default function BuildPackagePage() {
                         <div
                           key={p.id}
                           onClick={() => setSelectedTreatment(p)}
-                          className={`flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all ${
+                          className={cn(
+                            "flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all duration-300 shadow-xs",
                             isSelected
-                              ? "bg-[#D4937A] border-[#3A2820] shadow-xs"
-                              : "bg-[#E0A58E] border-[#C58068] hover:bg-[#E0A58E]/80"
-                          }`}
+                              ? "bg-[#4A1E27] border-[#4A1E27] ring-1 ring-[#4A1E27] text-[#FAF5F0] scale-[1.02]"
+                              : "bg-[#FAF5F0] border-[#EBDCD2] hover:bg-[#FAF5F0]/80 text-[#3D1B22]"
+                          )}
                         >
-                          <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-taupe/10">
+                          <div className={cn(
+                            "relative size-20 shrink-0 overflow-hidden rounded-lg transition-colors",
+                            isSelected ? "bg-[#FAF5F0]/15" : "bg-[#FDF4EE] border border-[#EBDCD2]/50"
+                          )}>
                             <ImageWithFallback src={p.image} alt={p.name} fill className="object-cover" sizes="80px" />
                             {isSelected && (
-                              <div className="absolute inset-0 bg-[#3A2820]/40 grid place-items-center">
-                                <Check className="size-6 text-white" />
+                              <div className="absolute inset-0 bg-[#4A1E27]/40 grid place-items-center">
+                                <Check className="size-6 text-[#FAF5F0]" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1 flex flex-col justify-between min-w-0">
                             <div>
-                              <h4 className="font-semibold text-[#3A2820] text-sm truncate">{p.name}</h4>
-                              <p className="text-xs text-[#4A3528] line-clamp-2 mt-0.5">{p.description}</p>
+                              <h4 className={cn(
+                                "font-semibold text-sm truncate transition-colors",
+                                isSelected ? "text-[#FAF5F0]" : "text-[#3D1B22]"
+                              )}>{p.name}</h4>
+                              <p className={cn(
+                                "text-xs line-clamp-2 mt-0.5 font-light transition-colors",
+                                isSelected ? "text-[#FAF5F0]/80" : "text-[#5A524E]"
+                              )}>{p.description}</p>
                             </div>
-                            <span className="text-xs font-bold text-[#3A2820] mt-2">${p.price.toFixed(2)}</span>
+                            <span className={cn(
+                              "text-xs font-bold mt-2 transition-colors",
+                              isSelected ? "text-[#FAF5F0]" : "text-[#4A1E27]"
+                            )}>${p.price.toFixed(2)}</span>
                           </div>
                         </div>
                       );
@@ -338,7 +366,7 @@ export default function BuildPackagePage() {
 
                 {/* 3. Moisturizers */}
                 <div className="space-y-4">
-                  <h3 className="font-heading text-2xl font-medium text-[#3A2820] border-b border-[#C58068]/40 pb-2">
+                  <h3 className="font-heading text-2xl font-medium text-[#3D1B22] border-b border-[#EBDCD2] pb-2">
                     Step 3: Choose a Moisturizer
                   </h3>
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -348,26 +376,39 @@ export default function BuildPackagePage() {
                         <div
                           key={p.id}
                           onClick={() => setSelectedMoisturizer(p)}
-                          className={`flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all ${
+                          className={cn(
+                            "flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all duration-300 shadow-xs",
                             isSelected
-                              ? "bg-[#D4937A] border-[#3A2820] shadow-xs"
-                              : "bg-[#E0A58E] border-[#C58068] hover:bg-[#E0A58E]/80"
-                          }`}
+                              ? "bg-[#4A1E27] border-[#4A1E27] ring-1 ring-[#4A1E27] text-[#FAF5F0] scale-[1.02]"
+                              : "bg-[#FAF5F0] border-[#EBDCD2] hover:bg-[#FAF5F0]/80 text-[#3D1B22]"
+                          )}
                         >
-                          <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-taupe/10">
+                          <div className={cn(
+                            "relative size-20 shrink-0 overflow-hidden rounded-lg transition-colors",
+                            isSelected ? "bg-[#FAF5F0]/15" : "bg-[#FDF4EE] border border-[#EBDCD2]/50"
+                          )}>
                             <ImageWithFallback src={p.image} alt={p.name} fill className="object-cover" sizes="80px" />
                             {isSelected && (
-                              <div className="absolute inset-0 bg-[#3A2820]/40 grid place-items-center">
-                                <Check className="size-6 text-white" />
+                              <div className="absolute inset-0 bg-[#4A1E27]/40 grid place-items-center">
+                                <Check className="size-6 text-[#FAF5F0]" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1 flex flex-col justify-between min-w-0">
                             <div>
-                              <h4 className="font-semibold text-[#3A2820] text-sm truncate">{p.name}</h4>
-                              <p className="text-xs text-[#4A3528] line-clamp-2 mt-0.5">{p.description}</p>
+                              <h4 className={cn(
+                                "font-semibold text-sm truncate transition-colors",
+                                isSelected ? "text-[#FAF5F0]" : "text-[#3D1B22]"
+                              )}>{p.name}</h4>
+                              <p className={cn(
+                                "text-xs line-clamp-2 mt-0.5 font-light transition-colors",
+                                isSelected ? "text-[#FAF5F0]/80" : "text-[#5A524E]"
+                              )}>{p.description}</p>
                             </div>
-                            <span className="text-xs font-bold text-[#3A2820] mt-2">${p.price.toFixed(2)}</span>
+                            <span className={cn(
+                              "text-xs font-bold mt-2 transition-colors",
+                              isSelected ? "text-[#FAF5F0]" : "text-[#4A1E27]"
+                            )}>${p.price.toFixed(2)}</span>
                           </div>
                         </div>
                       );
@@ -377,7 +418,7 @@ export default function BuildPackagePage() {
 
                 {/* 4. SPF */}
                 <div className="space-y-4">
-                  <h3 className="font-heading text-2xl font-medium text-[#3A2820] border-b border-[#C58068]/40 pb-2">
+                  <h3 className="font-heading text-2xl font-medium text-[#3D1B22] border-b border-[#EBDCD2] pb-2">
                     Step 4: Choose a Sunscreen (SPF)
                   </h3>
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -387,26 +428,39 @@ export default function BuildPackagePage() {
                         <div
                           key={p.id}
                           onClick={() => setSelectedSpf(p)}
-                          className={`flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all ${
+                          className={cn(
+                            "flex gap-4 border rounded-2xl p-4 cursor-pointer transition-all duration-300 shadow-xs",
                             isSelected
-                              ? "bg-[#D4937A] border-[#3A2820] shadow-xs"
-                              : "bg-[#E0A58E] border-[#C58068] hover:bg-[#E0A58E]/80"
-                          }`}
+                              ? "bg-[#4A1E27] border-[#4A1E27] ring-1 ring-[#4A1E27] text-[#FAF5F0] scale-[1.02]"
+                              : "bg-[#FAF5F0] border-[#EBDCD2] hover:bg-[#FAF5F0]/80 text-[#3D1B22]"
+                          )}
                         >
-                          <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-taupe/10">
+                          <div className={cn(
+                            "relative size-20 shrink-0 overflow-hidden rounded-lg transition-colors",
+                            isSelected ? "bg-[#FAF5F0]/15" : "bg-[#FDF4EE] border border-[#EBDCD2]/50"
+                          )}>
                             <ImageWithFallback src={p.image} alt={p.name} fill className="object-cover" sizes="80px" />
                             {isSelected && (
-                              <div className="absolute inset-0 bg-[#3A2820]/40 grid place-items-center">
-                                <Check className="size-6 text-white" />
+                              <div className="absolute inset-0 bg-[#4A1E27]/40 grid place-items-center">
+                                <Check className="size-6 text-[#FAF5F0]" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1 flex flex-col justify-between min-w-0">
                             <div>
-                              <h4 className="font-semibold text-[#3A2820] text-sm truncate">{p.name}</h4>
-                              <p className="text-xs text-[#4A3528] line-clamp-2 mt-0.5">{p.description}</p>
+                              <h4 className={cn(
+                                "font-semibold text-sm truncate transition-colors",
+                                isSelected ? "text-[#FAF5F0]" : "text-[#3D1B22]"
+                              )}>{p.name}</h4>
+                              <p className={cn(
+                                "text-xs line-clamp-2 mt-0.5 font-light transition-colors",
+                                isSelected ? "text-[#FAF5F0]/80" : "text-[#5A524E]"
+                              )}>{p.description}</p>
                             </div>
-                            <span className="text-xs font-bold text-[#3A2820] mt-2">${p.price.toFixed(2)}</span>
+                            <span className={cn(
+                              "text-xs font-bold mt-2 transition-colors",
+                              isSelected ? "text-[#FAF5F0]" : "text-[#4A1E27]"
+                            )}>${p.price.toFixed(2)}</span>
                           </div>
                         </div>
                       );
@@ -416,36 +470,45 @@ export default function BuildPackagePage() {
               </div>
 
               {/* Bottom Sticky Control Bar */}
-              <div className="sticky bottom-0 z-30 flex items-center justify-between border border-[#C58068] bg-[#D4937A]/95 backdrop-blur-md p-6 rounded-2xl shadow-lg mt-8 text-[#3A2820]">
-                <Button
+              <div className="sticky bottom-4 z-30 flex items-center justify-between border border-[#3D1B22] bg-[#4A1E27]/95 backdrop-blur-md p-6 rounded-2xl shadow-lg mt-8 text-[#FAF5F0]">
+                <button
+                  type="button"
                   onClick={() => setStep(1)}
-                  variant="outline"
-                  className="cursor-pointer flex items-center gap-1.5 font-semibold text-[#3A2820] border-[#C58068]/50 hover:bg-[#FAF5EF]/10"
+                  className="cursor-pointer flex items-center gap-1.5 font-semibold text-[#FAF5F0] border border-[#FAF5F0]/25 hover:bg-[#FAF5F0]/10 px-5 py-2.5 rounded-xl transition-colors text-xs"
                 >
                   <ArrowLeft className="size-4" />
                   Back
-                </Button>
+                </button>
 
-                <div className="hidden md:flex items-center gap-6 text-xs text-[#3A2820]/80">
+                <div className="hidden md:flex items-center gap-6 text-xs text-[#FAF5F0]/80">
                   <div className="flex flex-col">
-                    <span>Cleanser:</span>
-                    <span className="font-bold">{selectedCleanser ? "Selected" : "Empty"}</span>
+                    <span className="text-[#FAF5F0]/60 uppercase tracking-widest text-[9px]">Cleanser:</span>
+                    <span className={cn("font-bold text-[11px] transition-colors", selectedCleanser ? "text-[#FAF5F0]" : "text-[#FAF5F0]/40")}>
+                      {selectedCleanser ? "Selected" : "Empty"}
+                    </span>
                   </div>
                   <div className="flex flex-col">
-                    <span>Treatment:</span>
-                    <span className="font-bold">{selectedTreatment ? "Selected" : "Empty"}</span>
+                    <span className="text-[#FAF5F0]/60 uppercase tracking-widest text-[9px]">Treatment:</span>
+                    <span className={cn("font-bold text-[11px] transition-colors", selectedTreatment ? "text-[#FAF5F0]" : "text-[#FAF5F0]/40")}>
+                      {selectedTreatment ? "Selected" : "Empty"}
+                    </span>
                   </div>
                   <div className="flex flex-col">
-                    <span>Moisturizer:</span>
-                    <span className="font-bold">{selectedMoisturizer ? "Selected" : "Empty"}</span>
+                    <span className="text-[#FAF5F0]/60 uppercase tracking-widest text-[9px]">Moisturizer:</span>
+                    <span className={cn("font-bold text-[11px] transition-colors", selectedMoisturizer ? "text-[#FAF5F0]" : "text-[#FAF5F0]/40")}>
+                      {selectedMoisturizer ? "Selected" : "Empty"}
+                    </span>
                   </div>
                   <div className="flex flex-col">
-                    <span>SPF:</span>
-                    <span className="font-bold">{selectedSpf ? "Selected" : "Empty"}</span>
+                    <span className="text-[#FAF5F0]/60 uppercase tracking-widest text-[9px]">SPF:</span>
+                    <span className={cn("font-bold text-[11px] transition-colors", selectedSpf ? "text-[#FAF5F0]" : "text-[#FAF5F0]/40")}>
+                      {selectedSpf ? "Selected" : "Empty"}
+                    </span>
                   </div>
                 </div>
 
-                <Button
+                <button
+                  type="button"
                   onClick={() => {
                     if (!selectedCleanser || !selectedTreatment || !selectedMoisturizer || !selectedSpf) {
                       showToast("Please choose 1 item from each category.", "info");
@@ -453,12 +516,11 @@ export default function BuildPackagePage() {
                     }
                     setStep(3);
                   }}
-                  variant="default"
-                  className="cursor-pointer font-semibold flex items-center gap-1.5"
+                  className="cursor-pointer font-semibold flex items-center gap-1.5 bg-[#FAF5F0] hover:bg-[#FAF5F0]/90 text-[#4A1E27] px-5 py-2.5 rounded-xl transition-colors text-xs shadow-xs"
                 >
                   Review Bundle
                   <ArrowRight className="size-4" />
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -467,123 +529,123 @@ export default function BuildPackagePage() {
           {step === 3 && (
             <div className="max-w-4xl mx-auto grid gap-8 lg:grid-cols-[2fr_1fr]">
               {/* Left Column: Summary Checklist */}
-              <div className="bg-[#D4937A] border border-[#C58068] p-8 rounded-3xl space-y-6">
-                <h3 className="font-heading text-2xl font-medium text-[#3A2820] pb-3 border-b border-[#C58068]/30">
+              <div className="bg-[#4A1E27] border border-[#3D1B22] p-8 rounded-3xl space-y-6 shadow-sm text-[#FAF5F0]">
+                <h3 className="font-heading text-2xl font-medium text-[#FAF5F0] pb-3 border-b border-[#FAF5F0]/20">
                   Routine Summary
                 </h3>
 
                 <div className="space-y-4">
                   {/* Cleanser */}
                   {selectedCleanser && (
-                    <div className="flex gap-4 p-4 rounded-xl bg-[#E0A58E] border border-[#C58068]">
-                      <div className="relative size-16 overflow-hidden rounded-lg bg-taupe/10">
+                    <div className="flex gap-4 p-4 rounded-xl bg-[#FAF5F0] border border-[#EBDCD2] shadow-xs text-[#3D1B22]">
+                      <div className="relative size-16 overflow-hidden rounded-lg bg-[#FDF4EE] border border-[#EBDCD2]/50">
                         <ImageWithFallback src={selectedCleanser.image} alt={selectedCleanser.name} fill className="object-cover" sizes="64px" />
                       </div>
-                      <div>
-                        <span className="text-[0.58rem] font-bold text-[#3A2820]/80 tracking-widest uppercase">Cleanser</span>
-                        <h4 className="font-semibold text-[#3A2820] text-sm">{selectedCleanser.name}</h4>
-                        <span className="text-xs text-[#4A3528]">${selectedCleanser.price.toFixed(2)}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[9px] font-bold text-[#4A1E27] tracking-widest uppercase">Cleanser</span>
+                        <h4 className="font-semibold text-[#3D1B22] text-sm truncate">{selectedCleanser.name}</h4>
+                        <span className="text-xs text-[#5A524E] font-semibold block mt-0.5">${selectedCleanser.price.toFixed(2)}</span>
                       </div>
                     </div>
                   )}
 
                   {/* Treatment */}
                   {selectedTreatment && (
-                    <div className="flex gap-4 p-4 rounded-xl bg-[#E0A58E] border border-[#C58068]">
-                      <div className="relative size-16 overflow-hidden rounded-lg bg-taupe/10">
+                    <div className="flex gap-4 p-4 rounded-xl bg-[#FAF5F0] border border-[#EBDCD2] shadow-xs text-[#3D1B22]">
+                      <div className="relative size-16 overflow-hidden rounded-lg bg-[#FDF4EE] border border-[#EBDCD2]/50">
                         <ImageWithFallback src={selectedTreatment.image} alt={selectedTreatment.name} fill className="object-cover" sizes="64px" />
                       </div>
-                      <div>
-                        <span className="text-[0.58rem] font-bold text-[#3A2820]/80 tracking-widest uppercase">Treatment</span>
-                        <h4 className="font-semibold text-[#3A2820] text-sm">{selectedTreatment.name}</h4>
-                        <span className="text-xs text-[#4A3528]">${selectedTreatment.price.toFixed(2)}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[9px] font-bold text-[#4A1E27] tracking-widest uppercase">Treatment</span>
+                        <h4 className="font-semibold text-[#3D1B22] text-sm truncate">{selectedTreatment.name}</h4>
+                        <span className="text-xs text-[#5A524E] font-semibold block mt-0.5">${selectedTreatment.price.toFixed(2)}</span>
                       </div>
                     </div>
                   )}
 
                   {/* Moisturizer */}
                   {selectedMoisturizer && (
-                    <div className="flex gap-4 p-4 rounded-xl bg-[#E0A58E] border border-[#C58068]">
-                      <div className="relative size-16 overflow-hidden rounded-lg bg-taupe/10">
+                    <div className="flex gap-4 p-4 rounded-xl bg-[#FAF5F0] border border-[#EBDCD2] shadow-xs text-[#3D1B22]">
+                      <div className="relative size-16 overflow-hidden rounded-lg bg-[#FDF4EE] border border-[#EBDCD2]/50">
                         <ImageWithFallback src={selectedMoisturizer.image} alt={selectedMoisturizer.name} fill className="object-cover" sizes="64px" />
                       </div>
-                      <div>
-                        <span className="text-[0.58rem] font-bold text-[#3A2820]/80 tracking-widest uppercase">Moisturizer</span>
-                        <h4 className="font-semibold text-[#3A2820] text-sm">{selectedMoisturizer.name}</h4>
-                        <span className="text-xs text-[#4A3528]">${selectedMoisturizer.price.toFixed(2)}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[9px] font-bold text-[#4A1E27] tracking-widest uppercase">Moisturizer</span>
+                        <h4 className="font-semibold text-[#3D1B22] text-sm truncate">{selectedMoisturizer.name}</h4>
+                        <span className="text-xs text-[#5A524E] font-semibold block mt-0.5">${selectedMoisturizer.price.toFixed(2)}</span>
                       </div>
                     </div>
                   )}
 
                   {/* SPF */}
                   {selectedSpf && (
-                    <div className="flex gap-4 p-4 rounded-xl bg-[#E0A58E] border border-[#C58068]">
-                      <div className="relative size-16 overflow-hidden rounded-lg bg-taupe/10">
+                    <div className="flex gap-4 p-4 rounded-xl bg-[#FAF5F0] border border-[#EBDCD2] shadow-xs text-[#3D1B22]">
+                      <div className="relative size-16 overflow-hidden rounded-lg bg-[#FDF4EE] border border-[#EBDCD2]/50">
                         <ImageWithFallback src={selectedSpf.image} alt={selectedSpf.name} fill className="object-cover" sizes="64px" />
                       </div>
-                      <div>
-                        <span className="text-[0.58rem] font-bold text-[#3A2820]/80 tracking-widest uppercase">Sunscreen (SPF)</span>
-                        <h4 className="font-semibold text-[#3A2820] text-sm">{selectedSpf.name}</h4>
-                        <span className="text-xs text-[#4A3528]">${selectedSpf.price.toFixed(2)}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[9px] font-bold text-[#4A1E27] tracking-widest uppercase">Sunscreen (SPF)</span>
+                        <h4 className="font-semibold text-[#3D1B22] text-sm truncate">{selectedSpf.name}</h4>
+                        <span className="text-xs text-[#5A524E] font-semibold block mt-0.5">${selectedSpf.price.toFixed(2)}</span>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Right Column: Calculations */}
+               {/* Right Column: Calculations */}
               <div className="space-y-6">
-                <div className="bg-[#D4937A] border border-[#C58068] p-6 rounded-3xl space-y-6 text-[#3A2820]">
-                  <h4 className="font-heading text-xl font-medium text-[#3A2820]">
+                <div className="bg-[#4A1E27] border border-[#3D1B22] p-6 rounded-3xl space-y-6 text-[#FAF5F0] shadow-sm">
+                  <h4 className="font-heading text-xl font-medium text-[#FAF5F0]">
                     Order Summary
                   </h4>
 
                   <div className="space-y-3.5 text-sm">
-                    <div className="flex justify-between text-[#4A3528]">
+                    <div className="flex justify-between text-[#FAF5F0]/90">
                       <span>Skin Type:</span>
-                      <span className="font-semibold text-[#3A2820]">{skinType}</span>
+                      <span className="font-semibold text-[#FAF5F0]">{skinType}</span>
                     </div>
-                    <div className="flex justify-between text-[#4A3528]">
+                    <div className="flex justify-between text-[#FAF5F0]/90">
                       <span>Goal Concern:</span>
-                      <span className="font-semibold text-[#3A2820]">{concern}</span>
+                      <span className="font-semibold text-[#FAF5F0]">{concern}</span>
                     </div>
-                    <div className="h-px bg-[#C58068]/30" />
-                    <div className="flex justify-between text-[#4A3528]">
+                    <div className="h-px bg-[#FAF5F0]/20" />
+                    <div className="flex justify-between text-[#FAF5F0]/90">
                       <span>4 Items Subtotal:</span>
                       <span>${subtotal.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-emerald-950 font-bold">
+                    <div className="flex justify-between text-[#FAF5F0] font-bold bg-[#3D1B22] px-2.5 py-1.5 rounded-lg shadow-xs">
                       <span>15% Bundle Discount:</span>
                       <span>-${discountAmount.toFixed(2)}</span>
                     </div>
-                    <div className="h-px bg-[#C58068]/30" />
+                    <div className="h-px bg-[#FAF5F0]/20" />
                     <div className="flex justify-between items-baseline pt-2">
-                      <span className="text-base font-semibold text-[#3A2820]">Total:</span>
-                      <span className="text-2xl font-black text-[#3A2820]">${total.toFixed(2)}</span>
+                      <span className="text-base font-semibold text-[#FAF5F0]">Total:</span>
+                      <span className="text-2xl font-black text-[#FAF5F0]">${total.toFixed(2)}</span>
                     </div>
                   </div>
 
-                  <Button
+                  <button
+                    type="button"
                     onClick={handleAddCustomRoutineToCart}
-                    variant="default"
-                    className="w-full cursor-pointer h-12 text-sm font-semibold flex items-center justify-center gap-2"
+                    className="w-full cursor-pointer h-12 text-sm font-semibold flex items-center justify-center gap-2 bg-[#FAF5F0] hover:bg-[#FAF5F0]/90 text-[#4A1E27] rounded-xl transition-all shadow-xs"
                   >
                     <ShoppingBag className="size-4" />
                     Add Custom Routine
-                  </Button>
+                  </button>
 
-                  <div className="text-[0.62rem] text-center text-[#4A3528]/80 leading-relaxed pt-2">
+                  <div className="text-[0.62rem] text-center text-[#FAF5F0]/80 leading-relaxed pt-2 font-light">
                     *Bundle items can be individually returned or exchanged in accordance with our return guidelines.
                   </div>
                 </div>
 
-                <Button
+                <button
+                  type="button"
                   onClick={() => setStep(2)}
-                  variant="outline"
-                  className="w-full cursor-pointer font-semibold border-[#C58068]/50 text-[#3A2820] hover:bg-[#FAF5EF]/10"
+                  className="w-full cursor-pointer font-semibold border border-[#EBDCD2] text-[#4A1E27] bg-[#FAF5F0] hover:bg-[#FAF5F0]/80 h-11 rounded-xl transition-all shadow-xs"
                 >
                   Adjust Items Selection
-                </Button>
+                </button>
               </div>
             </div>
           )}

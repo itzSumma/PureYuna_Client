@@ -9,21 +9,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-br from-terracotta to-ochre text-brand-cream border-t border-white/15 shadow-[0_2px_4px_rgba(184,107,75,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] hover:shadow-[0_4px_8px_rgba(184,107,75,0.25),inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-0.5 active:scale-[0.97]",
+          "bg-caramel hover:bg-caramel/95 text-warm-white border-t border-white/10 shadow-[0_2px_4px_rgba(74,30,39,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-0.5 active:scale-[0.97]",
         "primary-organic":
-          "bg-gradient-to-br from-terracotta to-ochre text-brand-cream border-t border-white/15 shadow-[0_2px_4px_rgba(184,107,75,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] hover:shadow-[0_4px_8px_rgba(184,107,75,0.25),inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-0.5 active:scale-[0.97]",
+          "bg-caramel hover:bg-caramel/95 text-warm-white border-t border-white/10 shadow-[0_2px_4px_rgba(74,30,39,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-0.5 active:scale-[0.97]",
         "primary-formulated":
-          "bg-gradient-to-br from-terracotta to-ochre text-brand-cream border-t border-white/20 shadow-[0_2px_4px_rgba(184,107,75,0.15),inset_0_1px_0_rgba(255,255,255,0.15)] hover:shadow-[0_4px_8px_rgba(184,107,75,0.25),inset_0_1px_0_rgba(255,255,255,0.15)] hover:-translate-y-0.5 active:scale-[0.97]",
+          "bg-deep-brown hover:bg-deep-brown/95 text-warm-white border-t border-white/10 shadow-[0_2px_4px_rgba(38,28,25,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-0.5 active:scale-[0.97]",
         outline:
-          "border-1.5 border-charcoal bg-transparent text-charcoal hover:bg-charcoal/5 active:scale-[0.97]",
+          "border-1.5 border-deep-brown bg-transparent text-deep-brown hover:bg-deep-brown/5 active:scale-[0.97]",
         "secondary-organic":
           "border-1.5 border-organic-primary bg-transparent text-organic-primary hover:bg-organic-primary/8 active:scale-[0.97]",
         "secondary-formulated":
           "border-1.5 border-formulated-primary bg-transparent text-formulated-primary hover:bg-formulated-primary/8 active:scale-[0.97]",
         "secondary-terracotta":
-          "border-1.5 border-terracotta bg-transparent text-terracotta hover:bg-terracotta/8 active:scale-[0.97]",
+          "border-1.5 border-caramel bg-transparent text-caramel hover:bg-caramel/8 active:scale-[0.97]",
         ghost:
-          "hover:bg-charcoal/5 text-charcoal active:scale-[0.97]",
+          "hover:bg-deep-brown/5 text-deep-brown active:scale-[0.97]",
         ghostLight:
           "hover:bg-white/10 text-white/90 hover:text-white active:scale-[0.97]",
         destructive:

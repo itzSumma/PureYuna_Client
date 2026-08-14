@@ -1,9 +1,10 @@
 import React from "react";
-import { Filter, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, Filter, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { INPUT_UNDERLINE } from "@/constants/design-tokens";
 import { Category, ProductSort, SkinType } from "@/types/product";
@@ -20,8 +21,8 @@ interface FilterDrawerProps {
   activeSkinType: string;
   handleSkinTypeChange: (type: string) => void;
   isOrganic: boolean;
-  activeSort: string;
-  handleSortChange: (val: string) => void;
+  sortBy: string;
+  setSortBy: (val: string) => void;
 }
 
 export function FilterDrawer({
@@ -36,27 +37,27 @@ export function FilterDrawer({
   activeSkinType,
   handleSkinTypeChange,
   isOrganic,
-  activeSort,
-  handleSortChange,
+  sortBy,
+  setSortBy,
 }: FilterDrawerProps) {
   return (
-    <div className="flex items-center justify-between border-b border-taupe/40 pb-4 lg:hidden">
+    <div className="flex items-center justify-between border-b border-golden-border/40 pb-4 lg:hidden">
       <Sheet>
         <SheetTrigger
           render={
             <Button
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 cursor-pointer border-taupe text-cocoa"
+              className="flex items-center gap-2 cursor-pointer border-golden-border text-deep-brown hover:bg-deep-brown/5"
             >
               <Filter className="size-4" />
               Filters
             </Button>
           }
         />
-        <SheetContent side="left" className="w-80 bg-[#D4937A] text-[#3A2820] border-r border-[#C58068]">
-          <SheetHeader className="border-b border-[#C58068] pb-4 text-left">
-            <SheetTitle className="font-heading text-2xl font-medium text-[#3A2820] flex items-center gap-2">
+        <SheetContent side="left" className="w-80 bg-champagne text-deep-brown border-r border-golden-border">
+          <SheetHeader className="border-b border-golden-border/40 pb-4 text-left">
+            <SheetTitle className="font-heading text-2xl font-medium text-deep-brown flex items-center gap-2">
               <SlidersHorizontal className="size-5" />
               Filters
             </SheetTitle>
@@ -64,7 +65,7 @@ export function FilterDrawer({
           <div className="flex flex-col gap-6 py-6 overflow-y-auto max-h-[80vh] px-1">
             {/* Mobile Search */}
             <form onSubmit={handleSearchSubmit} className="space-y-2">
-              <Label className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
+              <Label className="text-[0.62rem] font-bold tracking-widest text-deep-brown/80 uppercase">
                 Search
               </Label>
               <div className="relative">
@@ -75,7 +76,7 @@ export function FilterDrawer({
                   onChange={(e) => setSearchText(e.target.value)}
                   className={INPUT_UNDERLINE}
                 />
-                <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 text-[#3A2820]/60">
+                <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 text-deep-brown/60">
                   <Search className="size-4" />
                 </button>
               </div>
@@ -83,7 +84,7 @@ export function FilterDrawer({
 
             {/* Mobile Category */}
             <div className="space-y-3">
-              <Label className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
+              <Label className="text-[0.62rem] font-bold tracking-widest text-deep-brown/80 uppercase">
                 Category
               </Label>
               <div className="flex flex-col gap-2">
@@ -91,8 +92,8 @@ export function FilterDrawer({
                   onClick={() => handleCategoryChange("ALL")}
                   className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                     !activeCategory
-                      ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
-                      : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
+                      ? "bg-[#FFF9EE] text-[#4A3420] font-semibold border border-golden-border"
+                      : "text-deep-brown/95 hover:bg-deep-brown/5"
                   }`}
                 >
                   All Categories
@@ -103,8 +104,8 @@ export function FilterDrawer({
                     onClick={() => handleCategoryChange(cat.id)}
                     className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                       activeCategory === cat.id
-                        ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
-                        : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
+                        ? "bg-[#FFF9EE] text-[#4A3420] font-semibold border border-golden-border"
+                        : "text-deep-brown/95 hover:bg-deep-brown/5"
                     }`}
                   >
                     {cat.name}
@@ -115,7 +116,7 @@ export function FilterDrawer({
 
             {/* Mobile Skin Type */}
             <div className="space-y-3">
-              <Label className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase">
+              <Label className="text-[0.62rem] font-bold tracking-widest text-deep-brown/80 uppercase">
                 Skin Type
               </Label>
               <div className="flex flex-col gap-2">
@@ -123,8 +124,8 @@ export function FilterDrawer({
                   onClick={() => handleSkinTypeChange("ALL")}
                   className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                     !activeSkinType
-                      ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
-                      : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
+                      ? "bg-[#FFF9EE] text-[#4A3420] font-semibold border border-golden-border"
+                      : "text-deep-brown/95 hover:bg-deep-brown/5"
                   }`}
                 >
                   All Skin Types
@@ -135,8 +136,8 @@ export function FilterDrawer({
                     onClick={() => handleSkinTypeChange(type)}
                     className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                       activeSkinType === type
-                        ? "bg-[#FAF5EF] text-[#3A2820] font-semibold border border-[#C58068]"
-                        : "text-[#4A3528] hover:bg-[#FAF5EF]/10"
+                        ? "bg-[#FFF9EE] text-[#4A3420] font-semibold border border-golden-border"
+                        : "text-deep-brown/95 hover:bg-deep-brown/5"
                     }`}
                   >
                     {type.charAt(0) + type.slice(1).toLowerCase()} Skin
@@ -150,7 +151,7 @@ export function FilterDrawer({
               <Button
                 onClick={handleResetFilters}
                 variant="outline"
-                className="w-full mt-4 flex items-center justify-center gap-2 border-terracotta text-terracotta cursor-pointer"
+                className="w-full mt-4 flex items-center justify-center gap-2 border-caramel text-caramel cursor-pointer hover:bg-caramel/5"
               >
                 <RotateCcw className="size-4" />
                 Clear All Filters
@@ -161,16 +162,19 @@ export function FilterDrawer({
       </Sheet>
 
       {/* Mobile Sort Dropdown */}
-      <select
-        value={activeSort || "DEFAULT"}
-        onChange={(e) => handleSortChange(e.target.value)}
-        className="h-9 rounded-lg border border-taupe px-3 bg-transparent text-xs text-cocoa focus-visible:ring-0 focus-visible:border-terracotta outline-none cursor-pointer"
-      >
-        <option value="DEFAULT">Recommended</option>
-        <option value={ProductSort.PRICE_LOW}>Price: Low to High</option>
-        <option value={ProductSort.PRICE_HIGH}>Price: High to Low</option>
-        <option value={ProductSort.NEWEST}>Newest</option>
-      </select>
+      <div className="relative min-w-[140px]">
+        <Select value={sortBy} onValueChange={(val) => setSortBy(val || "recommended")}>
+          <SelectTrigger className="w-full h-10 border border-golden-border bg-[#FAF5F0] hover:bg-[#FAF5F0]/80 text-[#3D1B22] focus:ring-2 focus:ring-[#8B6230]/40 transition-all cursor-pointer">
+            <SelectValue placeholder="Sort By" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#FAF5F0] border border-[#EBDCD2]">
+            <SelectItem value="recommended">Recommended</SelectItem>
+            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+            <SelectItem value="newest">Newest Arrivals</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,8 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  image?: string;
+  avatar?: string;
   isDeleted?: boolean;
   createdAt: string;
   updatedAt?: string;
@@ -20,6 +22,8 @@ export interface AuthUser {
   name: string;
   email: string;
   role: Role;
+  image?: string;
+  avatar?: string;
 }
 
 export interface RegisterPayload {
@@ -41,4 +45,6 @@ export interface LoginResponseData {
 export interface UpdateProfilePayload {
   name?: string;
   email?: string;
+  image?: string;
+  avatar?: string;
 }

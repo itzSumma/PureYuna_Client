@@ -69,9 +69,9 @@ export function RegisterForm() {
 
   return (
     <AuthShell
-      title="Create your PureYuna account."
+      title="Create your PureYuna account"
       subtitle="Join a brand that starts with your skin — never a role."
-      imageSrc="https://images.unsplash.com/photo-1643123158391-8543727c85f5?auto=format&fit=crop&w=1920&q=90"
+      imageSrc="https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=1200&auto=format&fit=crop"
       overlayText="Join Us. Embrace conscious luxury and pure, effective care."
     >
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -84,7 +84,7 @@ export function RegisterForm() {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-xs font-medium tracking-wide text-[#3A2820]">
+          <Label htmlFor="name" className="text-deep-brown text-xs uppercase tracking-wider font-medium">
             Name
           </Label>
           <Input
@@ -94,12 +94,12 @@ export function RegisterForm() {
             placeholder="Jane Doe"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            className={INPUT_UNDERLINE}
+            className="bg-white border border-golden-border/80 text-deep-brown placeholder:text-deep-brown/45 rounded-xl px-4 py-3 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel/40 h-auto"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-xs font-medium tracking-wide text-[#3A2820]">
+          <Label htmlFor="email" className="text-deep-brown text-xs uppercase tracking-wider font-medium">
             Email
           </Label>
           <Input
@@ -109,12 +109,12 @@ export function RegisterForm() {
             placeholder="you@example.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className={INPUT_UNDERLINE}
+            className="bg-white border border-golden-border/80 text-deep-brown placeholder:text-deep-brown/45 rounded-xl px-4 py-3 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel/40 h-auto"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-xs font-medium tracking-wide text-[#3A2820]">
+          <Label htmlFor="password" className="text-deep-brown text-xs uppercase tracking-wider font-medium">
             Password
           </Label>
           <div className="relative">
@@ -125,13 +125,13 @@ export function RegisterForm() {
               placeholder="At least 6 characters"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className={INPUT_UNDERLINE}
+              className="bg-white border border-golden-border/80 text-deep-brown placeholder:text-deep-brown/45 rounded-xl px-4 py-3 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel/40 h-auto"
             />
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute top-1/2 right-0 -translate-y-1/2 p-1 text-[#3A2820]/50 transition-colors hover:text-[#3A2820]"
+              className="absolute top-1/2 right-3 -translate-y-1/2 p-1 text-deep-brown/60 hover:text-deep-brown transition-colors"
             >
               {showPassword ? (
                 <EyeOff className="size-4" />
@@ -145,7 +145,7 @@ export function RegisterForm() {
         <div className="space-y-2">
           <Label
             htmlFor="confirm-password"
-            className="text-xs font-medium tracking-wide text-[#3A2820]"
+            className="text-deep-brown text-xs uppercase tracking-wider font-medium"
           >
             Confirm password
           </Label>
@@ -156,24 +156,22 @@ export function RegisterForm() {
             placeholder="Repeat your password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
-            className={INPUT_UNDERLINE}
+            className="bg-white border border-golden-border/80 text-deep-brown placeholder:text-deep-brown/45 rounded-xl px-4 py-3 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel/40 h-auto"
           />
         </div>
 
-        <Button
+        <button
           type="submit"
-          variant="default"
-          size="lg"
-          className="w-full cursor-pointer"
+          className="w-full bg-caramel hover:bg-caramel/90 text-white font-medium py-3 rounded-xl shadow-md transition-all h-12 flex items-center justify-center cursor-pointer disabled:opacity-50"
           disabled={isSubmitting}
         >
           {isSubmitting ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
           {isSubmitting ? "Creating account..." : "Create account"}
-        </Button>
+        </button>
 
-        <p className="text-center text-sm text-[#3A2820]">
+        <p className="text-center text-sm text-deep-brown/90">
           Already have an account?{"  "}
-          <Link href="/login" className="font-medium text-[#3A2820] hover:text-[#B86B4B] hover:underline">
+          <Link href="/login" className="font-medium text-deep-brown/90 hover:text-caramel underline-offset-4 hover:underline">
             Sign in
           </Link>
         </p>

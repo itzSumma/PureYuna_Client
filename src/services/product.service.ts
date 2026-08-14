@@ -1,4 +1,4 @@
-import { apiGet } from "@/lib/axios";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/lib/axios";
 import type { ApiSuccessResponse } from "@/types/api";
 import type { Product, ProductQueryParams, Category } from "@/types/product";
 import { FALLBACK_CATEGORIES, FALLBACK_PRODUCTS } from "@/constants/fallback-data";
@@ -38,7 +38,13 @@ function filterAndPaginateLocal(
     }
     // 3. Filter by skinType
     if (params.skinType) {
-      list = list.filter((p) => p.skinType === params.skinType);
+      list = list.filter((p) => {
+        const extProduct = p as any;
+        if (extProduct.skinTypes && Array.isArray(extProduct.skinTypes)) {
+          return extProduct.skinTypes.includes(params.skinType);
+        }
+        return p.skinType === params.skinType;
+      });
     }
     // 4. Filter by search text
     if (params.search) {
@@ -167,5 +173,19 @@ export const productService = {
       console.warn("Category API failed/empty, using fallback categories:", err);
     }
     return FALLBACK_CATEGORIES;
+  },
+
+  async createProduct(payload: Record<string, any>): Promise<Product> {
+    const result = await apiPost<ApiSuccessResponse<Product>>("/products", payload);
+    return result.data;
+  },
+
+  async updateProduct(id: string, payload: Record<string, any>): Promise<Product> {
+    const result = await apiPatch<ApiSuccessResponse<Product>>(`/products/${id}`, payload);
+    return result.data;
+  },
+
+  async deleteProduct(id: string): Promise<any> {
+    return await apiDelete(`/products/${id}`);
   },
 };

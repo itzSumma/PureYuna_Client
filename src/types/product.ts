@@ -48,6 +48,7 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   category?: Category;
+  rating?: number;
 }
 
 export interface ProductQueryParams {

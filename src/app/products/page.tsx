@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useMemo } from "react";
 
 import { FilterSidebar } from "@/components/products/filter-sidebar";
 import { FilterDrawer } from "@/components/products/filter-drawer";
@@ -46,6 +46,12 @@ function ProductsDiscoveryContent() {
   const [searchText, setSearchText] = useState(activeSearch);
   const [retryTrigger, setRetryTrigger] = useState(0);
 
+  // Sync sorting input
+  const [sortBy, setSortBy] = useState(activeSort || "recommended");
+  useEffect(() => {
+    setSortBy(activeSort || "recommended");
+  }, [activeSort]);
+
   // Sync search input
   useEffect(() => {
     setSearchText(activeSearch);
@@ -77,7 +83,15 @@ function ProductsDiscoveryContent() {
         };
         if (activeCategory) params.category = activeCategory;
         if (activeSkinType) params.skinType = activeSkinType as SkinType;
-        if (activeSort) params.sort = activeSort as ProductSort;
+        if (activeSort) {
+          if (activeSort === "price-asc") {
+            params.sort = "price-low" as ProductSort;
+          } else if (activeSort === "price-desc") {
+            params.sort = "price-high" as ProductSort;
+          } else if (activeSort === "newest") {
+            params.sort = "newest" as ProductSort;
+          }
+        }
         if (activeSearch) params.search = activeSearch;
 
         const response = await productService.getProducts(params);
@@ -154,7 +168,31 @@ function ProductsDiscoveryContent() {
     }
   };
 
-  const hasActiveFilters = Boolean(activeCategory || activeSkinType || activeSort || activeSearch);
+  const hasActiveFilters = Boolean(activeCategory || activeSkinType || (activeSort && activeSort !== "recommended") || activeSearch);
+
+  const filteredProducts = products;
+
+  const processedProducts = useMemo(() => {
+    let list = [...filteredProducts];
+
+    switch (sortBy) {
+      case 'price-asc':
+        list.sort((a, b) => Number(a.price) - Number(b.price));
+        break;
+      case 'price-desc':
+        list.sort((a, b) => Number(b.price) - Number(a.price));
+        break;
+      case 'newest':
+        list.sort((a, b) => b.id.localeCompare(a.id));
+        break;
+      case 'recommended':
+      default:
+        list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+    }
+
+    return list;
+  }, [filteredProducts, sortBy]);
 
   return (
     <div className="relative min-h-screen py-10">
@@ -204,8 +242,8 @@ function ProductsDiscoveryContent() {
             handleCategoryChange={handleCategoryChange}
             activeSkinType={activeSkinType}
             handleSkinTypeChange={handleSkinTypeChange}
-            activeSort={activeSort}
-            handleSortChange={handleSortChange}
+            sortBy={sortBy}
+            setSortBy={handleSortChange}
             isOrganic={isOrganic}
           />
 
@@ -222,14 +260,14 @@ function ProductsDiscoveryContent() {
               activeSkinType={activeSkinType}
               handleSkinTypeChange={handleSkinTypeChange}
               isOrganic={isOrganic}
-              activeSort={activeSort}
-              handleSortChange={handleSortChange}
+              sortBy={sortBy}
+              setSortBy={handleSortChange}
             />
 
             <ProductsGrid
               loading={loading}
               error={error}
-              products={products}
+              products={processedProducts}
               wishlistIds={wishlistIds}
               handleAddToCart={handleAddToCart}
               handleToggleWishlist={handleToggleWishlist}

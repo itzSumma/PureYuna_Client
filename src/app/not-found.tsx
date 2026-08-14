@@ -6,50 +6,48 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-[80vh] flex items-center justify-center bg-[#FAF5EF] px-6 text-center text-[#3A2820]">
+    <div className="relative min-h-[80vh] flex items-center justify-center bg-cream px-6 py-12 text-center">
       {/* Decorative Arch Background */}
       <div className="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center">
-        <div className="w-[30rem] h-[45rem] rounded-t-full border-[8px] border-[#3A2820]" />
+        <div className="w-[30rem] h-[45rem] rounded-t-full border-[8px] border-golden-border" />
       </div>
 
-      <div className="relative max-w-md mx-auto space-y-8">
+      <div className="relative max-w-md mx-auto bg-white text-deep-brown border border-golden-border rounded-t-[140px] p-10 shadow-lg space-y-8">
         {/* Editorial Indicator */}
-        <span className="text-[0.68rem] font-bold tracking-[0.3em] text-[#B86B4B] uppercase block">
-          🌿 Error 404 · Sanctuary
+        <span className="text-deep-brown/80 tracking-widest text-xs uppercase block font-medium">
+          ✨ Error 404 · Sanctuary
         </span>
 
         {/* Asymmetric Framed Illustration */}
-        <div className="relative mx-auto w-32 h-44 rounded-t-full rounded-b-2xl bg-gradient-to-br from-[#B86B4B]/10 to-[#3A2820]/10 border border-[#B86B4B]/20 flex items-center justify-center shadow-xs">
+        <div className="relative mx-auto w-32 h-44 rounded-t-full rounded-b-2xl bg-cream/80 border border-golden-border flex items-center justify-center shadow-xs">
           <span className="text-4xl filter saturate-75">🌿</span>
         </div>
 
         <div className="space-y-3">
-          <h1 className="font-heading text-4xl font-light tracking-tight text-[#3A2820] sm:text-5xl">
+          <h1 className="text-deep-brown font-heading text-3xl sm:text-4xl font-normal tracking-tight leading-tight">
             Path Lost in Sanctuary
           </h1>
-          <p className="text-sm leading-relaxed text-[#3A2820]/75 max-w-xs mx-auto">
+          <p className="text-deep-brown/85 text-sm max-w-md mx-auto leading-relaxed">
             The skincare secret or botanical formula you are seeking does not reside at this location. Let us guide you back.
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-          <Button
-            variant="outline"
-            className="border-[#3A2820]/25 text-[#3A2820] h-12 px-6 text-xs font-semibold cursor-pointer"
-            render={<Link href="/" />}
+          <Link
+            href="/"
+            className="flex items-center justify-center text-deep-brown border border-golden-border hover:bg-deep-brown/5 rounded-xl px-6 py-2.5 transition-all cursor-pointer font-medium"
           >
             <ArrowLeft className="size-4 mr-2" />
             Back to Home
-          </Button>
+          </Link>
 
-          <Button
-            variant="default"
-            className="bg-[#B86B4B] hover:bg-[#A35939] text-[#FAF5EF] h-12 px-6 text-xs font-semibold cursor-pointer"
-            render={<Link href="/products" />}
+          <Link
+            href="/products"
+            className="flex items-center justify-center bg-caramel text-white hover:bg-caramel/90 font-medium rounded-xl px-6 py-2.5 shadow-sm transition-all cursor-pointer"
           >
             Explore Formulas
             <ArrowRight className="size-4 ml-2" />
-          </Button>
+          </Link>
         </div>
       </div>
     </div>

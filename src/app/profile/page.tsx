@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { User, Mail, Award, Calendar, Loader2, Save } from "lucide-react";
+import { User, Mail, Award, Calendar, Loader2, Save, Camera, Image as ImageIcon } from "lucide-react";
 
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAuthStore } from "@/stores/authStore";
@@ -16,6 +16,8 @@ function ProfileContent() {
 
   const [name, setName] = React.useState(user?.name || "");
   const [email, setEmail] = React.useState(user?.email || "");
+  const [avatarUrl, setAvatarUrl] = React.useState(user?.image || "");
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(user?.image || null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
@@ -24,8 +26,29 @@ function ProfileContent() {
     if (user) {
       setName(user.name);
       setEmail(user.email);
+      setAvatarUrl(user.image || "");
+      setPreviewUrl(user.image || null);
     }
   }, [user]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setPreviewUrl(base64String);
+        setAvatarUrl(""); // Clear text input for clean UX since base64 is huge
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setAvatarUrl(url);
+    setPreviewUrl(url || null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,9 +66,10 @@ function ProfileContent() {
       const mergedUser = {
         ...user,
         ...updatedUser,
+        image: previewUrl || undefined,
       };
       setUser(mergedUser);
-      showToast("Sanctuary profile updated successfully.", "success");
+      showToast("Profile updated successfully!", "success");
     } catch (err) {
       const errMsg = getApiErrorMessage(err);
       setErrorMessage(errMsg);
@@ -77,8 +101,32 @@ function ProfileContent() {
         <div className="grid gap-8 md:grid-cols-[35fr_65fr] items-start">
           {/* User Detail Summary Card */}
           <div className="rounded-3xl border border-taupe/40 bg-cream p-6 text-center space-y-5 shadow-xs">
-            <div className="mx-auto size-24 rounded-full bg-gradient-to-br from-terracotta to-ochre text-brand-cream grid place-items-center font-heading text-4xl shadow-md border-4 border-white">
-              {name[0]?.toUpperCase() || "U"}
+            <div className="relative mx-auto size-24">
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt={name}
+                  className="size-full rounded-full object-cover shadow-md border-4 border-white"
+                />
+              ) : (
+                <div className="size-full rounded-full bg-gradient-to-br from-terracotta to-ochre text-brand-cream grid place-items-center font-heading text-4xl shadow-md border-4 border-white">
+                  {name[0]?.toUpperCase() || "U"}
+                </div>
+              )}
+              <label
+                htmlFor="avatar-upload"
+                className="absolute bottom-0 right-0 bg-[#4A1E27] text-[#FAF5F0] rounded-full p-1.5 cursor-pointer hover:bg-[#3D1B22] transition-colors shadow-md border border-white"
+                title="Upload Profile Image"
+              >
+                <Camera className="size-4" />
+              </label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
             </div>
 
             <div className="space-y-1">
@@ -155,6 +203,29 @@ function ProfileContent() {
                     className="w-full text-sm pl-10 pr-4 py-3.5 rounded-xl border border-[#3A2820]/15 bg-white/50 focus:border-terracotta focus:ring-0 outline-none"
                   />
                 </div>
+              </div>
+
+              {/* Avatar / Image URL */}
+              <div className="space-y-1.5">
+                <label htmlFor="avatarUrl" className="text-[0.68rem] font-bold tracking-widest text-muted-foreground uppercase">
+                  Avatar / Image URL
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-cocoa/40">
+                    <ImageIcon className="size-4" />
+                  </span>
+                  <input
+                    id="avatarUrl"
+                    type="text"
+                    placeholder="https://example.com/avatar.jpg"
+                    value={avatarUrl}
+                    onChange={handleUrlChange}
+                    className="w-full text-sm pl-10 pr-4 py-3.5 rounded-xl border border-[#3A2820]/15 bg-white/50 focus:border-terracotta focus:ring-0 outline-none"
+                  />
+                </div>
+                <p className="text-[10px] text-cocoa/50 mt-1">
+                  Paste an image URL above or select a local image file by clicking the camera icon on your avatar.
+                </p>
               </div>
 
               <div className="pt-2">

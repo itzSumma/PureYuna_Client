@@ -21,7 +21,7 @@ export function BrandMark({ className, variant = "light" }: BrandMarkProps) {
       <span
         className={cn(
           "grid size-9 shrink-0 place-items-center transition-transform duration-300 group-hover:-rotate-6",
-          dark ? "text-white" : "text-[#8C472E]"
+          dark ? "text-white" : "text-caramel"
         )}
       >
         <svg
@@ -43,7 +43,7 @@ export function BrandMark({ className, variant = "light" }: BrandMarkProps) {
       <span
         className={cn(
           "font-heading text-3xl tracking-tight leading-none",
-          dark ? "text-white" : "text-[#8C472E]"
+          dark ? "text-white" : "text-caramel"
         )}
       >
         <span className="font-black">Pure</span>

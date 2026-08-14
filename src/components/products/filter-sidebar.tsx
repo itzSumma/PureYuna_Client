@@ -1,8 +1,9 @@
 import React from "react";
-import { RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { INPUT_UNDERLINE } from "@/constants/design-tokens";
 import { Category, ProductSort, SkinType } from "@/types/product";
 
@@ -17,8 +18,8 @@ interface FilterSidebarProps {
   handleCategoryChange: (id: string) => void;
   activeSkinType: string;
   handleSkinTypeChange: (type: string) => void;
-  activeSort: string;
-  handleSortChange: (val: string) => void;
+  sortBy: string;
+  setSortBy: (val: string) => void;
   isOrganic: boolean;
 }
 
@@ -33,21 +34,21 @@ export function FilterSidebar({
   handleCategoryChange,
   activeSkinType,
   handleSkinTypeChange,
-  activeSort,
-  handleSortChange,
+  sortBy,
+  setSortBy,
   isOrganic,
 }: FilterSidebarProps) {
   return (
     <aside className="hidden lg:block space-y-7 pr-4">
-      <div className="flex items-center justify-between border-b border-taupe/60 pb-3">
-        <h2 className="font-heading text-2xl font-medium text-cocoa flex items-center gap-2">
-          <SlidersHorizontal className="size-4.5 text-cocoa/80" />
+      <div className="flex items-center justify-between border-b border-golden-border/60 pb-3">
+        <h2 className="font-heading text-2xl font-medium text-deep-brown flex items-center gap-2">
+          <SlidersHorizontal className="size-4.5 text-deep-brown/80" />
           Filters
         </h2>
         {hasActiveFilters && (
           <button
             onClick={handleResetFilters}
-            className="flex items-center gap-1 text-xs font-semibold text-terracotta hover:text-ochre cursor-pointer transition-colors"
+            className="flex items-center gap-1 text-xs font-semibold text-caramel hover:text-caramel/80 cursor-pointer transition-colors"
           >
             <RotateCcw className="size-3" />
             Reset
@@ -70,7 +71,7 @@ export function FilterSidebar({
           />
           <button
             type="submit"
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-cocoa/50 hover:text-cocoa cursor-pointer animate-none"
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-deep-brown/50 hover:text-deep-brown cursor-pointer animate-none"
             aria-label="Submit search"
           >
             <Search className="size-4" />
@@ -89,9 +90,9 @@ export function FilterSidebar({
             className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
               !activeCategory
                 ? isOrganic
-                  ? "bg-terracotta/10 text-terracotta font-semibold"
-                  : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                : "text-charcoal/70 hover:bg-charcoal/5"
+                  ? "bg-[#C9974E]/15 text-[#C9974E] font-semibold"
+                  : "bg-[#8B6230]/15 text-[#8B6230] font-semibold"
+                : "text-deep-brown/70 hover:bg-deep-brown/5"
             }`}
           >
             All Categories
@@ -103,9 +104,9 @@ export function FilterSidebar({
               className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                 activeCategory === cat.id
                   ? isOrganic
-                    ? "bg-terracotta/10 text-terracotta font-semibold"
-                    : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                  : "text-charcoal/70 hover:bg-charcoal/5"
+                    ? "bg-[#C9974E]/15 text-[#C9974E] font-semibold"
+                    : "bg-[#8B6230]/15 text-[#8B6230] font-semibold"
+                  : "text-deep-brown/70 hover:bg-deep-brown/5"
               }`}
             >
               {cat.name}
@@ -125,9 +126,9 @@ export function FilterSidebar({
             className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
               !activeSkinType
                 ? isOrganic
-                  ? "bg-terracotta/10 text-terracotta font-semibold"
-                  : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                : "text-charcoal/70 hover:bg-charcoal/5"
+                  ? "bg-[#C9974E]/15 text-[#C9974E] font-semibold"
+                  : "bg-[#8B6230]/15 text-[#8B6230] font-semibold"
+                : "text-deep-brown/70 hover:bg-deep-brown/5"
             }`}
           >
             All Skin Types
@@ -139,9 +140,9 @@ export function FilterSidebar({
               className={`text-left text-sm py-1.5 px-2.5 rounded-lg transition-colors cursor-pointer ${
                 activeSkinType === type
                   ? isOrganic
-                    ? "bg-terracotta/10 text-terracotta font-semibold"
-                    : "bg-formulated-primary/10 text-formulated-primary font-semibold"
-                  : "text-charcoal/70 hover:bg-charcoal/5"
+                    ? "bg-[#C9974E]/15 text-[#C9974E] font-semibold"
+                    : "bg-[#8B6230]/15 text-[#8B6230] font-semibold"
+                  : "text-deep-brown/70 hover:bg-deep-brown/5"
               }`}
             >
               {type.charAt(0) + type.slice(1).toLowerCase()} Skin
@@ -155,16 +156,17 @@ export function FilterSidebar({
         <Label className="text-[0.62rem] font-bold tracking-widest text-muted-foreground uppercase">
           Sort By
         </Label>
-        <select
-          value={activeSort || "DEFAULT"}
-          onChange={(e) => handleSortChange(e.target.value)}
-          className="w-full h-10 rounded-lg border border-taupe px-3 bg-transparent text-sm text-cocoa focus-visible:ring-0 focus-visible:border-terracotta outline-none cursor-pointer"
-        >
-          <option value="DEFAULT">Recommended</option>
-          <option value={ProductSort.PRICE_LOW}>Price: Low to High</option>
-          <option value={ProductSort.PRICE_HIGH}>Price: High to Low</option>
-          <option value={ProductSort.NEWEST}>Newest Arrivals</option>
-        </select>
+        <Select value={sortBy} onValueChange={(val) => setSortBy(val || "recommended")}>
+          <SelectTrigger className="w-full h-10 border border-golden-border bg-[#FAF5F0] hover:bg-[#FAF5F0]/80 text-[#3D1B22] focus:ring-2 focus:ring-[#8B6230]/40 transition-all cursor-pointer">
+            <SelectValue placeholder="Sort By" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#FAF5F0] border border-[#EBDCD2]">
+            <SelectItem value="recommended">Recommended</SelectItem>
+            <SelectItem value="price-asc">Price: Low to High</SelectItem>
+            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+            <SelectItem value="newest">Newest Arrivals</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </aside>
   );

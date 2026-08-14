@@ -46,7 +46,7 @@ export function SkinDiscoverySection() {
   const [selectedType, setSelectedType] = useState<SkinType | null>(null);
 
   return (
-    <section className="relative overflow-hidden bg-[#E4967C] py-20 lg:py-28">
+    <section className="relative overflow-hidden bg-cream py-20 lg:py-28">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-32 -right-24 size-96 rounded-full bg-white/5 blur-3xl"
@@ -54,7 +54,7 @@ export function SkinDiscoverySection() {
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <SectionHeading
-            variant="dark"
+            variant="light"
             eyebrow="Skin Discovery"
             title="What does your skin need today?"
             description="Not just what sells — what suits you. Select your type to reveal your custom routine."
@@ -69,10 +69,10 @@ export function SkinDiscoverySection() {
                 <button
                   type="button"
                   onClick={() => setSelectedType(item.type)}
-                  className={`group relative flex h-full w-full flex-col text-left overflow-hidden rounded-2xl border transition-all duration-300 bg-[#B86B4B] cursor-pointer ${
+                  className={`group relative flex h-full w-full flex-col text-left overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer ${
                     isSelected
-                      ? "border-2 border-white shadow-[0_0_0_4px_rgba(255,255,255,0.2)] -translate-y-1"
-                      : "border-white/10 hover:-translate-y-1 hover:shadow-md"
+                      ? "bg-caramel border-2 border-caramel shadow-[0_0_0_4px_rgba(74,30,39,0.15)] -translate-y-1 text-white"
+                      : "bg-white border-golden-border text-deep-brown hover:-translate-y-1 hover:shadow-md"
                   }`}
                 >
                   <div className="relative h-56 w-full overflow-hidden">
@@ -93,20 +93,26 @@ export function SkinDiscoverySection() {
 
                     {/* Active Selected checkmark overlay */}
                     {isSelected && (
-                      <div className="absolute top-2.5 right-2.5 z-10 flex size-7 items-center justify-center rounded-full bg-white text-terracotta shadow-sm animate-in zoom-in-50 duration-200">
+                      <div className="absolute top-2.5 right-2.5 z-10 flex size-7 items-center justify-center rounded-full bg-white text-caramel shadow-sm animate-in zoom-in-50 duration-200">
                         <Check className="size-4" strokeWidth={3} />
                       </div>
                     )}
                   </div>
 
                   <div className="flex flex-1 flex-col px-4 pt-3.5 pb-3">
-                    <span className="text-[0.62rem] font-semibold tracking-[0.22em] text-brand-cream/60 uppercase">
+                    <span className={`text-[0.62rem] font-semibold tracking-[0.22em] uppercase ${
+                      isSelected ? "text-white/70" : "text-foreground/60"
+                    }`}>
                       Skin Type
                     </span>
-                    <span className="mt-0.5 font-heading text-2xl font-medium tracking-tight text-white">
+                    <span className={`mt-0.5 font-heading text-2xl font-medium tracking-tight ${
+                      isSelected ? "text-white" : "text-deep-brown"
+                    }`}>
                       {item.displayName}
                     </span>
-                    <p className="mt-1 text-base leading-snug text-brand-cream/80">
+                    <p className={`mt-1 text-base leading-snug ${
+                      isSelected ? "text-white/90" : "text-foreground/80"
+                    }`}>
                       {item.description}
                     </p>
 
@@ -115,8 +121,8 @@ export function SkinDiscoverySection() {
                       <div
                         className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-xs font-semibold tracking-wider uppercase transition-all duration-200 ${
                           isSelected
-                            ? "bg-white text-terracotta"
-                            : "bg-white/15 text-brand-cream hover:bg-white/25 hover:text-white"
+                            ? "bg-white/10 text-white"
+                            : "bg-foreground/10 text-foreground hover:bg-foreground/20"
                         }`}
                       >
                         {isSelected ? "Selected" : "Select Type"}

@@ -69,15 +69,15 @@ export function LoginForm() {
 
   return (
     <AuthShell
-      title="Welcome back to PureYuna."
+      title="Welcome back to PureYuna"
       subtitle="Sign in to continue your skincare routine."
       imageSrc="https://plus.unsplash.com/premium_photo-1661604366594-64781f82a4b6?auto=format&fit=crop&w=1920&q=90"
       overlayText="Welcome Back. Access your PureYuna sanctuary."
     >
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         {registered && (
-          <Alert className="rounded-md bg-[#FAF5EF] border-[#B86B4B]/20 text-[#3A2820]">
-            <CheckCircle2 className="size-4 text-[#B86B4B]" />
+          <Alert className="rounded-md bg-champagne border-golden-border text-deep-brown">
+            <CheckCircle2 className="size-4 text-caramel" />
             <AlertTitle className="font-semibold text-sm">Account created</AlertTitle>
             <AlertDescription className="text-xs">
               Your account is ready. Sign in to continue.
@@ -93,7 +93,7 @@ export function LoginForm() {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-xs font-medium tracking-wide text-[#3A2820]">
+          <Label htmlFor="email" className="text-deep-brown text-xs uppercase tracking-wider font-medium">
             Email
           </Label>
           <Input
@@ -103,18 +103,18 @@ export function LoginForm() {
             placeholder="you@example.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className={INPUT_UNDERLINE}
+            className="bg-white border border-golden-border/80 text-deep-brown placeholder:text-deep-brown/45 rounded-xl px-4 py-3 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel/40 h-auto"
           />
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-xs font-medium tracking-wide text-[#3A2820]">
+            <Label htmlFor="password" className="text-deep-brown text-xs uppercase tracking-wider font-medium">
               Password
             </Label>
             <Link
               href="/forgot-password"
-              className="text-xs font-medium text-[#3A2820] hover:text-[#B86B4B] hover:underline transition-colors"
+              className="text-deep-brown/80 hover:text-caramel underline-offset-4 hover:underline text-xs font-medium transition-colors"
             >
               Forgot password?
             </Link>
@@ -126,13 +126,13 @@ export function LoginForm() {
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className={INPUT_UNDERLINE}
+              className="bg-white border border-golden-border/80 text-deep-brown placeholder:text-deep-brown/45 rounded-xl px-4 py-3 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel/40 h-auto"
             />
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute top-1/2 right-0 -translate-y-1/2 p-1 text-[#3A2820]/50 transition-colors hover:text-[#3A2820]"
+              className="absolute top-1/2 right-3 -translate-y-1/2 p-1 text-deep-brown/60 hover:text-deep-brown transition-colors"
             >
               {showPassword ? (
                 <EyeOff className="size-4" />
@@ -143,24 +143,22 @@ export function LoginForm() {
           </div>
         </div>
 
-        <Button
+        <button
           type="submit"
-          variant="default"
-          size="lg"
-          className="w-full cursor-pointer"
+          className="w-full bg-caramel hover:bg-caramel/90 text-white font-medium py-3 rounded-xl shadow-md transition-all h-12 flex items-center justify-center cursor-pointer disabled:opacity-50"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
             <Loader2 className="size-4 animate-spin mr-2" />
           ) : null}
           {isSubmitting ? "Signing in..." : "Sign in"}
-        </Button>
+        </button>
 
-        <p className="text-center text-sm text-[#3A2820]">
+        <p className="text-center text-sm text-deep-brown/90">
           New to PureYuna?{"  "}
           <Link
             href="/register"
-            className="font-medium text-[#3A2820] hover:text-[#B86B4B] hover:underline"
+            className="font-medium text-deep-brown/90 hover:text-caramel underline-offset-4 hover:underline"
           >
             Create an account
           </Link>

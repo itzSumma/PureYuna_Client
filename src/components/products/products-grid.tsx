@@ -45,7 +45,7 @@ export function ProductsGrid({
             key={idx}
             className="flex flex-col rounded-2xl border border-taupe/40 bg-cream p-4 space-y-4 animate-pulse"
           >
-            <Skeleton className="aspect-[4/5] w-full rounded-t-full rounded-b-lg" />
+            <Skeleton className="aspect-[4/5] w-full rounded-xl" />
             <Skeleton className="h-4 w-1/4 rounded-md" />
             <Skeleton className="h-6 w-3/4 rounded-md" />
             <Skeleton className="h-10 w-full rounded-md" />

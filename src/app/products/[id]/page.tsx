@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   Sparkles,
   Star,
+  Share2,
 } from "lucide-react";
 
 import { ImageWithFallback } from "@/components/shared/image-with-fallback";
@@ -25,6 +26,7 @@ import { useToastStore } from "@/stores/toastStore";
 import { useCartStore } from "@/stores/cartStore";
 import { useWishlistStore } from "@/stores/wishlistStore";
 import { useAuthStore } from "@/stores/authStore";
+import { ProductCard } from "@/components/products/product-card";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -45,6 +47,7 @@ export default function ProductDetailPage({ params }: PageProps) {
   const { user, isAuthenticated } = useAuthStore();
 
   const [product, setProduct] = React.useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [quantity, setQuantity] = React.useState(1);
@@ -52,8 +55,11 @@ export default function ProductDetailPage({ params }: PageProps) {
   // Gallery Active Image Thumbnail index state
   const [activeImgIndex, setActiveImgIndex] = React.useState(0);
 
-  // Tabs state
-  const [activeTab, setActiveTab] = React.useState<"formula" | "benefits" | "ingredients">("formula");
+  // Size / Variant state
+  const [selectedSize, setSelectedSize] = React.useState<"30ml" | "50ml" | "100ml">("50ml");
+
+  // Accordion state
+  const [openSection, setOpenSection] = React.useState<string | null>("ingredients");
 
   // Reviews state
   const [reviews, setReviews] = React.useState([
@@ -80,7 +86,7 @@ export default function ProductDetailPage({ params }: PageProps) {
   const isWishlisted = product ? wishlistIds.includes(product.id) : false;
 
   React.useEffect(() => {
-    async function loadProduct() {
+    async function loadProductAndRelated() {
       setLoading(true);
       setError(null);
       try {
@@ -89,6 +95,21 @@ export default function ProductDetailPage({ params }: PageProps) {
           setError("Product not found.");
         } else {
           setProduct(data);
+          
+          // Fetch related products from the same category
+          try {
+            const related = await productService.getProducts({
+              category: data.categoryId,
+              limit: 5,
+            });
+            if (related && related.data) {
+              setRelatedProducts(
+                related.data.filter((p) => p.id !== data.id).slice(0, 4)
+              );
+            }
+          } catch (relErr) {
+            console.warn("Failed to load related products:", relErr);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -97,8 +118,15 @@ export default function ProductDetailPage({ params }: PageProps) {
         setLoading(false);
       }
     }
-    loadProduct();
+    loadProductAndRelated();
   }, [id]);
+
+  const getCalculatedPrice = () => {
+    if (!product) return 0;
+    if (selectedSize === "30ml") return product.price * 0.8;
+    if (selectedSize === "100ml") return product.price * 1.7;
+    return product.price;
+  };
 
   const handleIncrement = () => {
     if (product && quantity < product.stock) {
@@ -114,8 +142,9 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   const handleAddToCart = () => {
     if (!product) return;
-    addItem(product, quantity);
-    showToast(`Added ${quantity} × ${product.name} to cart!`, "success");
+    const finalProduct = { ...product, price: getCalculatedPrice() };
+    addItem(finalProduct, quantity);
+    showToast(`Added ${quantity} × ${product.name} (${selectedSize}) to cart!`, "success");
   };
 
   const handleToggleWishlist = async () => {
@@ -125,6 +154,13 @@ export default function ProductDetailPage({ params }: PageProps) {
       showToast(`Removed from wishlist.`, "info");
     } else {
       showToast(`Saved to wishlist!`, "success");
+    }
+  };
+
+  const handleShare = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      showToast("Product link copied to clipboard!", "success");
     }
   };
 
@@ -154,18 +190,20 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 mb-8">
-          <Skeleton className="h-9 w-24" />
-        </div>
-        <div className="grid gap-12 lg:grid-cols-2">
-          <Skeleton className="aspect-[4/5] w-full rounded-t-[20rem] rounded-b-[2rem]" />
-          <div className="space-y-6">
-            <Skeleton className="h-4 w-1/4" />
-            <Skeleton className="h-10 w-3/4" />
-            <Skeleton className="h-6 w-1/3" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-12 w-1/2" />
+      <div className="bg-[#FDF4EE] min-h-screen">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 mb-8">
+            <Skeleton className="h-6 w-48" />
+          </div>
+          <div className="grid gap-12 lg:grid-cols-2">
+            <Skeleton className="aspect-square w-full rounded-2xl" />
+            <div className="space-y-6">
+              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-12 w-1/2" />
+            </div>
           </div>
         </div>
       </div>
@@ -174,18 +212,23 @@ export default function ProductDetailPage({ params }: PageProps) {
 
   if (error || !product) {
     return (
-      <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <span className="text-5xl">🌿</span>
-        <h2 className="mt-4 font-heading text-3xl font-medium text-cocoa">
-          Product Details Unavailable
-        </h2>
-        <p className="mt-2 text-sm text-charcoal/70">
-          {error || "We couldn't locate the skincare product you were looking for."}
-        </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Button variant="default" onClick={() => router.push("/products")}>
-            Back to Products
-          </Button>
+      <div className="bg-[#FDF4EE] min-h-screen flex items-center justify-center">
+        <div className="mx-auto max-w-xl px-4 py-20 text-center">
+          <span className="text-5xl">🌿</span>
+          <h2 className="mt-4 font-heading text-3xl font-medium text-[#3D1B22]">
+            Product Details Unavailable
+          </h2>
+          <p className="mt-2 text-sm text-[#5A524E]">
+            {error || "We couldn't locate the skincare product you were looking for."}
+          </p>
+          <div className="mt-8 flex justify-center gap-4">
+            <Button
+              className="bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0]"
+              onClick={() => router.push("/products")}
+            >
+              Back to Products
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -194,29 +237,34 @@ export default function ProductDetailPage({ params }: PageProps) {
   const isOrganic = product.productType === "ORGANIC";
 
   return (
-    <div className="relative min-h-screen py-10">
+    <div className="relative min-h-screen bg-[#FDF4EE] py-10">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         
-        {/* Navigation back link */}
-        <Link
-          href={`/products?productType=${product.productType}`}
-          className="group inline-flex items-center gap-2 text-sm font-medium text-cocoa/60 hover:text-terracotta transition-colors duration-200 mb-8 cursor-pointer"
-        >
-          <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
-          Back to {isOrganic ? "Organic Care" : "Precision Formulated"}
-        </Link>
+        {/* Breadcrumbs navigation */}
+        <nav className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#5A524E] mb-8">
+          <Link href="/" className="hover:text-[#4A1E27] transition-colors">
+            Home
+          </Link>
+          <span className="text-[#EBDCD2]">/</span>
+          <Link href="/products" className="hover:text-[#4A1E27] transition-colors">
+            Products
+          </Link>
+          <span className="text-[#EBDCD2]">/</span>
+          <span className="text-[#4A1E27] font-semibold">
+            {product.category?.name || "Skincare"}
+          </span>
+          <span className="text-[#EBDCD2]">/</span>
+          <span className="text-[#5A524E]/60 truncate max-w-[150px]">
+            {product.name}
+          </span>
+        </nav>
 
         {/* 2-Column Product Layout */}
         <div className="grid gap-12 lg:grid-cols-[45fr_55fr] lg:gap-16 items-start">
           
-          {/* LEFT: Product Image framed in Asymmetric Arch Mask & Gallery thumbnails */}
+          {/* LEFT: Product Image framed with clean rounded corners */}
           <div className="relative w-full max-w-md mx-auto lg:mx-0 flex flex-col gap-4">
-            <div
-              className={cn(
-                "relative aspect-[4/5] w-full overflow-hidden rounded-t-[20rem] rounded-b-[2.5rem] shadow-[0_20px_50px_rgba(58,40,32,0.1)] border",
-                isOrganic ? "border-taupe/40 bg-cream" : "border-formulated-surface/40 bg-formulated-bg"
-              )}
-            >
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-[#FAF5F0] border border-[#EBDCD2] shadow-sm">
               <ImageWithFallback
                 src={product.image}
                 alt={product.name}
@@ -243,12 +291,10 @@ export default function ProductDetailPage({ params }: PageProps) {
                   type="button"
                   onClick={() => setActiveImgIndex(idx)}
                   className={cn(
-                    "relative size-16 rounded-xl overflow-hidden border-2 cursor-pointer transition-all bg-white",
+                    "relative size-16 rounded-xl overflow-hidden border-2 cursor-pointer transition-all bg-[#FAF5F0]",
                     activeImgIndex === idx
-                      ? isOrganic
-                        ? "border-terracotta scale-105"
-                        : "border-formulated-primary scale-105"
-                      : "border-taupe/40 opacity-70 hover:opacity-100"
+                      ? "border-[#4A1E27] scale-105"
+                      : "border-[#EBDCD2] opacity-70 hover:opacity-100"
                   )}
                 >
                   <ImageWithFallback
@@ -265,218 +311,250 @@ export default function ProductDetailPage({ params }: PageProps) {
               ))}
             </div>
 
-            {/* Ambient branding indicator */}
-            <div className="relative mt-2 mx-auto rounded-full border border-white/20 bg-white/95 px-4 py-2 shadow-sm backdrop-blur-xs flex items-center gap-2 w-fit">
-              <span className={cn("size-2 rounded-full", isOrganic ? "bg-terracotta" : "bg-formulated-primary")} />
-              <span className="text-[0.62rem] font-bold tracking-widest text-cocoa uppercase">
-                {isOrganic ? "🌿 100% Organic" : "🧪 Formulated"}
-              </span>
+            {/* Badges for attributes */}
+            <div className="flex flex-wrap gap-2 mt-4 justify-center">
+              {isOrganic ? (
+                <>
+                  <span className="bg-[#FAF5F0] text-[#4A1E27] border border-[#EBDCD2] px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase">
+                    🌿 Organic
+                  </span>
+                  <span className="bg-[#FAF5F0] text-[#4A1E27] border border-[#EBDCD2] px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase">
+                    🛡️ Sensitive Skin
+                  </span>
+                  <span className="bg-[#FAF5F0] text-[#4A1E27] border border-[#EBDCD2] px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase">
+                    🐰 Cruelty-Free
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="bg-[#FAF5F0] text-[#4A1E27] border border-[#EBDCD2] px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase">
+                    🧪 Clinical Actives
+                  </span>
+                  <span className="bg-[#FAF5F0] text-[#4A1E27] border border-[#EBDCD2] px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase">
+                    ✨ Barrier Support
+                  </span>
+                  <span className="bg-[#FAF5F0] text-[#4A1E27] border border-[#EBDCD2] px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase">
+                    🔬 pH Balanced
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
-          {/* RIGHT: Detailed Content Panel (Theme Aligned) */}
-          <div
-            className={cn(
-              "rounded-3xl border p-8 sm:p-10 shadow-[0_15px_30px_rgba(58,40,32,0.04)]",
-              isOrganic
-                ? "border-taupe/40 bg-cream"
-                : "border-formulated-surface/40 bg-formulated-bg"
-            )}
-          >
-            {/* Category / Collection */}
-            <span className="text-[0.68rem] font-bold tracking-[0.24em] text-cocoa/40 uppercase block">
-              {product.category?.name || "PureYuna Collection"}
-            </span>
+          {/* RIGHT: Detailed Content Panel */}
+          <div className="bg-[#FAF5F0] border border-[#EBDCD2] rounded-3xl p-8 sm:p-10 shadow-xs">
+            {/* Category & Rating */}
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold tracking-[0.25em] text-[#4A1E27] uppercase">
+                {product.category?.name || "PureYuna Collection"}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <div className="flex gap-0.5 text-amber-500">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="size-3.5" fill="currentColor" strokeWidth={0} />
+                  ))}
+                </div>
+                <span className="text-[11px] text-[#5A524E] font-medium">(2 reviews)</span>
+              </div>
+            </div>
 
             {/* Product Title */}
-            <h1 className="mt-3 font-heading text-4xl font-medium tracking-tight text-cocoa sm:text-5xl leading-tight">
+            <h1 className="mt-4 font-heading text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-[#3D1B22] leading-tight">
               {product.name}
             </h1>
 
             {/* Price Row */}
             <div className="mt-4 flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-terracotta">
-                ${product.price.toFixed(2)}
+              <span className="text-3xl font-semibold text-[#3D1B22]">
+                ${getCalculatedPrice().toFixed(2)}
               </span>
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                USD (Tax included)
-              </span>
+              <span className="text-xs text-[#5A524E]/70 font-light">/ {selectedSize}</span>
             </div>
 
-            {/* Badges Container */}
-            <div className="mt-5 flex flex-wrap gap-2.5">
-              <span className="rounded-full bg-white/90 border border-taupe px-3 py-1 text-xs font-semibold text-cocoa/75 uppercase">
-                {product.skinType.toLowerCase()} Skin
-              </span>
-              <span className="rounded-full bg-white/90 border border-taupe px-3 py-1 text-xs font-semibold text-cocoa/75 uppercase">
-                Audience: {product.targetAudience}
-              </span>
-            </div>
+            {/* Short editorial formulation summary */}
+            <p className="mt-5 text-sm text-[#5A524E] italic leading-relaxed border-l-2 border-[#4A1E27]/30 pl-4 font-light">
+              "{product.description.split(".")[0]}."
+            </p>
 
-            {/* Tabs System */}
-            <div className="mt-8 border-t border-taupe/40 pt-6">
-              <div className="flex border-b border-taupe/30 mb-5">
-                {[
-                  { id: "formula", label: "About The Formula" },
-                  { id: "benefits", label: "Key Benefits" },
-                  { id: "ingredients", label: "Ingredients" }
-                ].map((tab) => (
+            {/* Size / Variant Selector */}
+            <div className="mt-6 space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#3D1B22] block">
+                Select Size
+              </span>
+              <div className="flex gap-3">
+                {(["30ml", "50ml", "100ml"] as const).map((size) => (
                   <button
-                    key={tab.id}
+                    key={size}
                     type="button"
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setSelectedSize(size)}
                     className={cn(
-                      "pb-2.5 text-xs font-bold uppercase tracking-wider transition-all border-b-2 mr-6 cursor-pointer",
-                      activeTab === tab.id
-                        ? isOrganic
-                          ? "border-terracotta text-terracotta"
-                          : "border-formulated-primary text-formulated-primary"
-                        : "border-transparent text-cocoa/40 hover:text-cocoa/70"
+                      "px-4 py-2 text-xs font-semibold rounded-lg uppercase transition-all duration-200 cursor-pointer",
+                      selectedSize === size
+                        ? "bg-[#4A1E27] text-[#FAF5F0]"
+                        : "bg-[#FAF5F0] text-[#3D1B22] border border-[#EBDCD2]"
                     )}
                   >
-                    {tab.label}
+                    {size}
                   </button>
                 ))}
               </div>
-
-              {activeTab === "formula" && (
-                <div className="text-sm leading-relaxed text-charcoal/80 space-y-4">
-                  <p>{product.description}</p>
-                </div>
-              )}
-
-              {activeTab === "benefits" && (
-                <div className="space-y-4">
-                  {isOrganic ? (
-                    <div className="space-y-3">
-                      <h4 className="text-xs font-bold tracking-widest text-terracotta uppercase">Botanical Care Profile</h4>
-                      <ul className="grid gap-2 sm:grid-cols-2 text-xs text-cocoa/80">
-                        <li className="flex items-center gap-2">
-                          <Check className="size-3.5 text-terracotta" /> Vegan & Eco-Conscious
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="size-3.5 text-terracotta" /> Cruelty-free certified
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="size-3.5 text-terracotta" /> No synthetic dyes
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check className="size-3.5 text-terracotta" /> Bio-active nourishment
-                        </li>
-                      </ul>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <h4 className="text-xs font-bold tracking-widest text-formulated-primary uppercase">Clinical Focus</h4>
-                      <p className="text-xs text-cocoa/80 leading-normal">
-                        Precision blended with active dermatologist-approved agents. Non-comedogenic, pH balanced, and optimized to protect the natural skin barrier.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === "ingredients" && (
-                <div className="text-xs leading-relaxed text-cocoa/75 italic">
-                  {isOrganic ? (
-                    <p>
-                      Organic Lavender Extract, Cold-Pressed Rosehip Seed Oil, Aloe Barbadensis Leaf Juice, Chamomile Flower Distillate, Organic Jojoba Oil, Vegetable Glycerin, Tocopherol (Vitamin E).
-                    </p>
-                  ) : (
-                    <p>
-                      Purified Water, Niacinamide (Vitamin B3), Sodium Hyaluronate (Hyaluronic Acid), Salicylic Acid (BHA), Centella Asiatica Extract, Ceramide NP, Panthenol, Phenoxyethanol, Ethylhexylglycerin.
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
 
-            {/* Interaction Row (Add to Cart / Stock) */}
-            <div className="mt-8 border-t border-taupe/40 pt-7 space-y-6">
+            {/* Action Section (Quantity, Add to Cart, Wishlist) */}
+            <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-[#EBDCD2] pt-6">
+              <div className="flex items-center rounded-lg border border-[#EBDCD2] bg-[#FAF5F0] h-12">
+                <button
+                  type="button"
+                  onClick={handleDecrement}
+                  disabled={quantity <= 1}
+                  className="grid size-12 cursor-pointer place-items-center text-[#3D1B22] hover:text-[#4A1E27] disabled:opacity-30"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="size-4" />
+                </button>
+                <span className="w-10 text-center text-sm font-semibold text-[#3D1B22]">
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleIncrement}
+                  disabled={quantity >= product.stock}
+                  className="grid size-12 cursor-pointer place-items-center text-[#3D1B22] hover:text-[#4A1E27] disabled:opacity-30"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="size-4" />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                disabled={product.stock <= 0}
+                className="flex-1 h-12 rounded-lg bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0] text-sm font-medium transition-colors duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-40"
+              >
+                <ShoppingBag className="size-4" />
+                Add to Cart
+              </button>
+
+              <button
+                type="button"
+                onClick={handleToggleWishlist}
+                className={cn(
+                  "grid size-12 cursor-pointer place-items-center rounded-lg border border-[#EBDCD2] bg-[#FAF5F0] text-[#3D1B22] hover:text-[#4A1E27] transition-all duration-200",
+                  isWishlisted && "text-red-500 bg-red-50/20"
+                )}
+                aria-label="Toggle wishlist"
+              >
+                <Heart className="size-5" fill={isWishlisted ? "currentColor" : "none"} strokeWidth={isWishlisted ? 0 : 2} />
+              </button>
+            </div>
+
+            {/* Share Product action link */}
+            <div className="mt-4 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={handleShare}
+                className="text-[10px] font-bold uppercase tracking-widest text-[#4A1E27]/70 hover:text-[#4A1E27] transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <Share2 className="size-3.5" /> Share Product
+              </button>
               
-              {/* Stock Status */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-cocoa/60">Stock Status</span>
-                {product.stock <= 0 ? (
-                  <span className="text-sm font-semibold text-destructive uppercase tracking-wider">
-                    Out of stock
-                  </span>
-                ) : product.stock <= 5 ? (
-                  <span className="text-sm font-semibold text-amber-500 uppercase tracking-wider">
-                    Only {product.stock} left in stock!
-                  </span>
-                ) : (
-                  <span className="text-sm font-semibold text-emerald-600 uppercase tracking-wider">
-                    In Stock ({product.stock} units)
-                  </span>
+              <span className="text-[10px] text-[#5A524E]/60 uppercase tracking-wider">
+                {product.stock > 0 ? `In Stock (${product.stock})` : "Out of Stock"}
+              </span>
+            </div>
+
+            {/* Custom Interactive Accordion */}
+            <div className="mt-8 space-y-3 border-t border-[#EBDCD2] pt-6">
+              {/* Section 1 */}
+              <div className="border border-[#EBDCD2] rounded-xl overflow-hidden bg-[#FAF5F0] transition-all duration-300">
+                <button
+                  type="button"
+                  onClick={() => setOpenSection(openSection === "ingredients" ? null : "ingredients")}
+                  className={cn(
+                    "w-full flex items-center justify-between p-4 text-left font-semibold text-[#3D1B22] transition-colors",
+                    openSection === "ingredients" ? "bg-[#4A1E27] text-[#FAF5F0]" : "hover:bg-[#4A1E27]/5"
+                  )}
+                >
+                  <span className="text-xs tracking-wider uppercase font-medium">Key Ingredients & Benefits</span>
+                  <span className="font-light text-base">{openSection === "ingredients" ? "−" : "+"}</span>
+                </button>
+                {openSection === "ingredients" && (
+                  <div className="p-5 text-xs text-[#5A524E] leading-relaxed font-light bg-[#FAF5F0] border-t border-[#EBDCD2]">
+                    {isOrganic ? (
+                      <p>Our organic botanical blend contains active Cold-Pressed oils and floral waters that deliver skin-mimicking hydration. Highly compatible with sensitive and compromised skin barriers.</p>
+                    ) : (
+                      <p>Precision formulated with clinical strength active ingredients (Niacinamide, multi-weight Hyaluronic Acid) and soothing Centella extract to provide targeted rejuvenation without causing redness.</p>
+                    )}
+                  </div>
                 )}
               </div>
 
-              {/* Controls */}
-              {product.stock > 0 && (
-                <div className="flex flex-wrap items-center gap-4">
-                  {/* Quantity Counter Selector */}
-                  <div className="flex items-center rounded-lg border border-taupe bg-white/50 h-12">
-                    <button
-                      type="button"
-                      onClick={handleDecrement}
-                      disabled={quantity <= 1}
-                      className="grid size-12 cursor-pointer place-items-center text-cocoa/60 hover:text-cocoa disabled:opacity-30"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus className="size-4" />
-                    </button>
-                    <span className="w-10 text-center text-sm font-semibold text-cocoa">
-                      {quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleIncrement}
-                      disabled={quantity >= product.stock}
-                      className="grid size-12 cursor-pointer place-items-center text-cocoa/60 hover:text-cocoa disabled:opacity-30"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus className="size-4" />
-                    </button>
+              {/* Section 2 */}
+              <div className="border border-[#EBDCD2] rounded-xl overflow-hidden bg-[#FAF5F0] transition-all duration-300">
+                <button
+                  type="button"
+                  onClick={() => setOpenSection(openSection === "usage" ? null : "usage")}
+                  className={cn(
+                    "w-full flex items-center justify-between p-4 text-left font-semibold text-[#3D1B22] transition-colors",
+                    openSection === "usage" ? "bg-[#4A1E27] text-[#FAF5F0]" : "hover:bg-[#4A1E27]/5"
+                  )}
+                >
+                  <span className="text-xs tracking-wider uppercase font-medium">How to Use in Your Routine</span>
+                  <span className="font-light text-base">{openSection === "usage" ? "−" : "+"}</span>
+                </button>
+                {openSection === "usage" && (
+                  <div className="p-5 text-xs text-[#5A524E] leading-relaxed font-light bg-[#FAF5F0] border-t border-[#EBDCD2]">
+                    <p>Gently apply 3-4 drops onto your fingertips and press onto a clean, damp face and neck. Use morning and night. Pair with our Jojoba Barrier moisturizer for optimal protection.</p>
                   </div>
+                )}
+              </div>
 
-                  {/* Add to Cart CTA */}
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className={cn(
-                      "flex-1 h-12 rounded-lg px-8 text-sm font-medium transition-all duration-200 cursor-pointer flex items-center justify-center gap-2",
-                      isOrganic
-                        ? "bg-gradient-to-br from-terracotta to-ochre text-cream hover:-translate-y-0.5 hover:shadow-md"
-                        : "bg-formulated-primary text-formulated-bg hover:bg-formulated-accent hover:-translate-y-0.5 hover:shadow-md"
-                    )}
-                  >
-                    <ShoppingBag className="size-4" />
-                    Add to Cart
-                  </button>
-
-                  {/* Wishlist Heart Icon */}
-                  <button
-                    type="button"
-                    onClick={handleToggleWishlist}
-                    className={cn(
-                      "grid size-12 cursor-pointer place-items-center rounded-lg border border-taupe bg-white/50 text-cocoa/60 transition-all duration-200 hover:text-terracotta hover:bg-white hover:scale-102",
-                      isWishlisted && "text-red-500 bg-white"
-                    )}
-                    aria-label="Toggle wishlist"
-                  >
-                    <Heart className="size-5" fill={isWishlisted ? "currentColor" : "none"} strokeWidth={isWishlisted ? 0 : 2} />
-                  </button>
-                </div>
-              )}
+              {/* Section 3 */}
+              <div className="border border-[#EBDCD2] rounded-xl overflow-hidden bg-[#FAF5F0] transition-all duration-300">
+                <button
+                  type="button"
+                  onClick={() => setOpenSection(openSection === "sustainability" ? null : "sustainability")}
+                  className={cn(
+                    "w-full flex items-center justify-between p-4 text-left font-semibold text-[#3D1B22] transition-colors",
+                    openSection === "sustainability" ? "bg-[#4A1E27] text-[#FAF5F0]" : "hover:bg-[#4A1E27]/5"
+                  )}
+                >
+                  <span className="text-xs tracking-wider uppercase font-medium">Full Formulation & Sustainability</span>
+                  <span className="font-light text-base">{openSection === "sustainability" ? "−" : "+"}</span>
+                </button>
+                {openSection === "sustainability" && (
+                  <div className="p-5 text-xs text-[#5A524E] leading-relaxed font-light bg-[#FAF5F0] border-t border-[#EBDCD2] space-y-4">
+                    <div>
+                      <span className="font-semibold block mb-1 text-[10px] uppercase tracking-wider text-[#3D1B22]">Ingredients:</span>
+                      <p className="italic text-[11px] leading-relaxed text-[#5A524E]/90">
+                        {isOrganic
+                          ? "Organic Lavender Hydrosol, Cold-Pressed Jojoba Seed Oil, Chamomile Flower Extract, Vegetable Glycerin, Aloe Leaf Juice, Tocopherol (Vitamin E)."
+                          : "Purified Water, Niacinamide, Sodium Hyaluronate (Hyaluronic Acid), Ceramide NP, Panthenol (Vitamin B5), Centella Asiatica Extract, Salicylic Acid (BHA)."}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <span className="bg-[#4A1E27]/10 text-[#4A1E27] px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                        ♻️ 100% Recyclable Glass
+                      </span>
+                      <span className="bg-[#4A1E27]/10 text-[#4A1E27] px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                        🌱 Vegan
+                      </span>
+                      <span className="bg-[#4A1E27]/10 text-[#4A1E27] px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider">
+                        🐰 Cruelty-Free
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
           </div>
         </div>
 
         {/* BOTTOM: Reviews Section */}
-        <div className="mt-16 border-t border-taupe/40 pt-10">
-          <h2 className="font-heading text-2xl font-medium text-cocoa mb-8">
+        <div className="mt-16 border-t border-[#EBDCD2] pt-10">
+          <h2 className="font-heading text-2xl font-medium text-[#3D1B22] mb-8">
             Customer Sanctuary Reviews
           </h2>
 
@@ -484,39 +562,42 @@ export default function ProductDetailPage({ params }: PageProps) {
             {/* Reviews List */}
             <div className="space-y-6">
               {reviews.length === 0 ? (
-                <p className="text-sm text-cocoa/50 italic">No reviews yet for this product. Be the first to share your sanctuary experience!</p>
+                <p className="text-sm text-[#5A524E] italic">
+                  No reviews yet for this product. Be the first to share your sanctuary experience!
+                </p>
               ) : (
                 reviews.map((rev) => (
-                  <div key={rev.id} className="bg-[#E0A58E] border border-[#C58068] p-5 rounded-2xl space-y-2">
+                  <div key={rev.id} className="bg-[#FAF5F0] border border-[#EBDCD2] p-5 rounded-2xl space-y-3 shadow-xs text-[#3D1B22]">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-[#3A2820]">{rev.userName}</span>
-                      <span className="text-[0.68rem] text-[#3A2820]/80">{rev.date}</span>
+                      <span className="text-sm font-semibold text-[#3D1B22]">{rev.userName}</span>
+                      <span className="text-[10px] text-[#5A524E]/60 uppercase tracking-wider">{rev.date}</span>
                     </div>
                     {/* Stars */}
-                    <div className="flex gap-0.5 text-[#3A2820]">
+                    <div className="flex gap-0.5 text-amber-500">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
                           key={i}
                           className="size-3.5"
                           fill={i < rev.rating ? "currentColor" : "none"}
+                          strokeWidth={i < rev.rating ? 0 : 2}
                         />
                       ))}
                     </div>
-                    <p className="text-xs text-[#4A3528] leading-relaxed pt-1">{rev.comment}</p>
+                    <p className="text-xs text-[#5A524E] leading-relaxed pt-1 font-light">{rev.comment}</p>
                   </div>
                 ))
               )}
             </div>
 
             {/* Review Submission Form */}
-            <div className="bg-[#D4937A] border border-[#C58068] rounded-2xl p-6 h-fit space-y-4">
-              <h3 className="text-sm font-bold tracking-wider text-[#3A2820] uppercase">Write a Review</h3>
+            <div className="bg-[#FAF5F0] border border-[#EBDCD2] rounded-2xl p-6 h-fit space-y-4 shadow-sm text-[#3D1B22]">
+              <h3 className="text-xs font-bold tracking-wider text-[#3D1B22] uppercase">Write a Review</h3>
               {isAuthenticated ? (
                 <form onSubmit={handleSubmitReview} className="space-y-4">
                   {/* Rating Selector */}
                   <div className="space-y-1">
-                    <span className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase block">Rating</span>
-                    <div className="flex gap-1.5 text-[#3A2820]">
+                    <span className="text-[9px] font-bold tracking-widest text-[#5A524E] uppercase block">Rating</span>
+                    <div className="flex gap-1.5 text-amber-500">
                       {[1, 2, 3, 4, 5].map((val) => (
                         <button
                           key={val}
@@ -528,6 +609,7 @@ export default function ProductDetailPage({ params }: PageProps) {
                           <Star
                             className="size-5"
                             fill={val <= formRating ? "currentColor" : "none"}
+                            strokeWidth={val <= formRating ? 0 : 2}
                           />
                         </button>
                       ))}
@@ -536,29 +618,28 @@ export default function ProductDetailPage({ params }: PageProps) {
 
                   {/* Comment input */}
                   <div className="space-y-1">
-                    <span className="text-[0.62rem] font-bold tracking-widest text-[#3A2820]/80 uppercase block">Your Comment</span>
+                    <span className="text-[9px] font-bold tracking-widest text-[#5A524E] uppercase block">Your Comment</span>
                     <textarea
                       value={formComment}
                       onChange={(e) => setFormComment(e.target.value)}
                       placeholder="Share your experience with the sanctuary formula..."
                       rows={4}
-                      className="w-full text-xs p-3 rounded-lg border border-[#C58068] bg-[#FAF5EF]/90 text-[#3A2820] focus-visible:ring-0 focus-visible:border-[#3A2820]/50 outline-none resize-none"
+                      className="w-full text-xs p-3 rounded-lg border border-[#EBDCD2] bg-[#FAF6F2] text-[#3D1B22] outline-none resize-none focus:border-[#4A1E27] transition-all"
                     />
                   </div>
 
-                  <Button type="submit" className="w-full text-xs font-semibold cursor-pointer">
+                  <Button type="submit" className="w-full text-xs font-semibold bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0] cursor-pointer">
                     Submit Experience
                   </Button>
                 </form>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-xs text-[#3A2820]/80 leading-relaxed">
+                  <p className="text-xs text-[#5A524E] leading-relaxed font-light">
                     Only registered sanctuary members can submit reviews.
                   </p>
                   <Button
                     variant="outline"
-                    size="sm"
-                    className="w-full text-xs font-semibold border-[#C58068] text-[#3A2820] cursor-pointer"
+                    className="w-full text-xs font-semibold border-[#4A1E27] text-[#4A1E27] hover:bg-[#4A1E27]/5 cursor-pointer bg-[#FAF5F0]"
                     render={<Link href={`/login?next=/products/${product.id}`} />}
                   >
                     Login to Review
@@ -568,6 +649,36 @@ export default function ProductDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {/* RELATED PRODUCTS */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-20 border-t border-[#EBDCD2] pt-12">
+            <h3 className="font-heading text-2xl sm:text-3xl font-medium text-[#3D1B22] mb-8 text-center">
+              Complete Your Routine
+            </h3>
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+              {relatedProducts.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  onAddToCart={(prod, e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addItem(prod, 1);
+                    showToast(`Added ${prod.name} to cart!`, "success");
+                  }}
+                  onToggleWishlist={async (prod, e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    await toggleWishlistStore(prod);
+                    showToast(wishlistIds.includes(prod.id) ? "Removed from wishlist." : "Saved to wishlist!", "info");
+                  }}
+                  isWishlisted={wishlistIds.includes(p.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
