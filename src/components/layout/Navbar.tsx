@@ -196,32 +196,46 @@ function UserMenu({ onNavigate, mounted }: { onNavigate?: () => void; mounted: b
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="my-1 h-px bg-[#EBDCD2] -mx-1.5" />
         
-        <DropdownMenuItem
-          render={<Link href="/profile" />}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
-          onClick={onNavigate}
-        >
-          <UserRound className="size-4 text-[#4A1E27]" />
-          My Profile
-        </DropdownMenuItem>
+        {user.role === "ADMIN" && (
+          <DropdownMenuItem
+            render={<Link href="/admin" />}
+            className="text-[#4A1E27] font-semibold hover:bg-[#F3E8DF] focus:bg-[#F3E8DF] flex items-center gap-2 px-3 py-2 rounded-md transition-colors cursor-pointer outline-none text-sm"
+            onClick={onNavigate}
+          >
+            <span>👑 Admin Dashboard</span>
+          </DropdownMenuItem>
+        )}
         
-        <DropdownMenuItem
-          render={<Link href="/orders" />}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
-          onClick={onNavigate}
-        >
-          <ShoppingBag className="size-4 text-[#4A1E27]" />
-          My Orders
-        </DropdownMenuItem>
+        {user.role === "CUSTOMER" && (
+          <>
+            <DropdownMenuItem
+              render={<Link href="/profile" />}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
+              onClick={onNavigate}
+            >
+              <UserRound className="size-4 text-[#4A1E27]" />
+              My Profile
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem
+              render={<Link href="/orders" />}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
+              onClick={onNavigate}
+            >
+              <ShoppingBag className="size-4 text-[#4A1E27]" />
+              My Orders
+            </DropdownMenuItem>
 
-        <DropdownMenuItem
-          render={<Link href="/wishlist" />}
-          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
-          onClick={onNavigate}
-        >
-          <Heart className="size-4 text-[#4A1E27]" />
-          My Wishlist
-        </DropdownMenuItem>
+            <DropdownMenuItem
+              render={<Link href="/wishlist" />}
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#3D1B22] hover:bg-[#4A1E27]/5 focus:bg-[#4A1E27]/5 cursor-pointer rounded-md transition-colors outline-none"
+              onClick={onNavigate}
+            >
+              <Heart className="size-4 text-[#4A1E27]" />
+              My Wishlist
+            </DropdownMenuItem>
+          </>
+        )}
 
         <DropdownMenuSeparator className="my-1 h-px bg-[#4A1E27]/10 -mx-1.5" />
         
@@ -267,8 +281,11 @@ function AuthActions({ onNavigate, mounted }: { onNavigate?: () => void; mounted
 }
 
 function IconLinks({ onCartClick, mounted }: { onCartClick: () => void; mounted: boolean }) {
+  const { user } = useAuthStore();
   const cartCount = useCartStore((state) => state.getItemCount());
   const wishlistCount = useWishlistStore((state) => state.items.length);
+
+  if (user?.role === "ADMIN") return null;
 
   return (
     <>
@@ -412,30 +429,43 @@ function MobileNavContent({
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <Link
-              href="/profile"
-              onClick={onClose}
-              className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
-            >
-              <UserRound className="size-4 text-[#4A1E27]" />
-              My Profile
-            </Link>
-            <Link
-              href="/orders"
-              onClick={onClose}
-              className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
-            >
-              <ShoppingBag className="size-4 text-[#4A1E27]" />
-              My Orders
-            </Link>
-            <Link
-              href="/wishlist"
-              onClick={onClose}
-              className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
-            >
-              <Heart className="size-4 text-[#4A1E27]" />
-              My Wishlist
-            </Link>
+            {user.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                onClick={onClose}
+                className="text-[#4A1E27] font-semibold hover:bg-[#F3E8DF] flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-base"
+              >
+                👑 Admin Dashboard
+              </Link>
+            )}
+            {user.role === "CUSTOMER" && (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={onClose}
+                  className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
+                >
+                  <UserRound className="size-4 text-[#4A1E27]" />
+                  My Profile
+                </Link>
+                <Link
+                  href="/orders"
+                  onClick={onClose}
+                  className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
+                >
+                  <ShoppingBag className="size-4 text-[#4A1E27]" />
+                  My Orders
+                </Link>
+                <Link
+                  href="/wishlist"
+                  onClick={onClose}
+                  className="flex items-center gap-2 text-base font-medium text-[#3D1B22] transition-colors duration-200 hover:text-[#4A1E27]"
+                >
+                  <Heart className="size-4 text-[#4A1E27]" />
+                  My Wishlist
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -506,7 +536,7 @@ export function Navbar() {
 
   const cartCount = useCartStore((state) => state.getItemCount());
   const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   React.useEffect(() => {
     fetchWishlist();
@@ -557,19 +587,21 @@ export function Navbar() {
 
         <div className="flex items-center gap-4 md:gap-8">
           {/* Mobile Cart Button */}
-          <button
-            type="button"
-            onClick={() => setCartOpen(true)}
-            className="md:hidden text-[#3D1B22] hover:text-[#4A1E27] relative p-1.5 cursor-pointer"
-            aria-label="Cart"
-          >
-            <ShoppingBag className="size-6" strokeWidth={2.2} />
-            {mounted && cartCount > 0 && (
-              <span className="absolute top-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
-                {cartCount}
-              </span>
-            )}
-          </button>
+          {user?.role !== "ADMIN" && (
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
+              className="md:hidden text-[#3D1B22] hover:text-[#4A1E27] relative p-1.5 cursor-pointer"
+              aria-label="Cart"
+            >
+              <ShoppingBag className="size-6" strokeWidth={2.2} />
+              {mounted && cartCount > 0 && (
+                <span className="absolute top-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          )}
 
           <div className="hidden gap-2 md:flex">
             <IconLinks onCartClick={() => setCartOpen(true)} mounted={mounted} />
