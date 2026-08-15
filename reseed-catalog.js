@@ -1,4 +1,9 @@
-import type { Category, Product } from "@/types/product";
+const fs = require('fs');
+const path = require('path');
+
+const filePath = path.join(__dirname, 'src', 'constants', 'fallback-data.ts');
+
+const fileContent = `import type { Category, Product } from "@/types/product";
 
 export interface FallbackCategory extends Category {
   slug: string;
@@ -928,3 +933,7 @@ export const FALLBACK_PACKAGES: FallbackPackage[] = [
     },
   },
 ];
+`;
+
+fs.writeFileSync(filePath, fileContent, 'utf8');
+console.log('Successfully reseeded fallback-data.ts!');
