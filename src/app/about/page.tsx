@@ -125,7 +125,7 @@ export default function AboutPage() {
         <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-md">
           <ImageWithFallback
             src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop"
-            alt="Yuna Cho, Founder of PureYuna"
+            alt="Sharmin Sultana Summa, Founder of PureYuna"
             fill
             className="object-cover"
             sizes="(min-width: 768px) 300px, 100vw"
@@ -139,8 +139,8 @@ export default function AboutPage() {
             "Skin is our largest organ, and it deserves respect, not harsh chemicals. I created PureYuna to bring back luxury and wellness into our daily self-care rituals while delivering clinic-proven radiance."
           </blockquote>
           <div className="pt-2">
-            <h5 className="font-semibold text-[#FAF5F0] text-base">Yuna Cho</h5>
-            <p className="text-xs text-[#FAF5F0]/80 mt-0.5 font-light">Founder & Lead Formulator, PureYuna</p>
+            <h5 className="font-semibold text-[#FAF5F0] text-base">Sharmin Sultana Summa</h5>
+            <p className="text-xs text-[#FAF5F0]/80 mt-0.5 font-light">Founder & CEO, PureYuna</p>
           </div>
         </div>
       </section>
