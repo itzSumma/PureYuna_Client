@@ -10,6 +10,7 @@ import { useToastStore } from "@/stores/toastStore";
 import { ImageWithFallback } from "@/components/shared/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { PackageDetailSkeleton } from "@/components/packages/packages-skeleton";
+import { packageService } from "@/services/package.service";
 
 export default function PackageDetailPage() {
   const params = useParams();
@@ -19,24 +20,42 @@ export default function PackageDetailPage() {
 
   const id = params.id as string;
   const [isLoading, setIsLoading] = useState(true);
-  const [pkg, setPkg] = useState<FallbackPackage | undefined>(undefined);
+  const [pkg, setPkg] = useState<any>(undefined);
 
   useEffect(() => {
-    // Simulate loading for loading skeleton verification
-    const timer = setTimeout(() => {
-      const found = FALLBACK_PACKAGES.find((p) => p.id === id);
-      setPkg(found);
-      setIsLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
+    async function loadPackage() {
+      setIsLoading(true);
+      try {
+        const list = await packageService.getPackages();
+        const found = list.find((p) => p.id === id);
+        if (found) {
+          setPkg(found);
+        } else {
+          const fallback = FALLBACK_PACKAGES.find((p) => p.id === id);
+          setPkg(fallback);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch packages from API, using fallback data:", err);
+        const fallback = FALLBACK_PACKAGES.find((p) => p.id === id);
+        setPkg(fallback);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadPackage();
   }, [id]);
 
   const handleAddSetToCart = () => {
     if (!pkg) return;
-    pkg.products.forEach((product) => {
-      addItem(product);
+    const ratio = pkg.price / pkg.originalPrice;
+    pkg.products.forEach((product: any) => {
+      const discountedProduct = {
+        ...product,
+        price: Number((product.price * ratio).toFixed(2)),
+      };
+      addItem(discountedProduct);
     });
-    showToast(`Added ${pkg.name} set to cart!`, "success");
+    showToast(`Added ${pkg.name} set to cart at a bundle discount!`, "success");
   };
 
   if (isLoading) {
@@ -155,7 +174,7 @@ export default function PackageDetailPage() {
                 <h3 className="font-heading text-xl font-medium text-[#3D1B22]">AM Routine</h3>
               </div>
               <ol className="space-y-4">
-                {pkg.steps.am.map((step, idx) => (
+                {pkg.steps.am.map((step: string, idx: number) => (
                   <li key={idx} className="flex gap-3 text-sm text-[#3D1B22]/90 leading-relaxed font-light">
                     <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#4A1E27] text-[#FAF5F0] text-xs font-bold shadow-xs">
                       {idx + 1}
@@ -173,7 +192,7 @@ export default function PackageDetailPage() {
                 <h3 className="font-heading text-xl font-medium text-[#3D1B22]">PM Routine</h3>
               </div>
               <ol className="space-y-4">
-                {pkg.steps.pm.map((step, idx) => (
+                {pkg.steps.pm.map((step: string, idx: number) => (
                   <li key={idx} className="flex gap-3 text-sm text-[#3D1B22]/90 leading-relaxed font-light">
                     <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#4A1E27] text-[#FAF5F0] text-xs font-bold shadow-xs">
                       {idx + 1}
@@ -192,7 +211,7 @@ export default function PackageDetailPage() {
             Products in this Bundle
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {pkg.products.map((product) => {
+            {pkg.products.map((product: any) => {
               const isOrganic = product.productType === "ORGANIC";
               return (
                 <div

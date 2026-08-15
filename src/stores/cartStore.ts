@@ -8,6 +8,8 @@ export interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  isOpen: boolean;
+  setOpen: (isOpen: boolean) => void;
   addItem: (product: Product, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -35,6 +37,8 @@ function persistCart(items: CartItem[]) {
 
 export const useCartStore = create<CartState>()((set, get) => ({
   items: readCart(),
+  isOpen: false,
+  setOpen: (isOpen) => set({ isOpen }),
 
   addItem: (product, quantity = 1) => {
     set((state) => {
@@ -46,14 +50,18 @@ export const useCartStore = create<CartState>()((set, get) => ({
       if (existingIndex > -1) {
         const item = state.items[existingIndex];
         const newQty = Math.min(item.quantity + quantity, product.stock);
-        newItems[existingIndex] = { ...item, quantity: newQty };
+        const finalProduct = {
+          ...product,
+          price: Math.min(item.product.price, product.price),
+        };
+        newItems[existingIndex] = { ...item, quantity: newQty, product: finalProduct };
       } else {
         const initialQty = Math.min(quantity, product.stock);
         newItems.push({ product, quantity: initialQty });
       }
 
       persistCart(newItems);
-      return { items: newItems };
+      return { items: newItems, isOpen: true };
     });
   },
 

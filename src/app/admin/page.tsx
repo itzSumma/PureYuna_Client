@@ -14,12 +14,14 @@ import {
   TrendingUp,
   Search,
   Filter,
-  Eye
+  Eye,
+  Gift
 } from "lucide-react";
 
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { productService } from "@/services/product.service";
 import { orderService } from "@/services/order.service";
+import { packageService, type ApiPackage } from "@/services/package.service";
 import { useToastStore } from "@/stores/toastStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,13 +38,33 @@ function AdminContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [packages, setPackages] = useState<ApiPackage[]>([]);
   
   // UI States
-  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "packages">("overview");
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loadingPackages, setLoadingPackages] = useState(true);
   const [submittingProduct, setSubmittingProduct] = useState(false);
+  const [submittingPackage, setSubmittingPackage] = useState(false);
   const [updatingOrderStatus, setUpdatingOrderStatus] = useState<string | null>(null);
+
+  // CRUD Package Modals/State
+  const [packageModalOpen, setPackageModalOpen] = useState(false);
+  const [editingPackage, setEditingPackage] = useState<ApiPackage | null>(null);
+
+  // Delete Package Confirmation Modal State
+  const [deletePackageModalOpen, setDeletePackageModalOpen] = useState(false);
+  const [packageToDelete, setPackageToDelete] = useState<ApiPackage | null>(null);
+  const [deletingPackage, setDeletingPackage] = useState(false);
+
+  // Package Form State
+  const [formPkgName, setFormPkgName] = useState("");
+  const [formPkgDescription, setFormPkgDescription] = useState("");
+  const [formPkgPrice, setFormPkgPrice] = useState("");
+  const [formPkgImage, setFormPkgImage] = useState("");
+  const [formPkgProductIds, setFormPkgProductIds] = useState<string[]>([]);
+  const [formPkgErrors, setFormPkgErrors] = useState<Record<string, string>>({});
 
   // Products Search and Filter States
   const [productSearch, setProductSearch] = useState("");
@@ -78,7 +100,21 @@ function AdminContent() {
     loadProducts();
     loadCategories();
     loadOrders();
+    loadPackages();
   }, []);
+
+  async function loadPackages() {
+    setLoadingPackages(true);
+    try {
+      const data = await packageService.getPackages();
+      setPackages(data || []);
+    } catch (err) {
+      console.error("Failed to load packages:", err);
+      showToast("Could not load packages from API.", "error");
+    } finally {
+      setLoadingPackages(false);
+    }
+  }
 
   async function loadProducts() {
     setLoadingProducts(true);
@@ -230,6 +266,104 @@ function AdminContent() {
     }
   };
 
+  // Open Package Modal
+  const openPkgModal = (pkg: ApiPackage | null = null) => {
+    setFormPkgErrors({});
+    if (pkg) {
+      setEditingPackage(pkg);
+      setFormPkgName(pkg.name);
+      setFormPkgDescription(pkg.description);
+      setFormPkgPrice(String(pkg.price));
+      setFormPkgImage(pkg.image);
+      setFormPkgProductIds(pkg.products.map((p) => p.id));
+    } else {
+      setEditingPackage(null);
+      setFormPkgName("");
+      setFormPkgDescription("");
+      setFormPkgPrice("");
+      setFormPkgImage("");
+      setFormPkgProductIds([]);
+    }
+    setPackageModalOpen(true);
+  };
+
+  // Package Form Validation
+  const validatePackageForm = () => {
+    const errors: Record<string, string> = {};
+    if (!formPkgName.trim()) errors.name = "Package name is required.";
+    if (!formPkgDescription.trim()) errors.description = "Description is required.";
+    
+    const priceNum = parseFloat(formPkgPrice);
+    if (isNaN(priceNum) || priceNum <= 0) {
+      errors.price = "Price must be a valid positive number.";
+    }
+
+    if (formPkgProductIds.length === 0) {
+      errors.productIds = "At least one product must be selected for the package.";
+    }
+
+    if (!formPkgImage.trim()) errors.image = "Image URL is required.";
+
+    setFormPkgErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Save/Submit Package CRUD Form
+  const handleSavePackage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validatePackageForm()) return;
+
+    setSubmittingPackage(true);
+    const payload = {
+      name: formPkgName.trim(),
+      description: formPkgDescription.trim(),
+      price: parseFloat(formPkgPrice),
+      image: formPkgImage.trim(),
+      productIds: formPkgProductIds,
+    };
+
+    try {
+      if (editingPackage) {
+        await packageService.updatePackage(editingPackage.id, payload);
+        showToast("Package updated successfully.", "success");
+      } else {
+        await packageService.createPackage(payload);
+        showToast("Package created successfully.", "success");
+      }
+      setPackageModalOpen(false);
+      loadPackages();
+    } catch (err) {
+      const msg = getApiErrorMessage(err, "Failed to save package.");
+      showToast(msg, "error");
+    } finally {
+      setSubmittingPackage(false);
+    }
+  };
+
+  // Open Package Delete Confirmation
+  const openDeletePkgModal = (pkg: ApiPackage) => {
+    setPackageToDelete(pkg);
+    setDeletePackageModalOpen(true);
+  };
+
+  // Delete Package
+  const handleDeletePackage = async () => {
+    if (!packageToDelete) return;
+    setDeletingPackage(true);
+    try {
+      await packageService.deletePackage(packageToDelete.id);
+      showToast("Package deleted successfully.", "success");
+      setDeletePackageModalOpen(false);
+      setPackageToDelete(null);
+      loadPackages();
+    } catch (err) {
+      const msg = getApiErrorMessage(err, "Failed to delete package.");
+      showToast(msg, "error");
+    } finally {
+      setDeletingPackage(false);
+    }
+  };
+
   // PATCH Order Status
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     setUpdatingOrderStatus(orderId);
@@ -318,6 +452,16 @@ function AdminContent() {
             }`}
           >
             📦 Orders Management
+          </button>
+          <button
+            onClick={() => setActiveTab("packages")}
+            className={`pb-4 px-6 text-sm font-medium tracking-wider uppercase border-b-2 transition-all cursor-pointer ${
+              activeTab === "packages"
+                ? "border-[#4A1E27] text-[#4A1E27] font-semibold"
+                : "border-transparent text-charcoal/60 hover:text-[#3D1B22]"
+            }`}
+          >
+            🎁 Packages
           </button>
         </div>
 
@@ -622,6 +766,106 @@ function AdminContent() {
           </section>
         )}
 
+        {/* VIEW 4: Packages Management Tab */}
+        {activeTab === "packages" && (
+          <section className="space-y-6 animate-in fade-in duration-200">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="font-heading text-2xl font-medium">Packages Registry</h2>
+              <Button 
+                onClick={() => openPkgModal()}
+                className="bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0] rounded-xl flex items-center gap-1.5 cursor-pointer text-xs"
+              >
+                <Plus className="size-4" />
+                Add Package
+              </Button>
+            </div>
+
+            {loadingPackages ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <Loader2 className="size-8 animate-spin text-[#4A1E27]" />
+                <span className="text-xs text-charcoal/60 tracking-wider">Retrieving Packages...</span>
+              </div>
+            ) : packages.length === 0 ? (
+              <div className="text-center py-16 bg-[#FAF5F0] rounded-3xl border border-[#EBDCD2]">
+                <p className="text-xs text-charcoal/70">No packages configured yet.</p>
+              </div>
+            ) : (
+              <div className="bg-[#FAF5F0] border border-[#EBDCD2] rounded-3xl overflow-hidden shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="bg-[#FAF5F0]/80 border-b border-[#EBDCD2] text-[#3D1B22]/70 uppercase font-semibold tracking-wider">
+                        <th className="p-4">Package</th>
+                        <th className="p-4">Bundled Products</th>
+                        <th className="p-4">Bundle Price</th>
+                        <th className="p-4">Original Sum</th>
+                        <th className="p-4">Savings</th>
+                        <th className="p-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#EBDCD2]/50">
+                      {packages.map((pkg) => {
+                        const savings = pkg.originalPrice - pkg.price;
+                        return (
+                          <tr key={pkg.id} className="hover:bg-[#FDF4EE]/40 transition-colors">
+                            <td className="p-4 flex items-center gap-3">
+                              <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-[#FAF6F2] border border-[#EBDCD2]/30">
+                                <ImageWithFallback
+                                  src={pkg.image}
+                                  alt={pkg.name}
+                                  fill
+                                  sizes="48px"
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div>
+                                <span className="font-semibold text-sm block">{pkg.name}</span>
+                                <span className="text-[0.68rem] text-charcoal/60 line-clamp-1 max-w-[250px]" title={pkg.description}>
+                                  {pkg.description}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="p-4 max-w-[200px]">
+                              <div className="flex flex-wrap gap-1">
+                                {pkg.products.map((p) => (
+                                  <span key={p.id} className="px-2 py-0.5 rounded-md bg-[#4A1E27]/10 text-[#4A1E27] text-[10px] font-medium border border-[#4A1E27]/25">
+                                    {p.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </td>
+                            <td className="p-4 font-bold text-sm text-[#4A1E27]">${pkg.price.toFixed(2)}</td>
+                            <td className="p-4 font-medium text-charcoal/70">${pkg.originalPrice.toFixed(2)}</td>
+                            <td className="p-4 font-semibold text-emerald-700">
+                              {savings > 0 ? `$${savings.toFixed(2)}` : "$0.00"}
+                            </td>
+                            <td className="p-4 text-right space-x-2">
+                              <button
+                                onClick={() => openPkgModal(pkg)}
+                                className="p-2 hover:bg-[#4A1E27]/10 text-charcoal hover:text-[#4A1E27] rounded-lg transition-colors cursor-pointer"
+                                title="Edit Package"
+                              >
+                                <Edit className="size-4" />
+                              </button>
+                              <button
+                                onClick={() => openDeletePkgModal(pkg)}
+                                className="p-2 hover:bg-rose-50 text-charcoal hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                                title="Delete Package"
+                              >
+                                <Trash2 className="size-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
         {/* PRODUCT ADD/EDIT MODAL */}
         {productModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
@@ -902,6 +1146,218 @@ function AdminContent() {
                   <span>Total Amount Paid</span>
                   <span>${selectedOrder.totalAmount.toFixed(2)}</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PACKAGE ADD/EDIT MODAL */}
+        {packageModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
+            <div className="bg-[#FAF5F0] border border-[#EBDCD2] rounded-3xl p-6 w-full max-w-lg shadow-xl relative animate-in fade-in zoom-in-95 duration-200 text-xs">
+              <button 
+                onClick={() => setPackageModalOpen(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-charcoal/10 transition-colors cursor-pointer"
+              >
+                <X className="size-4" />
+              </button>
+
+              <h3 className="font-heading text-2xl font-medium text-[#3D1B22] mb-6 pb-2 border-b border-[#EBDCD2]/50">
+                {editingPackage ? "Edit Routine Package" : "Create New Routine Package"}
+              </h3>
+
+              <form onSubmit={handleSavePackage} className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+                
+                {/* Name */}
+                <div className="space-y-1">
+                  <Label htmlFor="pkgName" className="font-semibold text-[0.68rem] tracking-wider uppercase text-charcoal/80">Package Name</Label>
+                  <Input
+                    id="pkgName"
+                    value={formPkgName}
+                    onChange={(e) => setFormPkgName(e.target.value)}
+                    placeholder="e.g. Skin Restoration Ritual"
+                    className="bg-[#FDF8F5] border border-[#EBDCD2] rounded-xl px-3 py-2.5 text-xs"
+                  />
+                  {formPkgErrors.name && <p className="text-red-600 text-[0.68rem]">{formPkgErrors.name}</p>}
+                </div>
+
+                {/* Description */}
+                <div className="space-y-1">
+                  <Label htmlFor="pkgDesc" className="font-semibold text-[0.68rem] tracking-wider uppercase text-charcoal/80">Description</Label>
+                  <textarea
+                    id="pkgDesc"
+                    value={formPkgDescription}
+                    onChange={(e) => setFormPkgDescription(e.target.value)}
+                    placeholder="Describe this curated bundle and its routines..."
+                    className="w-full min-h-16 p-3 rounded-xl border border-[#EBDCD2] bg-[#FDF8F5] text-[#3D1B22] outline-none focus:border-[#4A1E27] focus:ring-0 text-xs"
+                  />
+                  {formPkgErrors.description && <p className="text-red-600 text-[0.68rem]">{formPkgErrors.description}</p>}
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {/* Bundle Price */}
+                  <div className="space-y-1">
+                    <Label htmlFor="pkgPrice" className="font-semibold text-[0.68rem] tracking-wider uppercase text-charcoal/80">Bundle Price ($)</Label>
+                    <Input
+                      id="pkgPrice"
+                      type="number"
+                      step="0.01"
+                      value={formPkgPrice}
+                      onChange={(e) => setFormPkgPrice(e.target.value)}
+                      placeholder="89.00"
+                      className="bg-[#FDF8F5] border border-[#EBDCD2] rounded-xl px-3 py-2.5 text-xs"
+                    />
+                    {formPkgErrors.price && <p className="text-red-600 text-[0.68rem]">{formPkgErrors.price}</p>}
+                  </div>
+
+                  {/* Image URL */}
+                  <div className="space-y-1">
+                    <Label htmlFor="pkgImg" className="font-semibold text-[0.68rem] tracking-wider uppercase text-charcoal/80">Image URL</Label>
+                    <Input
+                      id="pkgImg"
+                      value={formPkgImage}
+                      onChange={(e) => setFormPkgImage(e.target.value)}
+                      placeholder="https://images.unsplash.com/... or /images/..."
+                      className="bg-[#FDF8F5] border border-[#EBDCD2] rounded-xl px-3 py-2.5 text-xs"
+                    />
+                    {formPkgErrors.image && <p className="text-red-600 text-[0.68rem]">{formPkgErrors.image}</p>}
+                  </div>
+                </div>
+
+                {/* Product Checklist */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <Label className="font-semibold text-[0.68rem] tracking-wider uppercase text-charcoal/80">Select Bundled Products</Label>
+                    {formPkgProductIds.length > 0 && (
+                      <span className="text-[10px] text-charcoal/60 font-semibold bg-[#4A1E27]/5 px-2 py-0.5 rounded-full border border-[#EBDCD2]">
+                        {formPkgProductIds.length} selected
+                      </span>
+                    )}
+                  </div>
+
+                  {formPkgErrors.productIds && <p className="text-red-600 text-[0.68rem]">{formPkgErrors.productIds}</p>}
+
+                  {/* Live calculations & warnings */}
+                  {(() => {
+                    const selectedProductsSum = products
+                      .filter((p) => formPkgProductIds.includes(p.id))
+                      .reduce((sum, p) => sum + p.price, 0);
+                    const enteredPrice = parseFloat(formPkgPrice);
+                    const hasWarning = !isNaN(enteredPrice) && enteredPrice >= selectedProductsSum && selectedProductsSum > 0;
+
+                    return (
+                      <div className="rounded-xl border border-[#EBDCD2] bg-[#FDF8F5] p-3 space-y-1">
+                        <div className="flex justify-between font-medium">
+                          <span>Original Sum:</span>
+                          <span className="text-[#3D1B22] font-semibold">${selectedProductsSum.toFixed(2)}</span>
+                        </div>
+                        {hasWarning && (
+                          <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2 mt-1.5 flex items-start gap-1">
+                            <AlertCircle className="size-3.5 shrink-0 text-amber-600 mt-0.5" />
+                            <span>Warning: The bundle price should typically be lower than the sum of the standard prices to offer a discount.</span>
+                          </div>
+                        )}
+                        {!hasWarning && selectedProductsSum > 0 && enteredPrice < selectedProductsSum && (
+                          <div className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg p-2 mt-1.5 flex items-start gap-1">
+                            <Check className="size-3.5 shrink-0 text-emerald-600 mt-0.5" />
+                            <span>Great! This package saves customers ${(selectedProductsSum - enteredPrice).toFixed(2)}.</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {/* Scrollable list of products */}
+                  <div className="border border-[#EBDCD2] rounded-xl bg-[#FDF8F5] max-h-44 overflow-y-auto divide-y divide-[#EBDCD2]/40">
+                    {products.map((prod) => {
+                      const isChecked = formPkgProductIds.includes(prod.id);
+                      return (
+                        <label key={prod.id} className="flex items-center justify-between p-2.5 hover:bg-[#FDF4EE]/40 transition-colors cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFormPkgProductIds([...formPkgProductIds, prod.id]);
+                                } else {
+                                  setFormPkgProductIds(formPkgProductIds.filter((id) => id !== prod.id));
+                                }
+                              }}
+                              className="size-3.5 rounded border-[#EBDCD2] text-[#4A1E27] focus:ring-0 focus:outline-none cursor-pointer"
+                            />
+                            <span className="font-semibold text-charcoal">{prod.name}</span>
+                          </div>
+                          <span className="font-bold text-[#4A1E27] shrink-0">${prod.price.toFixed(2)}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Submit buttons */}
+                <div className="pt-4 flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setPackageModalOpen(false)}
+                    className="w-1/2 border-[#EBDCD2] hover:bg-charcoal/10 rounded-xl cursor-pointer text-xs"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={submittingPackage}
+                    className="w-1/2 bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0] rounded-xl cursor-pointer text-xs"
+                  >
+                    {submittingPackage ? (
+                      <>
+                        <Loader2 className="size-3 animate-spin mr-1.5" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Package"
+                    )}
+                  </Button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* PACKAGE DELETE CONFIRMATION MODAL */}
+        {deletePackageModalOpen && packageToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
+            <div className="bg-[#FAF5F0] border border-[#EBDCD2] rounded-3xl p-6 w-full max-w-sm shadow-xl relative animate-in fade-in zoom-in-95 duration-200 text-xs space-y-4">
+              <h3 className="font-heading text-xl font-medium text-[#3D1B22]">
+                Delete Package
+              </h3>
+              <p className="text-xs text-charcoal/80">
+                Are you sure you want to delete <span className="font-semibold text-[#4A1E27]">{packageToDelete.name}</span>? This action permanently removes the routine package bundle from active storefront lists.
+              </p>
+              <div className="flex gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => { setDeletePackageModalOpen(false); setPackageToDelete(null); }}
+                  className="w-1/2 border-[#EBDCD2] hover:bg-charcoal/10 rounded-xl cursor-pointer text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  disabled={deletingPackage}
+                  onClick={handleDeletePackage}
+                  className="w-1/2 bg-rose-600 hover:bg-rose-700 text-[#FAF5F0] rounded-xl cursor-pointer text-xs"
+                >
+                  {deletingPackage ? (
+                    <>
+                      <Loader2 className="size-3 animate-spin mr-1.5" />
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete Package"
+                  )}
+                </Button>
               </div>
             </div>
           </div>

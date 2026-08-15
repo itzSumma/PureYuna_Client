@@ -39,10 +39,15 @@ export default function PackagesPage() {
 
   const handleAddSetToCart = (pkg: any, e: React.MouseEvent) => {
     e.preventDefault();
+    const ratio = pkg.price / pkg.originalPrice;
     pkg.products.forEach((product: any) => {
-      addItem(product);
+      const discountedProduct = {
+        ...product,
+        price: Number((product.price * ratio).toFixed(2)),
+      };
+      addItem(discountedProduct);
     });
-    showToast(`Added all items from ${pkg.name} to cart!`, "success");
+    showToast(`Added all items from ${pkg.name} to cart at a bundle discount!`, "success");
   };
 
   return (

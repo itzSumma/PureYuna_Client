@@ -527,7 +527,8 @@ function MobileNavContent({
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+  const cartOpen = useCartStore((state) => state.isOpen);
+  const setCartOpen = useCartStore((state) => state.setOpen);
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
