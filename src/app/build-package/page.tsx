@@ -9,6 +9,87 @@ import { useToastStore } from "@/stores/toastStore";
 import { ImageWithFallback } from "@/components/shared/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { FALLBACK_PRODUCTS } from "@/constants/fallback-data";
+
+// Fallback lists specifically partitioned for the 4 routine steps
+const FALLBACK_CLEANSERS: Product[] = FALLBACK_PRODUCTS.filter(
+  (p) =>
+    p.categoryId === "cat-cleansers" ||
+    p.category?.name?.toLowerCase().includes("cleanse") ||
+    p.name.toLowerCase().includes("cleans") ||
+    p.name.toLowerCase().includes("balm") ||
+    p.name.toLowerCase().includes("wash")
+);
+
+const FALLBACK_TREATMENTS: Product[] = FALLBACK_PRODUCTS.filter(
+  (p) =>
+    p.categoryId === "cat-serums-treatments" ||
+    p.categoryId === "cat-facial-oils" ||
+    p.categoryId === "cat-serums" ||
+    p.category?.name?.toLowerCase().includes("serum") ||
+    p.category?.name?.toLowerCase().includes("treatment") ||
+    p.category?.name?.toLowerCase().includes("oil")
+);
+
+const FALLBACK_MOISTURIZERS: Product[] = FALLBACK_PRODUCTS.filter(
+  (p) =>
+    p.categoryId === "cat-moisturizers" ||
+    p.category?.name?.toLowerCase().includes("moisturize") ||
+    p.category?.name?.toLowerCase().includes("cream") ||
+    p.name.toLowerCase().includes("cream")
+);
+
+const FALLBACK_SPFS: Product[] = FALLBACK_PRODUCTS.filter((p) => {
+  const catId = p.categoryId?.toLowerCase() || "";
+  const catName = p.category?.name?.toLowerCase() || "";
+  const catSlug = (p.category as any)?.slug?.toLowerCase() || "";
+  const name = p.name?.toLowerCase() || "";
+  return (
+    catId === "cat-sun-care" ||
+    catId === "cat-sunscreens" ||
+    catId.includes("sun") ||
+    catName.includes("sun") ||
+    catName.includes("spf") ||
+    catSlug.includes("sun") ||
+    catSlug.includes("spf") ||
+    name.includes("spf") ||
+    name.includes("sun")
+  );
+});
+
+function matchesSkinType(p: Product, selectedSkinType: string): boolean {
+  if (!selectedSkinType) return true;
+
+  // Retain products with targetAudience 'ALL' or general sunscreens
+  const targetAud = (p.targetAudience || "").toUpperCase();
+  if (targetAud === "ALL" || targetAud.includes("ALL")) {
+    return true;
+  }
+
+  // Check skinTypes array if present
+  const types = (p as any).skinTypes;
+  if (Array.isArray(types)) {
+    const normalized = types.map((t: string) => String(t).toUpperCase());
+    if (normalized.includes("ALL") || normalized.includes(selectedSkinType.toUpperCase())) {
+      return true;
+    }
+  }
+
+  // Check singular skinType field
+  if (p.skinType) {
+    const st = p.skinType.toUpperCase();
+    if (st === "ALL" || st === selectedSkinType.toUpperCase() || st.includes(selectedSkinType.toUpperCase())) {
+      return true;
+    }
+  }
+
+  // General sunscreens / products without restriction
+  if (!p.skinType && (!types || types.length === 0)) {
+    return true;
+  }
+
+  return false;
+}
 
 export default function BuildPackagePage() {
   const addItem = useCartStore((state) => state.addItem);
@@ -35,9 +116,14 @@ export default function BuildPackagePage() {
       setLoading(true);
       try {
         const response = await productService.getProducts({ limit: 100 });
-        setProducts(response.data);
+        if (response && response.data && response.data.length > 0) {
+          setProducts(response.data);
+        } else {
+          setProducts(FALLBACK_PRODUCTS);
+        }
       } catch (err) {
         console.error("Failed to load products in builder:", err);
+        setProducts(FALLBACK_PRODUCTS);
       } finally {
         setLoading(false);
       }
@@ -45,33 +131,74 @@ export default function BuildPackagePage() {
     loadProducts();
   }, []);
 
-  // Filter products by category
-  const cleansers = products.filter(
+  // Filter products by category with safe fallbacks and skinType matching
+  // 1. Cleansers
+  const rawCleansers = products.filter(
     (p) =>
       p.categoryId === "cat-cleansers" ||
-      p.category?.name.toLowerCase().includes("cleanse")
+      p.category?.name?.toLowerCase().includes("cleanse") ||
+      p.name?.toLowerCase().includes("cleans") ||
+      p.name?.toLowerCase().includes("balm") ||
+      p.name?.toLowerCase().includes("wash")
   );
-  const treatments = products.filter(
+  const baseCleansers = rawCleansers.length > 0 ? rawCleansers : FALLBACK_CLEANSERS;
+  const filteredCleansers = skinType ? baseCleansers.filter((p) => matchesSkinType(p, skinType)) : baseCleansers;
+  const cleansers = filteredCleansers.length > 0 ? filteredCleansers : baseCleansers;
+
+  // 2. Treatments / Serums
+  const rawTreatments = products.filter(
     (p) =>
       p.categoryId === "cat-serums-treatments" ||
       p.categoryId === "cat-facial-oils" ||
-      p.category?.name.toLowerCase().includes("serum") ||
-      p.category?.name.toLowerCase().includes("treatment") ||
-      p.category?.name.toLowerCase().includes("oil")
+      p.categoryId === "cat-serums" ||
+      p.category?.name?.toLowerCase().includes("serum") ||
+      p.category?.name?.toLowerCase().includes("treatment") ||
+      p.category?.name?.toLowerCase().includes("oil") ||
+      p.name?.toLowerCase().includes("serum") ||
+      p.name?.toLowerCase().includes("elixir")
   );
-  const moisturizers = products.filter(
+  const baseTreatments = rawTreatments.length > 0 ? rawTreatments : FALLBACK_TREATMENTS;
+  const filteredTreatments = skinType ? baseTreatments.filter((p) => matchesSkinType(p, skinType)) : baseTreatments;
+  const treatments = filteredTreatments.length > 0 ? filteredTreatments : baseTreatments;
+
+  // 3. Moisturizers
+  const rawMoisturizers = products.filter(
     (p) =>
       p.categoryId === "cat-moisturizers" ||
-      p.category?.name.toLowerCase().includes("moisturize") ||
-      p.category?.name.toLowerCase().includes("cream") ||
-      p.category?.name.toLowerCase().includes("mist")
+      p.category?.name?.toLowerCase().includes("moisturize") ||
+      p.category?.name?.toLowerCase().includes("cream") ||
+      p.category?.name?.toLowerCase().includes("mist") ||
+      p.name?.toLowerCase().includes("cream") ||
+      p.name?.toLowerCase().includes("moisturizer")
   );
-  const spfs = products.filter(
-    (p) =>
-      p.categoryId === "cat-sunscreens" ||
-      p.category?.name.toLowerCase().includes("sunscreen") ||
-      p.category?.name.toLowerCase().includes("spf")
-  );
+  const baseMoisturizers = rawMoisturizers.length > 0 ? rawMoisturizers : FALLBACK_MOISTURIZERS;
+  const filteredMoisturizers = skinType ? baseMoisturizers.filter((p) => matchesSkinType(p, skinType)) : baseMoisturizers;
+  const moisturizers = filteredMoisturizers.length > 0 ? filteredMoisturizers : baseMoisturizers;
+
+  // 4. Sunscreens / SPF
+  const rawSpfs = products.filter((p) => {
+    const catId = p.categoryId?.toLowerCase() || "";
+    const catName = p.category?.name?.toLowerCase() || "";
+    const catSlug = (p.category as any)?.slug?.toLowerCase() || "";
+    const prodName = p.name?.toLowerCase() || "";
+
+    return (
+      catId === "cat-sun-care" ||
+      catId === "cat-sunscreens" ||
+      catId.includes("sun") ||
+      catName.includes("sun") ||
+      catName.includes("spf") ||
+      catSlug.includes("sun") ||
+      catSlug.includes("spf") ||
+      prodName.includes("spf") ||
+      prodName.includes("sunscreen") ||
+      prodName.includes("sun care") ||
+      prodName.includes("sun gel")
+    );
+  });
+  const baseSpfs = rawSpfs.length > 0 ? rawSpfs : FALLBACK_SPFS;
+  const filteredSpfs = skinType ? baseSpfs.filter((p) => matchesSkinType(p, skinType)) : baseSpfs;
+  const spfs = filteredSpfs.length > 0 ? filteredSpfs : baseSpfs;
 
   // Calculations
   const getSubtotal = () => {
@@ -257,7 +384,7 @@ export default function BuildPackagePage() {
 
           {/* STEP 2: Selection */}
           {step === 2 && (
-            <div className="space-y-12 pb-16">
+            <div className="space-y-12 pb-24 min-h-[500px]">
               {/* Product Type Categorized Grid */}
               <div className="space-y-16">
                 {/* 1. Cleansers */}
@@ -417,11 +544,16 @@ export default function BuildPackagePage() {
                 </div>
 
                 {/* 4. SPF */}
-                <div className="space-y-4">
-                  <h3 className="font-heading text-2xl font-medium text-[#3D1B22] border-b border-[#EBDCD2] pb-2">
-                    Step 4: Choose a Sunscreen (SPF)
-                  </h3>
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center justify-between border-b border-[#EBDCD2] pb-2">
+                    <h3 className="font-heading text-2xl font-medium text-[#3D1B22]">
+                      Step 4: Choose a Sunscreen (SPF)
+                    </h3>
+                    <span className="text-xs font-semibold text-[#4A1E27]/70 uppercase tracking-wider">
+                      {spfs.length} {spfs.length === 1 ? "Option" : "Options"} Available
+                    </span>
+                  </div>
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 min-h-[160px] pb-6">
                     {spfs.map((p) => {
                       const isSelected = selectedSpf?.id === p.id;
                       return (
@@ -470,7 +602,7 @@ export default function BuildPackagePage() {
               </div>
 
               {/* Bottom Sticky Control Bar */}
-              <div className="sticky bottom-4 z-30 flex items-center justify-between border border-[#3D1B22] bg-[#4A1E27]/95 backdrop-blur-md p-6 rounded-2xl shadow-lg mt-8 text-[#FAF5F0]">
+              <div className="sticky bottom-4 z-30 flex items-center justify-between border border-[#3D1B22] bg-[#4A1E27]/95 backdrop-blur-md p-6 rounded-2xl shadow-lg mt-12 text-[#FAF5F0]">
                 <button
                   type="button"
                   onClick={() => setStep(1)}

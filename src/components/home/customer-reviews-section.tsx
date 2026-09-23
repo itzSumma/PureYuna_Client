@@ -2,10 +2,19 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { CheckCircle2, Quote, Star } from "lucide-react";
+import { CheckCircle2, HeartHandshake, Leaf, Quote, ShieldCheck, Sparkles, Star, type LucideIcon } from "lucide-react";
 
 import { Reveal } from "@/components/shared/reveal";
-import { CUSTOMER_REVIEWS, COMMUNITY_STATS } from "@/data/home-sections";
+import { CUSTOMER_REVIEWS, COMMUNITY_STATS, type CommunityStatIcon } from "@/data/home-sections";
+
+const STAT_ICONS: Record<CommunityStatIcon, LucideIcon> = {
+  Star,
+  Sparkles,
+  ShieldCheck,
+  HeartHandshake,
+  Leaf,
+  CheckCircle2,
+};
 
 function ReviewAvatar({ name, src }: { name: string; src: string }) {
   const [imageError, setImageError] = useState(false);
@@ -123,18 +132,29 @@ export function CustomerReviewsSection() {
 
         {/* Bottom Trust Stat Bar */}
         <Reveal delay={0.2}>
-          <div className="mt-10 sm:mt-12 rounded-2xl border border-golden-border bg-white/60 backdrop-blur-xs shadow-xs overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-golden-border/40 text-center">
-              {COMMUNITY_STATS.map((stat, idx) => (
-                <div key={idx} className="py-5 sm:py-6 px-4">
-                  <p className="font-heading text-2xl sm:text-3xl font-semibold text-caramel">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-xs text-deep-brown/70 tracking-wider uppercase">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
+          <div className="mt-10 sm:mt-12 rounded-3xl border border-golden-border/60 bg-[#FBF6F1]/80 backdrop-blur-md shadow-sm overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-golden-border/50 text-center">
+              {COMMUNITY_STATS.map((stat) => {
+                const IconComponent = stat.icon ? STAT_ICONS[stat.icon] : null;
+                return (
+                  <div
+                    key={stat.label}
+                    className="flex flex-col items-center justify-center py-6 sm:py-7 px-4"
+                  >
+                    {IconComponent && (
+                      <div className="size-10 sm:size-11 rounded-full bg-caramel/10 text-caramel flex items-center justify-center mb-3">
+                        <IconComponent className="size-5" />
+                      </div>
+                    )}
+                    <p className="font-heading text-3xl sm:text-4xl font-semibold text-deep-brown">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[11px] sm:text-xs font-bold tracking-[0.2em] text-deep-brown/70 uppercase">
+                      {stat.label}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </Reveal>

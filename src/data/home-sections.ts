@@ -34,9 +34,18 @@ export interface CustomerReview {
   avatar: string;
 }
 
+export type CommunityStatIcon =
+  | "Star"
+  | "Sparkles"
+  | "ShieldCheck"
+  | "HeartHandshake"
+  | "Leaf"
+  | "CheckCircle2";
+
 export interface CommunityStat {
   value: string;
   label: string;
+  icon?: CommunityStatIcon;
 }
 
 export const KEY_INGREDIENTS: KeyIngredient[] = [
@@ -159,7 +168,7 @@ export const CUSTOMER_REVIEWS: CustomerReview[] = [
 ];
 
 export const COMMUNITY_STATS: CommunityStat[] = [
-  { value: "4.9 / 5.0", label: "Average Customer Rating" },
-  { value: "98%", label: "Reported Calmer Barrier" },
-  { value: "100%", label: "Clean & Cruelty-Free" },
+  { value: "4.9 / 5.0", label: "Average Customer Rating", icon: "Sparkles" },
+  { value: "98%", label: "Reported Calmer Barrier", icon: "ShieldCheck" },
+  { value: "100%", label: "Clean & Cruelty-Free", icon: "Leaf" },
 ];
