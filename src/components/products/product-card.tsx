@@ -26,7 +26,7 @@ export function ProductCard({
 
   return (
     <div
-      className="group relative flex h-full flex-col rounded-2xl border border-golden-border bg-[#FAF5F0] hover:shadow-[0_15px_30px_rgba(74,52,32,0.08)] hover:-translate-y-1 transition-all duration-300"
+      className="group relative flex h-full flex-col rounded-2xl border border-golden-border bg-[#FAF5F0] hover:shadow-[0_15px_30px_rgba(74,52,32,0.08)] hover:-translate-y-1 transition-all duration-700 ease-in-out"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -55,7 +55,7 @@ export function ProductCard({
           type="button"
           onClick={(e) => onToggleWishlist?.(product, e)}
           className={cn(
-            "absolute top-4 right-4 z-10 grid size-9 cursor-pointer place-items-center rounded-full border border-white/20 bg-[#FAF5F0]/90 shadow-sm backdrop-blur-xs transition-all duration-300 hover:scale-105 active:scale-95",
+            "absolute top-4 right-4 z-10 grid size-9 cursor-pointer place-items-center rounded-full border border-white/20 bg-[#FAF5F0]/90 shadow-sm backdrop-blur-xs transition-all duration-500 ease-in-out hover:scale-105 active:scale-95",
             isWishlisted
               ? "text-red-500 bg-[#FAF5F0]"
               : "text-deep-brown/60 hover:text-caramel"
@@ -111,7 +111,7 @@ export function ProductCard({
  
         {/* Product Title */}
         <Link href={`/products/${product.id}`} className="group/title mt-1.5">
-          <h3 className="font-heading text-lg font-normal leading-snug tracking-tight text-balance text-deep-brown group-hover/title:text-caramel transition-colors duration-200 line-clamp-1">
+          <h3 className="font-heading text-lg font-normal leading-snug tracking-tight text-balance text-deep-brown group-hover/title:text-caramel transition-colors duration-500 ease-in-out line-clamp-1">
             {product.name}
           </h3>
         </Link>
@@ -135,7 +135,7 @@ export function ProductCard({
           <div className="flex items-center gap-2">
             <Link
               href={`/products/${product.id}`}
-              className="flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-semibold bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0] transition-all duration-200 shadow-sm active:scale-95 whitespace-nowrap cursor-pointer"
+              className="flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-semibold bg-[#4A1E27] hover:bg-[#3D1B22] text-[#FAF5F0] transition-all duration-500 ease-in-out shadow-sm active:scale-95 whitespace-nowrap cursor-pointer"
             >
               View Details
             </Link>
@@ -143,7 +143,7 @@ export function ProductCard({
               type="button"
               disabled={product.stock <= 0}
               onClick={(e) => onAddToCart?.(product, e)}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold bg-caramel hover:bg-caramel/90 text-white transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 shadow-sm whitespace-nowrap"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold bg-caramel hover:bg-caramel/90 text-white transition-all duration-500 ease-in-out cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 shadow-sm whitespace-nowrap"
               aria-label="Add to cart"
             >
               <ShoppingBag className="size-3.5" />

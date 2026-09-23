@@ -47,7 +47,7 @@ export function SkinDiscoverySection() {
   const [selectedType, setSelectedType] = useState<SkinType | null>(null);
 
   return (
-    <section className="relative overflow-hidden bg-cream pt-16 pb-24 lg:pt-20 lg:pb-32">
+    <section className="relative overflow-hidden bg-cream py-12 sm:py-16 lg:py-20 border-t border-golden-border/60">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-32 -right-24 size-96 rounded-full bg-white/5 blur-3xl"
@@ -62,7 +62,7 @@ export function SkinDiscoverySection() {
           />
         </Reveal>
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-10 sm:mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {skinTypes.map((item, index) => {
             const isSelected = selectedType === item.type;
             return (
@@ -71,7 +71,7 @@ export function SkinDiscoverySection() {
                   type="button"
                   onClick={() => setSelectedType(item.type)}
                   className={cn(
-                    "group relative flex h-full w-full flex-col text-left overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-caramel",
+                    "group relative flex h-full w-full flex-col text-left overflow-hidden rounded-2xl border transition-all duration-700 ease-in-out cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-caramel",
                     isSelected
                       ? "bg-caramel border-caramel shadow-[0_12px_28px_rgba(74,30,39,0.2)] -translate-y-1.5"
                       : "bg-white border-golden-border hover:border-caramel/40 hover:-translate-y-1 hover:shadow-md"
@@ -86,7 +86,7 @@ export function SkinDiscoverySection() {
                           ? "sensitive"
                           : item.type.toLowerCase()
                       } skin`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       loading="lazy"
                     />
                     <div
@@ -107,7 +107,7 @@ export function SkinDiscoverySection() {
                     {/* Tier 1: Category Tag */}
                     <span
                       className={cn(
-                        "text-[11px] font-bold tracking-[0.22em] uppercase transition-colors",
+                        "text-[11px] font-bold tracking-[0.22em] uppercase transition-colors duration-500 ease-in-out",
                         isSelected ? "text-warm-white/85" : "text-caramel/90"
                       )}
                     >
@@ -117,7 +117,7 @@ export function SkinDiscoverySection() {
                     {/* Tier 2: Display Title */}
                     <h3
                       className={cn(
-                        "mt-1 font-heading text-xl sm:text-2xl font-semibold tracking-tight transition-colors",
+                        "mt-1 font-heading text-xl sm:text-2xl font-semibold tracking-tight transition-colors duration-500 ease-in-out",
                         isSelected ? "text-white" : "text-deep-brown"
                       )}
                     >
@@ -127,7 +127,7 @@ export function SkinDiscoverySection() {
                     {/* Tier 3: Body Description */}
                     <p
                       className={cn(
-                        "mt-1.5 text-xs sm:text-sm leading-relaxed transition-colors flex-1 line-clamp-2",
+                        "mt-1.5 text-xs sm:text-sm leading-relaxed transition-colors duration-500 ease-in-out flex-1 line-clamp-2",
                         isSelected ? "text-white/85" : "text-deep-brown/75"
                       )}
                     >
@@ -138,7 +138,7 @@ export function SkinDiscoverySection() {
                     <div className="mt-auto pt-4">
                       <div
                         className={cn(
-                          "inline-flex w-full items-center justify-center rounded-full py-2 px-3 text-xs font-semibold tracking-wider uppercase transition-all duration-200 shadow-xs",
+                          "inline-flex w-full items-center justify-center rounded-full py-2 px-3 text-xs font-semibold tracking-wider uppercase transition-all duration-500 ease-in-out shadow-xs",
                           isSelected
                             ? "border border-white bg-white text-caramel font-bold shadow-md"
                             : "border border-golden-border bg-[#FAF5F0] text-deep-brown group-hover:border-caramel group-hover:bg-caramel group-hover:text-warm-white group-hover:shadow-sm"
@@ -163,7 +163,7 @@ export function SkinDiscoverySection() {
 
         {/* Dynamic CTA Row */}
         {selectedType && (
-          <div className="mt-14 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-350 ease-out">
+          <div className="mt-8 sm:mt-10 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-350 ease-out">
             <Button
               size="lg"
               variant="default"

@@ -39,7 +39,7 @@ export function CollectionShowcase() {
           <Reveal>
             <Link
               href="/products?productType=ORGANIC"
-              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-8"
+              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-700 ease-in-out hover:-translate-y-1 hover:shadow-lg sm:p-8"
             >
               <div className="relative aspect-[5/6] overflow-hidden rounded-3xl shadow-sm">
                 <ImageWithFallback
@@ -47,7 +47,7 @@ export function CollectionShowcase() {
                   sizes="(min-width: 1024px) 42vw, 90vw"
                   src={IMAGES.organic}
                   alt="Organic botanical serum bottle on a warm linen surface with a fresh leaf beside it"
-                  className="absolute inset-0 transition-transform duration-[650ms] ease-out group-hover:scale-[1.03] object-cover"
+                  className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.03] object-cover"
                 />
               </div>
 
@@ -62,9 +62,9 @@ export function CollectionShowcase() {
                   Naturally inspired skincare designed for gentle everyday
                   rituals.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-deep-brown">
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-500 ease-in-out hover:text-deep-brown">
                   Explore Organic
-                  <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="size-4 transition-transform duration-500 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </Link>
@@ -73,7 +73,7 @@ export function CollectionShowcase() {
           <Reveal delay={0.12}>
             <Link
               href="/products?productType=FORMULATED"
-              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-8"
+              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-700 ease-in-out hover:-translate-y-1 hover:shadow-lg sm:p-8"
             >
               <div className="relative aspect-[5/6] overflow-hidden rounded-3xl shadow-sm">
                 <ImageWithFallback
@@ -81,7 +81,7 @@ export function CollectionShowcase() {
                   sizes="(min-width: 1024px) 42vw, 90vw"
                   src={IMAGES.formulated}
                   alt="A precise glass serum dropper in a warm amber golden-hour light"
-                  className="absolute inset-0 transition-transform duration-[650ms] ease-out group-hover:scale-[1.03] object-cover"
+                  className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.03] object-cover"
                 />
                 <div
                   aria-hidden="true"
@@ -109,9 +109,9 @@ export function CollectionShowcase() {
                 <p className="mt-3 max-w-sm text-base leading-relaxed text-deep-brown/85">
                   Thoughtfully formulated care for specific skin needs.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-deep-brown">
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-500 ease-in-out hover:text-deep-brown">
                   Explore Formulated
-                  <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="size-4 transition-transform duration-500 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </Link>
