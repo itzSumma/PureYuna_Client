@@ -7,6 +7,7 @@ import { Check, ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/home/section-heading";
 import { Reveal } from "@/components/shared/reveal";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { SkinType } from "@/types/product";
 
 const skinTypes: { type: SkinType; displayName: string; description: string; imageUrl: string }[] = [
@@ -46,7 +47,7 @@ export function SkinDiscoverySection() {
   const [selectedType, setSelectedType] = useState<SkinType | null>(null);
 
   return (
-    <section className="relative overflow-hidden bg-cream py-20 lg:py-28">
+    <section className="relative overflow-hidden bg-cream pt-16 pb-24 lg:pt-20 lg:pb-32">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-32 -right-24 size-96 rounded-full bg-white/5 blur-3xl"
@@ -69,63 +70,88 @@ export function SkinDiscoverySection() {
                 <button
                   type="button"
                   onClick={() => setSelectedType(item.type)}
-                  className={`group relative flex h-full w-full flex-col text-left overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer ${
+                  className={cn(
+                    "group relative flex h-full w-full flex-col text-left overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-caramel",
                     isSelected
-                      ? "bg-caramel border-2 border-caramel shadow-[0_0_0_4px_rgba(74,30,39,0.15)] -translate-y-1 text-white"
-                      : "bg-white border-golden-border text-deep-brown hover:-translate-y-1 hover:shadow-md"
-                  }`}
+                      ? "bg-caramel border-caramel shadow-[0_12px_28px_rgba(74,30,39,0.2)] -translate-y-1.5"
+                      : "bg-white border-golden-border hover:border-caramel/40 hover:-translate-y-1 hover:shadow-md"
+                  )}
                 >
-                  <div className="relative h-56 w-full overflow-hidden">
+                  {/* Uniform Aspect Ratio Image Container */}
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-golden-border/30">
                     <img
                       src={item.imageUrl}
-                      alt={`Close-up of ${
+                      alt={`Close-up representing ${
                         item.type === "SENSITIVE"
                           ? "sensitive"
                           : item.type.toLowerCase()
                       } skin`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                       loading="lazy"
                     />
                     <div
                       aria-hidden="true"
-                      className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
+                      className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"
                     />
 
-                    {/* Active Selected checkmark overlay */}
+                    {/* Active Selected checkmark badge */}
                     {isSelected && (
-                      <div className="absolute top-2.5 right-2.5 z-10 flex size-7 items-center justify-center rounded-full bg-white text-caramel shadow-sm animate-in zoom-in-50 duration-200">
+                      <div className="absolute top-3 right-3 z-10 flex size-7 items-center justify-center rounded-full bg-white text-caramel shadow-md animate-in zoom-in-50 duration-200">
                         <Check className="size-4" strokeWidth={3} />
                       </div>
                     )}
                   </div>
 
-                  <div className="flex flex-1 flex-col px-4 pt-3.5 pb-3">
-                    <span className={`text-[0.62rem] font-semibold tracking-[0.22em] uppercase ${
-                      isSelected ? "text-white/70" : "text-foreground/60"
-                    }`}>
+                  {/* Card Content & Typographic Hierarchy */}
+                  <div className="flex flex-1 flex-col p-4 sm:p-4.5">
+                    {/* Tier 1: Category Tag */}
+                    <span
+                      className={cn(
+                        "text-[11px] font-bold tracking-[0.22em] uppercase transition-colors",
+                        isSelected ? "text-warm-white/85" : "text-caramel/90"
+                      )}
+                    >
                       Skin Type
                     </span>
-                    <span className={`mt-0.5 font-heading text-2xl font-medium tracking-tight ${
-                      isSelected ? "text-white" : "text-deep-brown"
-                    }`}>
+
+                    {/* Tier 2: Display Title */}
+                    <h3
+                      className={cn(
+                        "mt-1 font-heading text-xl sm:text-2xl font-semibold tracking-tight transition-colors",
+                        isSelected ? "text-white" : "text-deep-brown"
+                      )}
+                    >
                       {item.displayName}
-                    </span>
-                    <p className={`mt-1 text-base leading-snug ${
-                      isSelected ? "text-white/90" : "text-foreground/80"
-                    }`}>
+                    </h3>
+
+                    {/* Tier 3: Body Description */}
+                    <p
+                      className={cn(
+                        "mt-1.5 text-xs sm:text-sm leading-relaxed transition-colors flex-1 line-clamp-2",
+                        isSelected ? "text-white/85" : "text-deep-brown/75"
+                      )}
+                    >
                       {item.description}
                     </p>
 
-                    {/* Soft Option Selection Pill Bar */}
-                    <div className="mt-3">
+                    {/* Distinct 'SELECT TYPE' Button Pill */}
+                    <div className="mt-auto pt-4">
                       <div
-                        className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-xs font-semibold tracking-wider uppercase transition-all duration-200 ${
+                        className={cn(
+                          "inline-flex w-full items-center justify-center rounded-full py-2 px-3 text-xs font-semibold tracking-wider uppercase transition-all duration-200 shadow-xs",
                           isSelected
-                            ? "bg-white/10 text-white"
-                            : "bg-foreground/10 text-foreground hover:bg-foreground/20"
-                        }`}
+                            ? "border border-white bg-white text-caramel font-bold shadow-md"
+                            : "border border-golden-border bg-[#FAF5F0] text-deep-brown group-hover:border-caramel group-hover:bg-caramel group-hover:text-warm-white group-hover:shadow-sm"
+                        )}
                       >
-                        {isSelected ? "Selected" : "Select Type"}
+                        {isSelected ? (
+                          <span className="flex items-center gap-1.5 font-bold">
+                            <Check className="size-3.5" strokeWidth={3} />
+                            Selected
+                          </span>
+                        ) : (
+                          "Select Type"
+                        )}
                       </div>
                     </div>
                   </div>
@@ -141,10 +167,11 @@ export function SkinDiscoverySection() {
             <Button
               size="lg"
               variant="default"
+              nativeButton={false}
               render={
                 <Link
                   href={`/products?skinType=${selectedType}`}
-                  className="inline-flex items-center gap-2 text-lg font-medium h-12 px-8"
+                  className="inline-flex items-center gap-2 text-base sm:text-lg font-medium h-12 px-8 shadow-md"
                 />
               }
             >

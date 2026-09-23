@@ -22,7 +22,7 @@ const socialIconPaths: Record<SocialHandle["icon"], string> = {
 
 function SocialIcon({ name }: { name: SocialHandle["icon"] }) {
   return (
-    <svg viewBox="0 0 24 24" className="size-4" fill="currentColor" aria-hidden="true">
+    <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
       <path d={socialIconPaths[name]} />
     </svg>
   );
@@ -35,14 +35,14 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.6fr_repeat(3,1fr)]">
           <div className="max-w-sm">
             <BrandMark variant="dark" />
-            <p className="mt-5 text-lg font-medium text-brand-cream">
+            <p className="mt-5 text-base sm:text-lg font-medium text-white">
               {SITE_TAGLINE}
             </p>
-            <p className="mt-3 text-base leading-relaxed text-brand-cream/75">
+            <p className="mt-3 text-sm leading-relaxed text-brand-cream/80">
               Clean, natural skincare made with honest ingredients. Calm,
               minimal routines for skin that deserves the purest care.
             </p>
-            <div className="mt-7 flex gap-2.5">
+            <div className="mt-7 flex gap-3">
               {socialHandles.map((handle) => (
                 <a
                   key={handle.label}
@@ -50,7 +50,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={handle.label}
-                  className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/5 text-white/60 transition-all duration-200 hover:border-white/35 hover:bg-white/15 hover:text-white hover:scale-105"
+                  className="grid size-11 min-h-[44px] min-w-[44px] place-items-center rounded-full border border-white/15 bg-white/5 text-brand-cream/80 transition-all duration-200 hover:border-white/40 hover:bg-white/15 hover:text-white hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 >
                   <SocialIcon name={handle.icon} />
                 </a>
@@ -60,15 +60,15 @@ export function Footer() {
 
           {footerColumns.map((column) => (
             <div key={column.title}>
-              <h3 className="text-base font-semibold tracking-wider text-brand-cream uppercase">
+              <h3 className="text-xs sm:text-sm font-bold tracking-[0.2em] text-white uppercase border-b border-white/10 pb-2.5 mb-4">
                 {column.title}
               </h3>
-              <ul className="mt-5 space-y-3">
+              <ul className="space-y-3">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-lg text-brand-cream/80 transition-colors duration-200 hover:text-white"
+                      className="text-sm text-brand-cream/75 transition-all duration-200 hover:text-white hover:translate-x-1 inline-block"
                     >
                       {link.label}
                     </Link>
@@ -80,11 +80,11 @@ export function Footer() {
         </div>
 
         <Separator className="my-10 bg-white/10" />
-        <div className="flex flex-col items-center justify-between gap-4 text-sm text-brand-cream/60 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 text-xs sm:text-sm text-brand-cream/70 sm:flex-row">
           <p>
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <p className="flex items-center gap-1.5 text-brand-cream/50">
+          <p className="flex items-center gap-1.5 text-brand-cream/60">
             Made with care, for skin and planet.
           </p>
         </div>

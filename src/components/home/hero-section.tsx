@@ -10,7 +10,7 @@ import { IMAGES } from "@/lib/images";
 
 const trustPoints = ["Cruelty-free", "Vegan formulas", "Traceable sourcing"];
 
-const EASE_OUT = [0.25, 1, 0.5, 1] as any;
+const EASE_OUT = [0.25, 1, 0.5, 1] as const;
 
 export function HeroSection() {
   const reduceMotion = useReducedMotion();
@@ -34,7 +34,7 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-cream">
-      <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[45fr_55fr] lg:gap-16 lg:px-8 lg:pt-20 lg:pb-24">
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:grid-cols-[45fr_55fr] lg:gap-16 lg:px-8 lg:pt-18 lg:pb-20">
         <motion.div
           variants={containerVariants}
           initial="initial"
@@ -43,9 +43,9 @@ export function HeroSection() {
         >
           <motion.p
             variants={itemVariants}
-            className="flex items-center gap-3 text-xs font-semibold tracking-widest text-deep-brown uppercase"
+            className="flex items-center gap-3 text-xs font-bold tracking-widest text-caramel uppercase"
           >
-            <span aria-hidden="true" className="h-px w-8 bg-caramel/30" />
+            <span aria-hidden="true" className="h-px w-8 bg-caramel/40" />
             Pure care, made for your skin
           </motion.p>
  
@@ -66,7 +66,7 @@ export function HeroSection() {
  
           <motion.p
             variants={itemVariants}
-            className="mt-6 max-w-[42ch] text-lg leading-relaxed text-deep-brown/75"
+            className="mt-6 max-w-[42ch] text-lg leading-relaxed text-deep-brown/85"
           >
             Honest, minimal routines built on botanical and precision
             actives — matched to your skin type, and priced without the
@@ -79,17 +79,20 @@ export function HeroSection() {
           >
             <Button
               size="lg"
+              variant="default"
               render={<Link href="/products" />}
-              className="gap-2 text-lg font-medium h-12 px-7"
+              nativeButton={false}
+              className="gap-2 text-base sm:text-lg font-medium h-12 px-7 shadow-sm"
             >
               Explore Products
               <ArrowRight className="size-5 transition-transform group-hover/button:translate-x-0.5" />
             </Button>
             <Button
               size="lg"
-              variant="secondary-terracotta"
+              variant="outline"
               render={<Link href="/build-package" />}
-              className="gap-2 text-lg font-medium h-12 px-7"
+              nativeButton={false}
+              className="gap-2 text-base sm:text-lg font-medium h-12 px-7 border-2 border-caramel/80 text-caramel hover:border-caramel hover:bg-caramel/5"
             >
               <Sparkles className="size-5" />
               Build Your Package
@@ -98,15 +101,15 @@ export function HeroSection() {
  
           <motion.ul
             variants={itemVariants}
-            className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2.5"
+            className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3"
           >
             {trustPoints.map((point) => (
               <li
                 key={point}
-                className="flex items-center gap-2.5 text-sm text-deep-brown/80"
+                className="flex items-center gap-2.5 text-sm sm:text-[15px] font-semibold text-deep-brown"
               >
-                <span className="grid size-5 place-items-center rounded-full bg-caramel/10 text-caramel">
-                  <Check className="size-3" strokeWidth={3} />
+                <span className="grid size-5.5 place-items-center rounded-full bg-caramel/15 text-caramel border border-caramel/20">
+                  <Check className="size-3.5" strokeWidth={3} />
                 </span>
                 {point}
               </li>
@@ -130,10 +133,10 @@ export function HeroSection() {
           </div>
  
           {/* Floating glassmorphic chip ("100% TRACEABLE") */}
-          <div className="absolute -left-4 bottom-12 rounded-full border border-white/20 bg-white/90 px-6 py-3.5 shadow-[0_10px_30px_rgba(74,52,32,0.08)] backdrop-blur-sm flex items-center gap-3.5">
-            <span className="h-2 w-2 rounded-full bg-caramel animate-pulse" />
+          <div className="absolute left-6 bottom-6 sm:left-8 sm:bottom-8 lg:-left-6 lg:bottom-10 z-20 rounded-2xl border border-white/60 bg-white/85 px-5 py-3 shadow-[0_12px_32px_rgba(74,52,32,0.1)] backdrop-blur-md flex items-center gap-3.5 transition-transform duration-300 hover:scale-105">
+            <span className="h-2.5 w-2.5 rounded-full bg-caramel animate-pulse" />
             <div className="flex flex-col leading-none">
-              <span className="text-[0.65rem] font-bold tracking-widest text-deep-brown/60 uppercase">100% TRACEABLE</span>
+              <span className="text-[0.65rem] font-bold tracking-widest text-deep-brown/70 uppercase">100% TRACEABLE</span>
               <span className="mt-1 font-heading text-lg font-bold text-caramel">Honest Sourcing</span>
             </div>
           </div>

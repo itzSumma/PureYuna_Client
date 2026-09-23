@@ -254,29 +254,27 @@ function UserMenu({ onNavigate, mounted }: { onNavigate?: () => void; mounted: b
 function AuthActions({ onNavigate, mounted }: { onNavigate?: () => void; mounted: boolean }) {
   const { isAuthenticated } = useAuthStore();
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return <div className="size-10 rounded-full" aria-hidden="true" />;
+  }
 
   if (isAuthenticated) {
     return <UserMenu onNavigate={onNavigate} mounted={mounted} />;
   }
 
   return (
-    <div className="flex items-center gap-6">
-      <Link
-        href="/login"
-        onClick={onNavigate}
-        className="text-sm tracking-widest uppercase font-medium text-[#3D1B22]/80 transition-colors duration-200 hover:text-[#4A1E27]"
-      >
-        Login
-      </Link>
-      <Link
-        href="/register"
-        onClick={onNavigate}
-        className="text-sm tracking-widest uppercase font-medium text-[#3D1B22]/80 transition-colors duration-200 hover:text-[#4A1E27]"
-      >
-        Register
-      </Link>
-    </div>
+    <Button
+      variant="ghost"
+      size="icon"
+      render={<Link href="/login" />}
+      nativeButton={false}
+      onClick={onNavigate}
+      aria-label="Account sign in"
+      title="Sign in"
+      className="text-[#3D1B22]/80 hover:text-[#4A1E27] hover:bg-[#4A1E27]/5 rounded-full cursor-pointer transition-colors"
+    >
+      <UserRound className="size-5" strokeWidth={1.8} />
+    </Button>
   );
 }
 
@@ -295,11 +293,12 @@ function IconLinks({ onCartClick, mounted }: { onCartClick: () => void; mounted:
         render={<Link href="/wishlist" />}
         nativeButton={false}
         aria-label="Wishlist"
-        className="text-[#3D1B22]/80 hover:text-[#4A1E27] relative"
+        title="Wishlist"
+        className="text-[#3D1B22]/80 hover:text-[#4A1E27] hover:bg-[#4A1E27]/5 relative rounded-full transition-colors"
       >
-        <Heart className="size-6" strokeWidth={2.2} />
+        <Heart className="size-5" strokeWidth={1.8} />
         {mounted && wishlistCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
             {wishlistCount}
           </span>
         )}
@@ -309,11 +308,12 @@ function IconLinks({ onCartClick, mounted }: { onCartClick: () => void; mounted:
         size="icon"
         onClick={onCartClick}
         aria-label="Cart"
-        className="text-[#3D1B22]/80 hover:text-[#4A1E27] relative cursor-pointer"
+        title="Cart"
+        className="text-[#3D1B22]/80 hover:text-[#4A1E27] hover:bg-[#4A1E27]/5 relative cursor-pointer rounded-full transition-colors"
       >
-        <ShoppingBag className="size-6" strokeWidth={2.2} />
+        <ShoppingBag className="size-5" strokeWidth={1.8} />
         {mounted && cartCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
             {cartCount}
           </span>
         )}
@@ -485,26 +485,17 @@ function MobileNavContent({
             Sign Out
           </button>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              render={<Link href="/login" />}
-              nativeButton={false}
-              onClick={onClose}
-            >
-              Login
-            </Button>
-            <Button
-              variant="default"
-              size="sm"
-              render={<Link href="/register" />}
-              nativeButton={false}
-              onClick={onClose}
-            >
-              Register
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="default"
+            render={<Link href="/login" />}
+            nativeButton={false}
+            onClick={onClose}
+            className="w-full justify-center gap-2 border-golden-border text-deep-brown hover:bg-[#4A1E27]/5"
+          >
+            <UserRound className="size-4 text-caramel" />
+            Sign In / Register
+          </Button>
         )}
       </div>
 
@@ -529,11 +520,11 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const cartOpen = useCartStore((state) => state.isOpen);
   const setCartOpen = useCartStore((state) => state.setOpen);
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const cartCount = useCartStore((state) => state.getItemCount());
   const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
@@ -547,17 +538,17 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-golden-border bg-champagne">
-      <div className="w-full bg-[#4A1E27] py-2 px-4 text-center text-[11px] font-semibold tracking-[0.16em] text-white uppercase">
+      <div className="w-full bg-[#4A1E27] py-2.5 px-4 text-center text-xs sm:text-[13px] font-medium tracking-[0.14em] text-[#FAF5F0] uppercase">
         Complimentary shipping on orders over $75 • Use code: PUREYUNA
       </div>
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-8 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-4 py-4 sm:px-6 sm:py-4.5 lg:px-8">
         <div className="flex items-center gap-3">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger
               render={
                 <button
                   type="button"
-                  className="inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 outline-none select-none hover:bg-charcoal/5 text-charcoal active:scale-[0.97] size-8 rounded-md -ml-2 md:hidden"
+                  className="inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 outline-none select-none hover:bg-charcoal/5 text-charcoal active:scale-[0.97] size-9 rounded-md -ml-1.5 md:hidden"
                   aria-label="Open menu"
                 />
               }
@@ -586,35 +577,34 @@ export function Navbar() {
           <PackagesDropdown />
         </nav>
 
-        <div className="flex items-center gap-4 md:gap-8">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Mobile Cart Button */}
           {user?.role !== "ADMIN" && (
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className="md:hidden text-[#3D1B22] hover:text-[#4A1E27] relative p-1.5 cursor-pointer"
+              className="md:hidden text-[#3D1B22] hover:text-[#4A1E27] relative p-2 rounded-full hover:bg-[#4A1E27]/5 cursor-pointer transition-colors"
               aria-label="Cart"
             >
-              <ShoppingBag className="size-6" strokeWidth={2.2} />
+              <ShoppingBag className="size-5" strokeWidth={1.8} />
               {mounted && cartCount > 0 && (
-                <span className="absolute top-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
+                <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#4A1E27] text-[0.62rem] font-bold text-[#FAF5F0]">
                   {cartCount}
                 </span>
               )}
             </button>
           )}
 
-          <div className="hidden gap-2 md:flex">
+          <div className="hidden items-center gap-1 md:flex">
             <IconLinks onCartClick={() => setCartOpen(true)} mounted={mounted} />
-          </div>
-          <div className="hidden md:block">
             <AuthActions mounted={mounted} />
           </div>
+
           <Button
             variant="default"
             render={<Link href="/products" />}
             nativeButton={false}
-            className="hidden lg:inline-flex text-lg font-medium h-12 px-7"
+            className="hidden sm:inline-flex text-sm font-semibold tracking-wide h-10 px-5.5 rounded-lg shadow-sm"
           >
             Shop Now
           </Button>

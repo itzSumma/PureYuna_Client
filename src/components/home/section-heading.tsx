@@ -30,28 +30,28 @@ export function SectionHeading({
       {eyebrow && (
         <p
           className={cn(
-            "flex items-center gap-3 text-xs font-semibold tracking-[0.22em] uppercase",
-            isDark ? "text-cream/80" : "text-charcoal",
+            "flex items-center gap-3 text-xs font-bold tracking-[0.24em] uppercase",
+            isDark ? "text-warm-white/90" : "text-caramel",
             align === "center" && "justify-center"
           )}
         >
-          <span aria-hidden="true" className={cn("h-px w-8", isDark ? "bg-cream/25" : "bg-charcoal/25")} />
+          <span aria-hidden="true" className={cn("h-px w-8", isDark ? "bg-white/30" : "bg-caramel/40")} />
           {eyebrow}
           {align === "center" && (
-            <span aria-hidden="true" className={cn("h-px w-8", isDark ? "bg-cream/25" : "bg-charcoal/25")} />
+            <span aria-hidden="true" className={cn("h-px w-8", isDark ? "bg-white/30" : "bg-caramel/40")} />
           )}
         </p>
       )}
       <h2 className={cn(
         "mt-5 font-heading text-3xl font-medium tracking-tight text-balance sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]",
-        isDark ? "text-cream" : "text-charcoal"
+        isDark ? "text-warm-white" : "text-deep-brown"
       )}>
         {title}
       </h2>
       {description && (
         <p className={cn(
-          "mt-4 text-sm leading-relaxed sm:text-base",
-          isDark ? "text-cream/70" : "text-charcoal/70"
+          "mt-4 text-base leading-relaxed sm:text-lg",
+          isDark ? "text-warm-white/80" : "text-deep-brown/85 font-normal"
         )}>
           {description}
         </p>

@@ -1,3 +1,4 @@
+import * as React from "react"
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -15,13 +16,13 @@ const buttonVariants = cva(
         "primary-formulated":
           "bg-deep-brown hover:bg-deep-brown/95 text-warm-white border-t border-white/10 shadow-[0_2px_4px_rgba(38,28,25,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-0.5 active:scale-[0.97]",
         outline:
-          "border-1.5 border-deep-brown bg-transparent text-deep-brown hover:bg-deep-brown/5 active:scale-[0.97]",
+          "border-2 border-deep-brown bg-transparent text-deep-brown hover:bg-deep-brown/5 active:scale-[0.97]",
         "secondary-organic":
-          "border-1.5 border-organic-primary bg-transparent text-organic-primary hover:bg-organic-primary/8 active:scale-[0.97]",
+          "border-2 border-organic-primary bg-transparent text-organic-primary hover:bg-organic-primary/8 active:scale-[0.97]",
         "secondary-formulated":
-          "border-1.5 border-formulated-primary bg-transparent text-formulated-primary hover:bg-formulated-primary/8 active:scale-[0.97]",
+          "border-2 border-formulated-primary bg-transparent text-formulated-primary hover:bg-formulated-primary/8 active:scale-[0.97]",
         "secondary-terracotta":
-          "border-1.5 border-caramel bg-transparent text-caramel hover:bg-caramel/8 active:scale-[0.97]",
+          "border-2 border-caramel bg-transparent text-caramel hover:bg-caramel/8 active:scale-[0.97]",
         ghost:
           "hover:bg-deep-brown/5 text-deep-brown active:scale-[0.97]",
         ghostLight:
@@ -55,11 +56,22 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
+  render,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  const isNative =
+    nativeButton !== undefined
+      ? nativeButton
+      : render
+        ? React.isValidElement(render) && render.type === "button"
+        : true;
+
   return (
     <ButtonPrimitive
       data-slot="button"
+      nativeButton={isNative}
+      render={render}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />

@@ -8,7 +8,7 @@ import { IMAGES } from "@/lib/images";
 
 export function CollectionShowcase() {
   return (
-    <section className="bg-cream py-20 lg:py-28 relative overflow-hidden">
+    <section className="bg-cream py-16 lg:py-20 relative overflow-hidden">
       {/* Subtle organic layout glow */}
       <div
         aria-hidden="true"
@@ -35,11 +35,11 @@ export function CollectionShowcase() {
           />
         </Reveal>
 
-        <div className="mt-16 grid gap-12 lg:grid-cols-2 lg:gap-8">
+        <div className="mt-14 grid gap-8 lg:grid-cols-2 lg:gap-10">
           <Reveal>
             <Link
               href="/products?productType=ORGANIC"
-              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 sm:p-8"
+              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-8"
             >
               <div className="relative aspect-[5/6] overflow-hidden rounded-3xl shadow-sm">
                 <ImageWithFallback
@@ -52,17 +52,17 @@ export function CollectionShowcase() {
               </div>
 
               <div className="mt-8 px-1">
-                <p className="text-xs font-semibold tracking-[0.24em] text-foreground/60 uppercase">
+                <p className="text-xs font-bold tracking-[0.24em] text-caramel uppercase">
                   Organic
                 </p>
                 <h3 className="mt-3 font-heading text-3xl font-medium tracking-tight text-deep-brown sm:text-4xl">
                   Inspired by nature.
                 </h3>
-                <p className="mt-3 max-w-sm text-[16px] leading-relaxed text-foreground/80">
+                <p className="mt-3 max-w-sm text-base leading-relaxed text-deep-brown/85">
                   Naturally inspired skincare designed for gentle everyday
                   rituals.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-caramel/85">
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-deep-brown">
                   Explore Organic
                   <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -73,7 +73,7 @@ export function CollectionShowcase() {
           <Reveal delay={0.12}>
             <Link
               href="/products?productType=FORMULATED"
-              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 sm:p-8 sm:mt-10"
+              className="group flex flex-col rounded-[2rem] border border-golden-border bg-[#FAF5F0] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-8"
             >
               <div className="relative aspect-[5/6] overflow-hidden rounded-3xl shadow-sm">
                 <ImageWithFallback
@@ -100,16 +100,16 @@ export function CollectionShowcase() {
               </div>
 
               <div className="mt-8 px-1">
-                <p className="text-xs font-semibold tracking-[0.24em] text-foreground/60 uppercase">
+                <p className="text-xs font-bold tracking-[0.24em] text-caramel uppercase">
                   Formulated
                 </p>
                 <h3 className="mt-3 font-heading text-3xl font-medium tracking-tight text-deep-brown sm:text-4xl">
                   Targeted skincare.
                 </h3>
-                <p className="mt-3 max-w-sm text-[16px] leading-relaxed text-foreground/80">
+                <p className="mt-3 max-w-sm text-base leading-relaxed text-deep-brown/85">
                   Thoughtfully formulated care for specific skin needs.
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-caramel/85">
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-caramel transition-colors duration-200 hover:text-deep-brown">
                   Explore Formulated
                   <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
