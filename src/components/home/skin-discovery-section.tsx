@@ -135,7 +135,7 @@ export function SkinDiscoverySection() {
   };
 
   return (
-    <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24 bg-transparent border-t border-[#F2ECE5]/70">
+    <section className="relative overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24 lg:pt-36 lg:pb-28 bg-transparent border-t border-[#F2ECE5]/70">
       {/* Inline Pure CSS Keyframe Styles for Scanner & Gentle Floating */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes skinFloat {

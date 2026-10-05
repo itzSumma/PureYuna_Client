@@ -4,6 +4,7 @@ import { FeaturedProducts } from "@/components/home/featured-products";
 import { HeroSection } from "@/components/home/hero-section";
 import { PureRoutineSection } from "@/components/home/pure-routine-section";
 import { SkinDiscoverySection } from "@/components/home/skin-discovery-section";
+import { WhyChooseUsSection } from "@/components/home/why-choose-us";
 
 export default function Home() {
   return (
@@ -20,10 +21,13 @@ export default function Home() {
       {/* 4. Skin Discovery */}
       <SkinDiscoverySection />
 
-      {/* 5. The Pure Routine / Ingredients */}
+      {/* 5. Why Choose Us / Features */}
+      <WhyChooseUsSection />
+
+      {/* 6. The Pure Routine / Ingredients */}
       <PureRoutineSection />
 
-      {/* 6. Customer Reviews */}
+      {/* 7. Customer Reviews */}
       <CustomerReviewsSection />
     </>
   );

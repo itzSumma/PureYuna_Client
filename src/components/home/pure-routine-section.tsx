@@ -13,43 +13,58 @@ const stepIcons = [Droplets, Sparkles, ShieldCheck];
 
 export function PureRoutineSection() {
   return (
-    <section className="relative overflow-hidden bg-cream py-12 sm:py-16 lg:py-20 border-t border-golden-border/60">
-      {/* Background ambient glows */}
+    <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24 bg-transparent border-t border-[#4A1E24]/10">
+      {/* Background ambient lighting */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 -left-40 size-96 rounded-full bg-[#E3C2B0]/15 blur-3xl"
+        className="pointer-events-none absolute -top-40 -left-40 size-[500px] rounded-full bg-[#4A1E24]/3 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-40 -right-40 size-96 rounded-full bg-[#E3C2B0]/15 blur-3xl"
+        className="pointer-events-none absolute -bottom-40 -right-40 size-[500px] rounded-full bg-[#4A1E24]/3 blur-3xl"
       />
 
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 z-10">
-        {/* ================= 1. THE 3-STEP ROUTINE ================= */}
+        {/* ================= 1. THE 3-STEP EDITORIAL FLOW ================= */}
         <Reveal>
           <div className="text-center max-w-2xl mx-auto">
-            <p className="flex items-center justify-center gap-2.5 text-xs font-bold tracking-[0.24em] text-caramel uppercase">
-              <span aria-hidden="true" className="h-px w-8 bg-caramel/40" />
+            <p className="flex items-center justify-center gap-2.5 text-xs font-bold tracking-[0.24em] text-[#4A1E24] uppercase">
+              <span aria-hidden="true" className="h-px w-8 bg-[#4A1E24]/30" />
               The Pure Ritual
-              <span aria-hidden="true" className="h-px w-8 bg-caramel/40" />
+              <span aria-hidden="true" className="h-px w-8 bg-[#4A1E24]/30" />
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-medium tracking-tight text-deep-brown sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+            <h2 className="mt-4 font-heading font-serif text-3xl font-medium tracking-tight text-[#241815] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
               Simplicity in three thoughtful steps
             </h2>
-            <p className="mt-4 text-base sm:text-lg text-deep-brown/80 leading-relaxed">
+            <p className="mt-3.5 text-sm sm:text-base text-[#7A6B66] leading-relaxed max-w-xl mx-auto">
               We stripped away unnecessary fillers and confusing 12-step rituals. Clean, potent, and effortless morning-to-night care.
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-10 sm:mt-12 grid gap-6 md:grid-cols-3">
+        {/* Cardless Editorial Step Columns */}
+        <div className="mt-12 sm:mt-16 grid gap-10 md:grid-cols-3 max-w-6xl mx-auto">
           {PURE_ROUTINE_STEPS.map((stepItem, index) => {
             const Icon = stepIcons[index % stepIcons.length];
+            const cleanCategory = stepItem.category
+              .replace(/^Step\s*\d+\s*[·•-]\s*/i, "")
+              .toUpperCase();
+
             return (
-              <Reveal key={stepItem.step} delay={index * 0.1} className="h-full">
-                <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-golden-border bg-white/70 shadow-xs transition-all duration-700 ease-in-out hover:-translate-y-1.5 hover:bg-[#FDF6F0] hover:shadow-xl hover:border-caramel/40">
-                  {/* Top Image Container */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-sand/20">
+              <Reveal key={stepItem.step} delay={index * 0.12} className="h-full">
+                <div className="group relative flex h-full flex-col justify-between">
+                  {/* Top: Delicate Numbering & Phase Header */}
+                  <div className="flex items-baseline justify-between border-b border-[#4A1E24]/10 pb-3 mb-4">
+                    <span className="font-heading font-serif text-4xl sm:text-5xl font-light text-[#4A1E24]/25 leading-none select-none tracking-tight">
+                      {stepItem.step}
+                    </span>
+                    <span className="text-[10px] tracking-[0.25em] font-semibold text-[#7A6B66] uppercase">
+                      {index === 0 ? "Phase I" : index === 1 ? "Phase II" : "Phase III"}
+                    </span>
+                  </div>
+
+                  {/* Center: Premium Soft Arch Shape Image */}
+                  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-[80px] rounded-b-2xl bg-[#FAF6F0] shadow-sm transition-all duration-500 ease-out group-hover:shadow-md">
                     <ImageWithFallback
                       fill
                       src={stepItem.image}
@@ -57,40 +72,62 @@ export function PureRoutineSection() {
                       sizes="(min-width: 768px) 33vw, 100vw"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
-                    {/* Floating Step Number badge over image */}
-                    <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5 rounded-full bg-cream/90 backdrop-blur-md border border-golden-border/60 px-3 py-1 shadow-xs">
-                      <span className="font-heading text-xs font-bold text-caramel tracking-wider">
-                        STEP {stepItem.step}
-                      </span>
+
+                    {/* Subtle bottom vignette gradient */}
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-60"
+                    />
+
+                    {/* Step Icon Badge */}
+                    <div className="absolute top-4 right-4 grid size-8 place-items-center rounded-full bg-white/90 backdrop-blur-md text-[#4A1E24] shadow-xs transition-colors duration-300 group-hover:bg-[#4A1E24] group-hover:text-white">
+                      <Icon className="size-3.5" />
                     </div>
-                    {/* Floating Step Icon */}
-                    <div className="absolute top-3.5 right-3.5 grid size-9 place-items-center rounded-full bg-cream/90 backdrop-blur-md border border-golden-border/60 text-caramel shadow-xs transition-all duration-500 ease-in-out group-hover:bg-caramel group-hover:text-warm-white">
-                      <Icon className="size-4" />
+
+                    {/* Step Name Floating Pill */}
+                    <div className="absolute bottom-4 left-4">
+                      <span className="inline-block rounded-full bg-white/90 backdrop-blur-md px-3.5 py-1 text-[11px] font-medium tracking-wide text-[#4A1E24] shadow-xs">
+                        {stepItem.title}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Step Title & Details */}
-                  <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between">
+                  {/* Bottom: Typography & Content */}
+                  <div className="flex flex-col flex-1 justify-between pt-5">
                     <div>
-                      <span className="text-[11px] font-bold tracking-[0.2em] text-caramel/90 uppercase">
-                        {stepItem.category}
-                      </span>
-                      <h3 className="mt-1 font-heading text-2xl font-semibold tracking-tight text-deep-brown">
+                      {/* Step Sub-label */}
+                      <p className="text-[11px] tracking-widest uppercase font-semibold text-[#7A6B66]">
+                        STEP {stepItem.step} — {cleanCategory}
+                      </p>
+
+                      {/* Main Step Name */}
+                      <h3 className="font-heading font-serif text-2xl font-medium text-[#241815] mt-1.5 mb-2 tracking-tight">
                         {stepItem.title}
                       </h3>
-                      <p className="mt-2 text-xs sm:text-sm font-medium text-deep-brown/90 leading-snug">
+
+                      {/* Benefit Tagline */}
+                      <p className="text-xs sm:text-sm font-medium text-[#241815]/90 leading-snug mb-2">
                         {stepItem.tagline}
                       </p>
-                      <p className="mt-3 text-xs sm:text-sm text-deep-brown/75 leading-relaxed">
+
+                      {/* Detailed Description */}
+                      <p className="text-xs sm:text-sm text-[#7A6B66] leading-relaxed">
                         {stepItem.description}
                       </p>
+
+                      {/* Recommended Skin Types */}
+                      {stepItem.recommendedTypes && (
+                        <p className="mt-2.5 text-[11px] font-medium text-[#4A1E24]/80 flex items-center gap-1.5">
+                          <span className="size-1 rounded-full bg-[#4A1E24]/40" />
+                          {stepItem.recommendedTypes}
+                        </p>
+                      )}
                     </div>
 
-                    {/* Ritual Tip Pill */}
-                    <div className="mt-6 pt-4 border-t border-golden-border/60">
-                      <p className="text-[11px] text-deep-brown/70 leading-relaxed">
-                        <span className="font-bold text-caramel">Ritual tip:</span> {stepItem.tip}
-                      </p>
+                    {/* Ritual Tip Separator Line */}
+                    <div className="border-t border-[#4A1E24]/10 pt-3 mt-4 text-xs italic text-[#7A6B66]">
+                      <span className="font-semibold not-italic text-[#4A1E24]">Ritual tip:</span>{" "}
+                      {stepItem.tip}
                     </div>
                   </div>
                 </div>
@@ -99,14 +136,18 @@ export function PureRoutineSection() {
           })}
         </div>
 
-        {/* Build Package CTA Link Banner */}
+        {/* ================= 2. BORDERLESS GLASSPHORMIC PACKAGE BANNER ================= */}
         <Reveal delay={0.25}>
-          <div className="mt-10 sm:mt-12 rounded-2xl border border-golden-border bg-gradient-to-r from-[#FAF5F0] via-champagne to-[#FAF5F0] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-            <div>
-              <h4 className="font-heading text-xl sm:text-2xl font-medium text-deep-brown">
+          <div className="mt-14 sm:mt-16 rounded-3xl border border-[#4A1E24]/20 bg-white/40 backdrop-blur-md p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_10px_30px_rgba(74,30,36,0.03)]">
+            <div className="max-w-xl text-center md:text-left">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#4A1E24] mb-2">
+                <Sparkles className="size-3.5" />
+                <span>Sanctuary Routine Package</span>
+              </div>
+              <h4 className="font-heading font-serif text-xl sm:text-2xl lg:text-3xl font-medium text-[#241815]">
                 Ready to build your complete custom 3-step routine?
               </h4>
-              <p className="mt-1 text-sm text-deep-brown/75">
+              <p className="mt-2 text-xs sm:text-sm text-[#7A6B66] leading-relaxed">
                 Bundle your cleanser, targeted serum, and barrier cream for special sanctuary bundle pricing.
               </p>
             </div>
@@ -115,26 +156,26 @@ export function PureRoutineSection() {
               variant="default"
               nativeButton={false}
               render={<Link href="/build-package" />}
-              className="shrink-0 gap-2 text-sm font-semibold h-11 px-6 shadow-sm cursor-pointer"
+              className="shrink-0 gap-2 bg-[#4A1E24] hover:bg-[#38151A] text-white text-xs sm:text-sm font-semibold h-11 px-7 rounded-full shadow-sm cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300 group/btn"
             >
-              Build Your Package
-              <ArrowRight className="size-4 transition-transform group-hover/button:translate-x-0.5" />
+              <span>Build Your Package</span>
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
             </Button>
           </div>
         </Reveal>
 
-        {/* ================= 2. KEY INGREDIENTS PHILOSOPHY ================= */}
-        <div className="mt-14 sm:mt-16 pt-10 sm:pt-14 border-t border-golden-border/60">
+        {/* ================= 3. KEY INGREDIENTS PHILOSOPHY ================= */}
+        <div className="mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-[#4A1E24]/10">
           <Reveal>
             <div className="text-center max-w-2xl mx-auto">
-              <p className="flex items-center justify-center gap-2.5 text-xs font-bold tracking-[0.24em] text-caramel uppercase">
-                <Leaf className="size-3.5 text-caramel" />
+              <p className="flex items-center justify-center gap-2 text-xs font-bold tracking-[0.24em] text-[#4A1E24] uppercase">
+                <Leaf className="size-3.5 text-[#4A1E24]" />
                 Ingredients That Matter
               </p>
-              <h2 className="mt-4 font-heading text-3xl font-medium tracking-tight text-deep-brown sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+              <h2 className="mt-3.5 font-heading font-serif text-3xl font-medium tracking-tight text-[#241815] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
                 Botanical elegance. Clinical potency.
               </h2>
-              <p className="mt-4 text-base sm:text-lg text-deep-brown/80 leading-relaxed">
+              <p className="mt-3.5 text-xs sm:text-sm text-[#7A6B66] leading-relaxed">
                 Every formula begins with sustainably sourced wild botanicals and is amplified by bio-fermented clinical actives.
               </p>
             </div>
@@ -143,9 +184,9 @@ export function PureRoutineSection() {
           <div className="mt-10 sm:mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {KEY_INGREDIENTS.map((ingredient, index) => (
               <Reveal key={ingredient.id} delay={index * 0.08} className="h-full">
-                <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-golden-border bg-white/70 shadow-xs transition-all duration-700 ease-in-out hover:-translate-y-1.5 hover:bg-[#4A1E27] hover:border-[#4A1E27] hover:shadow-xl">
+                <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#4A1E24]/15 bg-white/60 backdrop-blur-xs shadow-xs transition-all duration-700 ease-in-out hover:-translate-y-1.5 hover:bg-[#4A1E24] hover:border-[#4A1E24] hover:shadow-xl">
                   {/* Top Image Container */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-sand/20">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#FAF6F0]">
                     <ImageWithFallback
                       fill
                       src={ingredient.image}
@@ -155,14 +196,14 @@ export function PureRoutineSection() {
                     />
                     {/* Category pill overlay */}
                     <div className="absolute top-3 left-3">
-                      <span className="rounded-full bg-cream/90 backdrop-blur-md border border-golden-border/60 px-2.5 py-0.5 text-[0.62rem] font-bold tracking-wider text-caramel uppercase shadow-xs transition-all duration-500 ease-in-out group-hover:bg-[#FAF5F0] group-hover:text-[#4A1E27] group-hover:border-white/90 group-hover:shadow-sm">
+                      <span className="rounded-full bg-white/90 backdrop-blur-md border border-[#4A1E24]/10 px-2.5 py-0.5 text-[0.62rem] font-bold tracking-wider text-[#4A1E24] uppercase shadow-xs transition-all duration-500 ease-in-out group-hover:bg-[#FAF5F0] group-hover:text-[#4A1E24] group-hover:border-white/90 group-hover:shadow-sm">
                         {ingredient.type}
                       </span>
                     </div>
                     {/* Concentration pill overlay */}
                     {ingredient.concentration && (
                       <div className="absolute bottom-2.5 right-2.5">
-                        <span className="rounded-full bg-deep-brown/85 backdrop-blur-md border border-white/10 px-2 py-0.5 text-[0.62rem] font-medium tracking-wide text-warm-white shadow-xs transition-all duration-500 ease-in-out group-hover:bg-black/60 group-hover:border-white/30 group-hover:text-white">
+                        <span className="rounded-full bg-[#241815]/85 backdrop-blur-md border border-white/10 px-2 py-0.5 text-[0.62rem] font-medium tracking-wide text-white shadow-xs transition-all duration-500 ease-in-out group-hover:bg-black/60 group-hover:border-white/30 group-hover:text-white">
                           {ingredient.concentration}
                         </span>
                       </div>
@@ -173,25 +214,28 @@ export function PureRoutineSection() {
                   <div className="p-5 sm:p-6 flex flex-col flex-1 justify-between">
                     <div>
                       {/* Name & Origin */}
-                      <h3 className="font-heading text-xl font-semibold text-deep-brown leading-snug transition-colors duration-500 ease-in-out group-hover:text-white">
+                      <h3 className="font-heading font-serif text-lg font-semibold text-[#241815] leading-snug transition-colors duration-500 ease-in-out group-hover:text-white">
                         {ingredient.name}
                       </h3>
-                      <p className="text-[11px] font-medium text-caramel tracking-wide mt-0.5 transition-colors duration-500 ease-in-out group-hover:text-warm-white/80">
+                      <p className="text-[11px] font-medium text-[#4A1E24] tracking-wide mt-0.5 transition-colors duration-500 ease-in-out group-hover:text-[#FAF6F0]/80">
                         Source: {ingredient.origin}
                       </p>
 
                       {/* Description */}
-                      <p className="mt-3 text-xs leading-relaxed text-deep-brown/75 transition-colors duration-500 ease-in-out group-hover:text-warm-white/80">
+                      <p className="mt-2.5 text-xs leading-relaxed text-[#7A6B66] transition-colors duration-500 ease-in-out group-hover:text-[#FAF6F0]/85">
                         {ingredient.description}
                       </p>
                     </div>
 
                     {/* Benefits Checkmarks */}
-                    <div className="mt-5 pt-4 border-t border-golden-border/60 transition-colors duration-500 ease-in-out group-hover:border-white/15">
+                    <div className="mt-5 pt-3.5 border-t border-[#4A1E24]/10 transition-colors duration-500 ease-in-out group-hover:border-white/15">
                       <ul className="space-y-1.5">
                         {ingredient.benefits.map((benefit) => (
-                          <li key={benefit} className="flex items-center gap-2 text-xs font-medium text-deep-brown/85 transition-colors duration-500 ease-in-out group-hover:text-[#FAF5F0]">
-                            <span className="grid size-4 place-items-center rounded-full bg-caramel/15 text-caramel shrink-0 border border-caramel/20 transition-all duration-500 ease-in-out group-hover:bg-white/20 group-hover:border-white/40 group-hover:text-white">
+                          <li
+                            key={benefit}
+                            className="flex items-center gap-2 text-xs font-medium text-[#241815] transition-colors duration-500 ease-in-out group-hover:text-[#FAF6F0]"
+                          >
+                            <span className="grid size-4 place-items-center rounded-full bg-[#4A1E24]/10 text-[#4A1E24] shrink-0 border border-[#4A1E24]/20 transition-all duration-500 ease-in-out group-hover:bg-white/20 group-hover:border-white/40 group-hover:text-white">
                               <Check className="size-2.5" strokeWidth={3} />
                             </span>
                             {benefit}

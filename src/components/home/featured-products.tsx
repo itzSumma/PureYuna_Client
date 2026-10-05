@@ -111,7 +111,7 @@ export function FeaturedProducts() {
                 className={cn(
                   "h-full flex flex-col justify-between rounded-3xl border border-[#EADBCE] bg-white p-5 sm:p-6 space-y-4",
                   idx === 1 &&
-                    "md:-translate-y-8 md:scale-[1.03] transition-transform duration-300 z-10 shadow-[0_20px_50px_rgba(74,30,36,0.12)] bg-white border-[#4A1E24]/30"
+                    "md:-translate-y-6 md:scale-[1.03] transition-transform duration-300 z-10 shadow-[0_20px_50px_rgba(74,30,36,0.12)] bg-white border-[#4A1E24]/30"
                 )}
               >
                 <Skeleton className="h-64 w-full rounded-2xl bg-[#4A1E24]/5" />
@@ -132,13 +132,13 @@ export function FeaturedProducts() {
 
               return (
                 <Reveal key={product.id} delay={index * 0.12} className="h-full flex flex-col">
-                  {/* Single Main Card Container with Uniform p-5 sm:p-6 and Equal Height */}
+                  {/* Single Main Card Container with Podium Lift and Hover Depth */}
                   <div
                     className={cn(
-                      "group relative h-full flex flex-col justify-between rounded-3xl bg-white border border-[#EADBCE] p-5 sm:p-6 transition-all duration-300 ease-in-out",
+                      "group relative h-full flex flex-col justify-between rounded-3xl bg-white border border-[#EADBCE] p-5 sm:p-6 transition-all duration-500 ease-out",
                       isFeatured
-                        ? "md:-translate-y-8 md:scale-[1.03] transition-transform duration-300 z-10 shadow-[0_20px_50px_rgba(74,30,36,0.12)] bg-white border-[#4A1E24]/30"
-                        : "shadow-sm hover:shadow-md hover:-translate-y-1"
+                        ? "md:-translate-y-6 md:scale-[1.03] z-10 shadow-[0_20px_50px_rgba(74,30,36,0.12)] border-[#4A1E24]/30 hover:md:-translate-y-8 hover:md:scale-[1.04] hover:shadow-[0_30px_60px_rgba(74,30,36,0.18)]"
+                        : "shadow-sm hover:-translate-y-3 hover:shadow-[0_25px_50px_rgba(74,30,36,0.12)]"
                     )}
                   >
                     {/* Featured Center Badge */}
@@ -151,28 +151,34 @@ export function FeaturedProducts() {
                       </div>
                     )}
 
-                    {/* Fixed Aspect Image Frame with Uniform Padding */}
+                    {/* Fixed Aspect Image Frame with Uniform Padding & Overflow Hidden */}
                     <div className="relative h-64 w-full overflow-hidden rounded-2xl bg-[#FAF6F0] shrink-0">
                       <Link
                         href={`/products/${product.id}`}
-                        className="relative block h-full w-full"
+                        className="relative block h-full w-full overflow-hidden"
                       >
                         <ImageWithFallback
                           src={product.image}
                           alt={product.name}
                           fill
                           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
                           unoptimized={true}
+                        />
+
+                        {/* Shimmer Light Reflection Sweep */}
+                        <div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent z-10"
                         />
                       </Link>
 
-                      {/* Wishlist Button */}
+                      {/* Wishlist Button with Heart Pop Animation */}
                       <button
                         type="button"
                         onClick={(e) => handleToggleWishlist(product, e)}
                         className={cn(
-                          "absolute top-3.5 right-3.5 z-10 grid size-9 cursor-pointer place-items-center rounded-full bg-white/90 backdrop-blur-md shadow-xs transition-all duration-300 hover:scale-110 active:scale-95",
+                          "absolute top-3.5 right-3.5 z-20 grid size-9 cursor-pointer place-items-center rounded-full bg-white/90 backdrop-blur-md shadow-xs transition-all duration-200 hover:scale-110 active:scale-90",
                           isWishlisted
                             ? "text-red-500 bg-white"
                             : "text-[#7A6B66] hover:text-[#4A1E24]"
@@ -180,19 +186,19 @@ export function FeaturedProducts() {
                         aria-label="Add to wishlist"
                       >
                         <Heart
-                          className="size-4"
+                          className="size-4 transition-transform duration-200"
                           fill={isWishlisted ? "currentColor" : "none"}
                           strokeWidth={isWishlisted ? 0 : 2}
                         />
                       </button>
 
-                      {/* Hover Quick Add Pill Button */}
-                      <div className="absolute inset-x-4 bottom-4 z-10 transition-all duration-300 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0">
+                      {/* Hover Quick Add Pill Button (Slide-in Transition) */}
+                      <div className="absolute inset-x-4 bottom-4 z-20 transition-all duration-300 ease-out opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0">
                         <button
                           type="button"
                           disabled={product.stock <= 0}
                           onClick={(e) => handleAddToCart(product, e)}
-                          className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#4A1E24] hover:bg-[#3D1B22] text-[#FAF6F0] py-3 px-4 text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-md active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#4A1E24] hover:bg-[#38151A] text-[#FAF6F0] py-3 px-4 text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-md active:scale-98 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <ShoppingBag className="size-3.5" />
                           {product.stock <= 0 ? "Out of Stock" : "Quick Add"}
@@ -233,7 +239,3 @@ export function FeaturedProducts() {
     </section>
   );
 }
-
-
-
-
