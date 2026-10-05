@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -14,35 +15,28 @@ export function BrandMark({ className, variant = "light" }: BrandMarkProps) {
       href="/"
       aria-label="PureYuna — home"
       className={cn(
-        "group inline-flex items-center gap-2 transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-95 cursor-pointer",
+        "group inline-flex items-center gap-2.5 transition-all duration-300 hover:opacity-95 hover:scale-[1.02] active:scale-95 cursor-pointer",
         className
       )}
     >
-      <span
-        className={cn(
-          "grid size-9 shrink-0 place-items-center transition-transform duration-300 group-hover:-rotate-6",
-          dark ? "text-white" : "text-caramel"
-        )}
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="size-7"
-        >
-          {/* Custom organic leaf-droplet curve */}
-          <path d="M12 2C12 2 4.5 10 4.5 15C4.5 19.14 7.86 22.5 12 22.5C16.14 22.5 19.5 19.14 19.5 15C19.5 10 12 2 12 2Z" />
-          <path d="M12 6.5C12 6.5 10 10.5 8 13.5" />
-          <path d="M12 10.5C12 10.5 14.5 13.5 16 16" />
-          <path d="M12 2.5V22" />
-        </svg>
+      <span className="relative flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3">
+        <Image
+          src="/logo.png"
+          alt="PureYuna"
+          width={36}
+          height={43}
+          priority
+          className={cn(
+            "h-9 sm:h-10 w-auto object-contain transition-all duration-300",
+            dark
+              ? "drop-shadow-[0_2px_8px_rgba(230,195,120,0.35)]"
+              : "drop-shadow-[0_2px_6px_rgba(130,90,40,0.22)]"
+          )}
+        />
       </span>
       <span
         className={cn(
-          "font-heading text-3xl tracking-tight leading-none",
+          "font-heading text-2xl sm:text-3xl tracking-tight leading-none transition-colors",
           dark ? "text-white" : "text-caramel"
         )}
       >
