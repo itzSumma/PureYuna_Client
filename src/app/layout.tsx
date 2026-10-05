@@ -68,6 +68,11 @@ export const metadata: Metadata = {
     description: "Discover clean, organic, and precision-formulated skincare formulas.",
     images: ["/og-image.png"],
   },
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

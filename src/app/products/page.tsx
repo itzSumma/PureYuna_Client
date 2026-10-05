@@ -38,7 +38,7 @@ function ProductsDiscoveryContent() {
   const activeProductType = (searchParams.get("productType") as ProductType) || ProductType.ORGANIC;
   const isOrganic = activeProductType === ProductType.ORGANIC;
   const activeCategory = searchParams.get("category") || "";
-  const activeSkinType = searchParams.get("skinType") || "";
+  const activeSkinType = (searchParams.get("skinType") || "").toUpperCase();
   const activeSort = searchParams.get("sort") || "";
   const activeSearch = searchParams.get("search") || "";
   const activePage = Number(searchParams.get("page")) || 1;
