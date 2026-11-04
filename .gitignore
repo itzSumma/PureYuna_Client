@@ -46,3 +46,11 @@ yarn-error.log*
 
 # typescript cache
 *.tsbuildinfo
+
+# Environment variables & secrets (added by GitHub Guardian)
+.env.*
+*.env
+!.env.sample
+.envrc
+.venv/
+venv/
